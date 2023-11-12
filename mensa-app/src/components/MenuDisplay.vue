@@ -7,10 +7,11 @@
     <div v-for="(categoryMeals, category) in categories" :key="category">
       <h4>{{ category }}</h4>
       <div v-for="meal in categoryMeals" :key="meal.id">
-        <p>{{ meal.name || 'Unbekanntes Gericht' }} - Preis: {{ getPrice(meal) }}  </p>
+        <p>{{ meal.name || 'Unbekanntes Gericht' }} - Preis: {{ getPrice(meal) }}
         <img v-if="isBadgePresent(meal.badges, 'Vegan')" :src="veganIcon" alt="Vegan" class="icon-inline">
         <img v-if="isBadgePresent(meal.badges, 'Vegetarisch')" :src="veggieIcon" alt="Vegetarisch" class="icon-inline">
         <img v-if="!isBadgePresent(meal.badges, 'Vegetarisch') && !isBadgePresent(meal.badges, 'Vegan')" :src="chickenIcon" alt="Manly" class="icon-inline">
+        </p>
       </div>
     </div>
   </div>
