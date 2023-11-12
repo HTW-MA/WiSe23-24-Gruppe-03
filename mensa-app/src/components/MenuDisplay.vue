@@ -7,7 +7,10 @@
     <div v-for="(categoryMeals, category) in categories" :key="category">
       <h4>{{ category }}</h4>
       <div v-for="meal in categoryMeals" :key="meal.id">
-        <p>{{ meal.name || 'Unbekanntes Gericht' }} - Preis: {{ getPrice(meal) }}</p>
+        <p>{{ meal.name || 'Unbekanntes Gericht' }} - Preis: {{ getPrice(meal) }}  </p>
+        <img v-if="isBadgePresent(meal.badges, 'Vegan')" :src="veganIcon" alt="Vegan" class="icon-inline">
+        <img v-if="isBadgePresent(meal.badges, 'Vegetarisch')" :src="veggieIcon" alt="Vegetarisch" class="icon-inline">
+        <img v-if="!isBadgePresent(meal.badges, 'Vegetarisch') && !isBadgePresent(meal.badges, 'Vegan')" :src="chickenIcon" alt="Manly" class="icon-inline">
       </div>
     </div>
   </div>
@@ -16,6 +19,9 @@
 <script>
 import { ref, watch, computed } from 'vue';
 import axios from 'axios';
+import veganIcon from '../assets/vegan.png';
+import veggieIcon from '../assets/veggie.png'
+import chickenIcon from '../assets/chicken.png'
 
 export default {
   name: 'MenuDisplay',
@@ -23,6 +29,13 @@ export default {
     selectedCanteen: String,
     selectedRole: String
   },
+
+  methods:{
+    isBadgePresent(badges, badgeName) {
+      return badges.some(badge => badge.name === badgeName);
+    },
+  },
+
   setup(props) {
     const startDate = ref(new Date().toISOString().slice(0, 10)); // today's date
     const endDate = ref(new Date().toISOString().slice(0, 10)); // today's date
@@ -47,6 +60,7 @@ export default {
           return acc;
         }, {});
         meals.value = mealsByDateAndCategory;
+        console.log(meals)
       } catch (error) {
         console.error(error);
       }
@@ -84,8 +98,18 @@ export default {
       endDate,
       categorizedMeals,
       meals,
+      veganIcon,
+      veggieIcon,
+      chickenIcon,
       getPrice
     };
   }
 };
 </script>
+
+<style scoped>
+.icon-inline {
+  height: 1em; /* Sets the icon height to match the font size of the text */
+  vertical-align: middle; /* Aligns the icon with the middle of the text line */
+}
+</style>
