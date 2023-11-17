@@ -1,6 +1,7 @@
 <template>
+  <navbar>
 
-  <!--<Home/>-->
+  </navbar>
   <router-view/>
 </template>
 
@@ -8,10 +9,13 @@
 import { Options, Vue } from 'vue-class-component';
 import HelloWorld from './components/HelloWorld.vue';
 import Home from './views/HomeComponent.vue'
+import Navbar from "@/components/Navbar.vue";
+
 
 @Options({
   components: {
     HelloWorld,
+    Navbar,
     Home
   },
 })
@@ -26,5 +30,20 @@ export default class App extends Vue {}
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+nav {
+  padding: 30px;
+  top: -50px;
+  background-color: red;
+}
+
+nav a {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+nav a.router-link-exact-active {
+  color: #42b983;
 }
 </style>
