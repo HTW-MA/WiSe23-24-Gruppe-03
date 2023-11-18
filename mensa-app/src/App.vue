@@ -34,7 +34,7 @@ export default class App extends Vue {}
 
 nav {
   padding: 30px;
-  top: -50px;
+  top: -60px;
   background-color: red;
 }
 

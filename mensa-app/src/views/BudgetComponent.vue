@@ -7,12 +7,7 @@ export default {
 </script>
 
 <template>
-  <p>
-    Das ist die Budget Seite
-  </p>
-  <p>
-    <router-link to="/">Zurück</router-link>
-  </p>
+  <img src="../assets/NFC_Placeholder.png" alt="NFC">
 </template>
 
 <style scoped>

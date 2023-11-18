@@ -1,8 +1,4 @@
 <template>
-  <p align="right">
-    <router-link class="link-info" to="/Budget">€</router-link>
-  </p>
-  <br>
   <select v-model="selectedCanteen">
     <option v-for="canteen in canteens" :value="canteen.id" :key="canteen.id">
       {{ canteen.name }} - {{ canteen.address.street }}
