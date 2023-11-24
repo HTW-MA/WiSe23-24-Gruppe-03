@@ -1,13 +1,15 @@
 <template>
   <input type="date" v-model="startDate" @change="fetchMenu" />
+  <button class="btn-active" @click="navigateToProfile">Einstellungen ändern</button>
   <div v-if="isWeekend">
     Am Wochenende hat die Mensa zu - Geh nach Hause, kleiner Streber!
   </div>
 
-  <div v-if="Object.keys(meals).length === 0 && !isWeekend">
+  <div v-else-if="Object.keys(meals).length === 0 && !isWeekend">
     <p>Hm....da finden wir irgendwie nichts zu essen. Vielleicht bist du zu zeitig? Vielleicht will dir dein Handy auch sagen, dass du abnehmen sollst?</p>
   </div>
 
+  <div v-else>
   <div v-for="(categories, date) in meals" :key="date">
     <h3>{{ date }}</h3>
     <div v-for="(categoryMeals, category) in categories" :key="category">
@@ -21,10 +23,12 @@
       </div>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
 import {ref, watch, computed, onMounted} from 'vue';
+import {useRouter} from "vue-router";
 import axios from 'axios';
 import veganIcon from '../assets/vegan.png';
 import veggieIcon from '../assets/veggie.png'
@@ -56,6 +60,11 @@ export default {
     //falls doch noch benötigt:
     //const endDate = ref(new Date().toISOString().slice(0, 10));
 
+    const router = useRouter();
+
+    const navigateToProfile = () => {
+      router.push('/Profile');
+    };
 
     const fetchMenu = async () => {
       try {
@@ -118,7 +127,8 @@ export default {
       veggieIcon,
       chickenIcon,
       getPrice,
-      isWeekend
+      isWeekend,
+      navigateToProfile
     };
   }
 };
@@ -128,5 +138,10 @@ export default {
 .icon-inline {
   height: 1em;
   vertical-align: middle;
+}
+
+.btn-active {
+  background-color: #76B900; /* Ist das HTW grün... */
+  color: white;
 }
 </style>

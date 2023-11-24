@@ -8,8 +8,8 @@
         {{ canteen.name }} - {{ canteen.address.street }}
       </option>
     </select>
-<p></p>
-  <p>Für genauere Preisinfos. Aber Achtung: Diese Informationen sind unverbindlich:</p>
+    <p></p>
+    <p>Für genauere Preisinformationen. Aber Achtung: Diese Informationen sind unverbindlich:</p>
     <div>
       <label>
         <input type="radio" value="Studierende" v-model="selectedRole"> Studierende
@@ -22,7 +22,7 @@
       </label>
     </div>
     <p></p>
-<p>Was kommt bei dir auf den Teller? Achtung: Veganer bekommen keine vegetarischen Gerichte angezeigt!</p>
+    <p>Was kommt bei dir auf den Teller? Achtung: Veganer bekommen keine vegetarischen Gerichte angezeigt!</p>
     <div>
       <label>
         <input type="radio" value="Allesfresser" v-model="selectedDiet"> Allesfresser
@@ -52,9 +52,10 @@
 import axios from 'axios';
 import { ref, onMounted, computed } from 'vue';
 import {useRouter} from "vue-router";
+import Dexie from "dexie";
 
 interface Canteen {
-  id: number;
+  id: string;
   name: string;
   address: {
     street: string;
@@ -64,10 +65,21 @@ interface Canteen {
 export default {
   name: 'SelectedOptions',
   setup() {
+
+    class MyDexie extends Dexie {
+      canteens!: Dexie.Table<Canteen, string>; // Specify that 'id' is a string
+    }
+
+
+    const db = new MyDexie('Mensen');
+    db.version(1).stores({
+      canteens: 'id,name,address'
+    });
+
     const router = useRouter()
-    const selectedRole = ref<string>('');
-    const selectedDiet = ref<string>('');
-    const selectedCanteen = ref<number | null>(null);
+    const selectedRole = ref(localStorage.getItem('selectedRole') || '');
+    const selectedDiet = ref(localStorage.getItem('selectedDiet') || '');
+    const selectedCanteen = ref<string | null>(null);
     const canteens = ref<Canteen[]>([]);
 
 
@@ -81,13 +93,23 @@ export default {
             'X-API-KEY': process.env.VUE_APP_API_KEY
           }
         });
+        await db.canteens.bulkPut(response.data);
         canteens.value = response.data;
+
       } catch (error) {
         console.log(error);
       }
     };
 
-    onMounted(fetchCanteens);
+    onMounted(async () => {
+      await fetchCanteens();
+
+      const storedCanteenId = localStorage.getItem('selectedCanteen');
+      if (storedCanteenId && canteens.value.some(canteen => canteen.id === storedCanteenId)) {
+        selectedCanteen.value = storedCanteenId; // Assign string to string
+      }
+    });
+
 
     const confirmSelection = () => {
       // Implement your caching strategy here
@@ -96,11 +118,8 @@ export default {
       if (selectedCanteen.value !== null) {
         localStorage.setItem('selectedCanteen', selectedCanteen.value.toString());
       } else {
-        localStorage.removeItem('selectedCanteen'); // or localStorage.setItem('selectedCanteen', 'null');
+        localStorage.removeItem('selectedCanteen');
       }
-      console.log('Selected Role:', selectedRole.value);
-      console.log('Selected Diet:', selectedDiet.value);
-      console.log('Selected Canteen:', selectedCanteen.value);
       router.push('/');
 
     };
@@ -124,21 +143,21 @@ export default {
 }
 
 .btn-active {
-  background-color: #76B900; /* Vibrant green when active */
+  background-color: #76B900; /* Ist das HTW grün... */
   color: white;
 }
 
 .btn-active:hover {
-  background-color: #64a000; /* Slightly darker green on hover */
+  background-color: #64a000;
 }
 
 .btn-inactive {
-  background-color: #cccccc; /* Simple grey when inactive */
+  background-color: #cccccc;
   color: #666666;
   cursor: not-allowed;
 }
 
 .btn-inactive:hover {
-  background-color: #cccccc; /* Remain grey on hover */
+  background-color: #cccccc;
 }
 </style>
