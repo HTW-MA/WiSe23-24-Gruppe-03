@@ -10,7 +10,7 @@ I have this component. If selectedDiet is “Veganer”, I only want meals to be
   </div>
 
   <div v-else-if="Object.keys(meals).length === 0 && !isWeekend">
-    <p>Hm....da finden wir irgendwie nichts zu essen. Vielleicht bist du zu zeitig? Vielleicht will dir dein Handy auch sagen, dass du abnehmen sollst?</p>
+    <p>Hm....da finden wir irgendwie nichts zu essen. Vielleicht bist du zu zeitig oder zu spät? Vielleicht will dir dein Handy auch sagen, dass du abnehmen sollst?</p>
   </div>
 
   <div v-else>
@@ -22,7 +22,7 @@ I have this component. If selectedDiet is “Veganer”, I only want meals to be
           <p>
             {{ meal.name || 'Unbekanntes Gericht' }} - Preis: {{ getPrice(meal) }}
             <img v-if="isBadgePresent(meal.badges, 'Vegan')" :src="veganIcon" alt="Vegan" class="icon-inline">
-            <img v-if="isBadgePresent(meal.badges, 'Vegetarisch')" :src="veggieIcon" alt="Vegetarisch" class="icon-inline">
+            <img v-if="isBadgePresent(meal.badges, 'Vegetarisch')" :src="annaIcon" alt="Vegetarisch" class="icon-inline">
             <img v-if="!isBadgePresent(meal.badges, 'Vegetarisch') && !isBadgePresent(meal.badges, 'Vegan')" :src="chickenIcon" alt="Fleischgericht" class="icon-inline">
           </p>
         </div>
@@ -38,6 +38,7 @@ import axios from 'axios';
 import veganIcon from '../assets/vegan.png';
 import veggieIcon from '../assets/veggie.png'
 import chickenIcon from '../assets/chicken.png'
+import annaIcon from '../assets/annalena.png'
 
 
 export default {
@@ -156,6 +157,7 @@ export default {
       meals,
       veganIcon,
       veggieIcon,
+      annaIcon,
       chickenIcon,
       getPrice,
       isWeekend,
