@@ -67,7 +67,7 @@ export default {
   setup() {
 
     class MyDexie extends Dexie {
-      canteens!: Dexie.Table<Canteen, string>; // Specify that 'id' is a string
+      canteens!: Dexie.Table<Canteen, string>;
     }
 
 
@@ -106,13 +106,12 @@ export default {
 
       const storedCanteenId = localStorage.getItem('selectedCanteen');
       if (storedCanteenId && canteens.value.some(canteen => canteen.id === storedCanteenId)) {
-        selectedCanteen.value = storedCanteenId; // Assign string to string
+        selectedCanteen.value = storedCanteenId;
       }
     });
 
 
     const confirmSelection = () => {
-      // Implement your caching strategy here
       localStorage.setItem('selectedRole', selectedRole.value);
       localStorage.setItem('selectedDiet', selectedDiet.value);
       if (selectedCanteen.value !== null) {

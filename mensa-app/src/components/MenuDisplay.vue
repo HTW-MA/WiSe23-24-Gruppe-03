@@ -1,3 +1,7 @@
+I have this component. If selectedDiet is “Veganer”, I only want meals to be displayed where the bagde “Vegan” is present
+
+
+
 <template>
   <input type="date" v-model="startDate" @change="fetchMenu" />
   <button class="btn-active" @click="navigateToProfile">Einstellungen ändern</button>
@@ -10,19 +14,20 @@
   </div>
 
   <div v-else>
-  <div v-for="(categories, date) in meals" :key="date">
-    <h3>{{ date }}</h3>
-    <div v-for="(categoryMeals, category) in categories" :key="category">
-      <h4>{{ category }}</h4>
-      <div v-for="meal in categoryMeals" :key="meal.id">
-        <p>{{ meal.name || 'Unbekanntes Gericht' }} - Preis: {{ getPrice(meal) }}
-        <img v-if="isBadgePresent(meal.badges, 'Vegan')" :src="veganIcon" alt="Vegan" class="icon-inline">
-        <img v-if="isBadgePresent(meal.badges, 'Vegetarisch')" :src="veggieIcon" alt="Vegetarisch" class="icon-inline">
-        <img v-if="!isBadgePresent(meal.badges, 'Vegetarisch') && !isBadgePresent(meal.badges, 'Vegan')" :src="chickenIcon" alt="Manly" class="icon-inline">
-        </p>
+    <div v-for="(categories, date) in filteredMeals" :key="date">
+      <h3>{{ date }}</h3>
+      <div v-for="(categoryMeals, category) in categories" :key="category">
+        <h4>{{ category }}</h4>
+        <div v-for="meal in categoryMeals" :key="meal.id">
+          <p>
+            {{ meal.name || 'Unbekanntes Gericht' }} - Preis: {{ getPrice(meal) }}
+            <img v-if="isBadgePresent(meal.badges, 'Vegan')" :src="veganIcon" alt="Vegan" class="icon-inline">
+            <img v-if="isBadgePresent(meal.badges, 'Vegetarisch')" :src="veggieIcon" alt="Vegetarisch" class="icon-inline">
+            <img v-if="!isBadgePresent(meal.badges, 'Vegetarisch') && !isBadgePresent(meal.badges, 'Vegan')" :src="chickenIcon" alt="Fleischgericht" class="icon-inline">
+          </p>
+        </div>
       </div>
     </div>
-  </div>
   </div>
 </template>
 
@@ -47,8 +52,33 @@ export default {
     isBadgePresent(badges, badgeName) {
       return badges.some(badge => badge.name === badgeName);
     },
+    shouldDisplayMeal(meal) {
+      if (this.selectedDiet === 'Veganer') {
+        return this.isBadgePresent(meal.badges, 'Vegan');
+      }
+      return true;
+    }
   },
-
+  computed: {
+    filteredMeals() {
+      const filtered = {};
+      for (const date in this.meals) {
+        filtered[date] = {};
+        for (const category in this.meals[date]) {
+          // Apply filtering based on selectedDiet and selectedRole
+          filtered[date][category] = this.meals[date][category].filter(meal => {
+            if (this.selectedDiet === 'Veganer') {
+              return this.isBadgePresent(meal.badges, 'Vegan');
+            } else if (this.selectedDiet === 'Vegetarier') {
+              return this.isBadgePresent(meal.badges, 'Vegetarisch') || this.isBadgePresent(meal.badges, 'Vegan');
+            }
+            return true; // If no specific diet/role filtering is applied, show all meals
+          });
+        }
+      }
+      return filtered;
+    }
+  },
   setup(props) {
     const meals = ref([]);
     const startDate = ref(new Date().toISOString().slice(0, 10)); // heute
@@ -120,6 +150,7 @@ export default {
     };
 
     return {
+
       startDate,
       categorizedMeals,
       meals,
@@ -145,3 +176,4 @@ export default {
   color: white;
 }
 </style>
+
