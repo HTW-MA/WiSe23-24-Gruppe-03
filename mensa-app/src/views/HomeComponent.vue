@@ -1,8 +1,6 @@
 <template>
 
 
-  <!-- Dropdown for canteens -->
-
   <menu-display
       :selectedCanteen="selectedCanteen"
       :selectedRole="selectedRole"
@@ -45,7 +43,7 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      fetchCanteens();  // Assuming fetchCanteens is a defined function
+      fetchCanteens();
       const storedRole = localStorage.getItem('selectedRole');
       const storedCanteen = localStorage.getItem('selectedCanteen')
       const storedDiet = localStorage.getItem('selectedDiet');

@@ -1,6 +1,12 @@
 <template>
-  <!-- Date pickers for start and end dates -->
   <input type="date" v-model="startDate" @change="fetchMenu" />
+  <div v-if="isWeekend">
+    Am Wochenende hat die Mensa zu - Geh nach Hause, kleiner Streber!
+  </div>
+
+  <div v-if="Object.keys(meals).length === 0 && !isWeekend">
+    <p>Hm....da finden wir irgendwie nichts zu essen. Vielleicht bist du zu zeitig? Vielleicht will dir dein Handy auch sagen, dass du abnehmen sollst?</p>
+  </div>
 
   <div v-for="(categories, date) in meals" :key="date">
     <h3>{{ date }}</h3>
@@ -24,6 +30,7 @@ import veganIcon from '../assets/vegan.png';
 import veggieIcon from '../assets/veggie.png'
 import chickenIcon from '../assets/chicken.png'
 
+
 export default {
   name: 'MenuDisplay',
   props: {
@@ -39,9 +46,16 @@ export default {
   },
 
   setup(props) {
-    const startDate = ref(new Date().toISOString().slice(0, 10)); // today's date
-    const endDate = ref(new Date().toISOString().slice(0, 10)); // today's date
     const meals = ref([]);
+    const startDate = ref(new Date().toISOString().slice(0, 10)); // heute
+
+    const isWeekend = computed(() => {
+      const day = new Date(startDate.value).getDay();
+      return day === 0 || day === 6; // 0 for Sunday, 6 for Saturday
+    });
+    //falls doch noch benötigt:
+    //const endDate = ref(new Date().toISOString().slice(0, 10));
+
 
     const fetchMenu = async () => {
       try {
@@ -71,12 +85,12 @@ export default {
 
     onMounted(fetchMenu)
 
-    // Watchers
+
     watch(() => props.selectedCanteen, fetchMenu);
     watch(startDate, fetchMenu);
-    watch(endDate, fetchMenu);
 
-    // Computed Properties
+    //watch(endDate, fetchMenu);
+
     const categorizedMeals = computed(() => {
       return meals.value.reduce((acc, meal) => {
         if (!acc[meal.category]) {
@@ -88,25 +102,23 @@ export default {
     });
 
     const getPrice = (meal) => {
-      // Check if 'prices' exists and is an array
       if (Array.isArray(meal.prices) && meal.prices.length > 0) {
         const priceObj = meal.prices.find(price => price.priceType === props.selectedRole);
         return priceObj ? priceObj.price : 'Der Betreiber hat leider keinen Preis angegeben :(';
       } else {
-        // Handle the case where 'prices' is undefined or empty
         return 'Preisinformation nicht verfügbar';
       }
     };
 
     return {
       startDate,
-      endDate,
       categorizedMeals,
       meals,
       veganIcon,
       veggieIcon,
       chickenIcon,
-      getPrice
+      getPrice,
+      isWeekend
     };
   }
 };
@@ -114,7 +126,7 @@ export default {
 
 <style scoped>
 .icon-inline {
-  height: 1em; /* Sets the icon height to match the font size of the text */
-  vertical-align: middle; /* Aligns the icon with the middle of the text line */
+  height: 1em;
+  vertical-align: middle;
 }
 </style>
