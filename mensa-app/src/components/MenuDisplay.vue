@@ -1,7 +1,7 @@
 <template>
   <!-- Date pickers for start and end dates -->
   <input type="date" v-model="startDate" @change="fetchMenu" />
-  <input type="date" v-model="endDate" @change="fetchMenu" />
+
   <div v-for="(categories, date) in meals" :key="date">
     <h3>{{ date }}</h3>
     <div v-for="(categoryMeals, category) in categories" :key="category">
@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { ref, watch, computed } from 'vue';
+import {ref, watch, computed, onMounted} from 'vue';
 import axios from 'axios';
 import veganIcon from '../assets/vegan.png';
 import veggieIcon from '../assets/veggie.png'
@@ -28,7 +28,8 @@ export default {
   name: 'MenuDisplay',
   props: {
     selectedCanteen: String,
-    selectedRole: String
+    selectedRole: String,
+    selectedDiet: String,
   },
 
   methods:{
@@ -44,8 +45,9 @@ export default {
 
     const fetchMenu = async () => {
       try {
-        const response = await axios.get(`https://mensa.projekt-ipa.tech/api/v1/menue?loadingtype=complete&canteenId=${props.selectedCanteen}&startdate=${startDate.value}&enddate=${endDate.value}`, {
-          headers: {  'X-API-KEY': process.env.VUE_APP_API_KEY
+        //note: hier wird aus gründen der übersichtlichkeit immer nur 1 Tag angezeigt...
+        const response = await axios.get(`https://mensa.gregorflachs.de/api/v1/menue?loadingtype=complete&canteenId=${props.selectedCanteen}&startdate=${startDate.value}&enddate=${startDate.value}`, {
+          headers: {  'X-API-KEY':  process.env.VUE_APP_API_KEY
           }
         });
         const mealsByDateAndCategory = response.data.reduce((acc, dayData) => {
@@ -66,6 +68,8 @@ export default {
         console.error(error);
       }
     };
+
+    onMounted(fetchMenu)
 
     // Watchers
     watch(() => props.selectedCanteen, fetchMenu);

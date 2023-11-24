@@ -7,14 +7,13 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import HelloWorld from './components/HelloWorld.vue';
+
 import Home from './views/HomeComponent.vue'
 import Navbar from "@/components/Navbar.vue";
 
 
 @Options({
   components: {
-    HelloWorld,
     Navbar,
     Home
   },
