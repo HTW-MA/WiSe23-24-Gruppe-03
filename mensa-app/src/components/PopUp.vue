@@ -1,12 +1,23 @@
-<script lang="ts">
+<script lang="js">
 
 export default {
-  name: 'Pop-up'
+  name: 'PopUp',
+  methods: {
+    close() {
+      const close = () => {
+        // Soll angeblich sich selbst aus der DOM entfernen, funktioniert aber nicht
+        this.$root.$el.parentNode.removeChild(this.$root.$el)
+        //root.$destroy();
+        //root.$el.parentNode.removeChild(root.$el);
+      };
+      return { close };
+    }
+  }
 }
 </script>
 
 <template>
-  <div ref="Popup" class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div ref="PopUp" class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
