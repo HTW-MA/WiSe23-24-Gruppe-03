@@ -52,9 +52,9 @@
 import axios from 'axios';
 import { ref, onMounted, computed } from 'vue';
 import {useRouter} from "vue-router";
-
 import db from "@/db";
 import {Canteen} from "@/types";
+
 
 
 
@@ -62,6 +62,19 @@ export default {
   name: 'SelectedOptions',
   setup() {
 
+
+    function generateTimestampedHex(len: number):string {
+      const timestampHex = Date.now().toString(16);
+
+      const remainingLen = len - timestampHex.length;
+
+      let randomHex = '';
+      const characters = '0123456789abcdef';
+      for (let i = 0; i < remainingLen; i++) {
+        randomHex += characters.charAt(Math.floor(Math.random() * characters.length));
+      }
+      return timestampHex + randomHex;
+    }
 
 
 
@@ -72,6 +85,15 @@ export default {
     const selectedDiet = ref(localStorage.getItem('selectedDiet') || '');
     const selectedCanteen = ref<string | null>(null);
     const canteens = ref<Canteen[]>([]);
+
+    const getUserID = () => {
+      let userID = localStorage.getItem('userID');
+      if (!userID) {
+        userID = generateTimestampedHex(24)
+        localStorage.setItem('userID', userID);
+      }
+      return userID;
+    };
 
 
     const allChoicesMade = computed(() => {
@@ -109,6 +131,8 @@ export default {
 
 
     const confirmSelection = () => {
+      // eslint-disable-next-line no-unused-vars
+      const userID = getUserID();
       localStorage.setItem('selectedRole', selectedRole.value);
       localStorage.setItem('selectedDiet', selectedDiet.value);
       if (selectedCanteen.value !== null) {
@@ -116,11 +140,12 @@ export default {
       } else {
         localStorage.removeItem('selectedCanteen');
       }
+
       router.push('/');
 
     };
 
-    return { selectedRole, selectedDiet, selectedCanteen, canteens, confirmSelection,allChoicesMade, router};
+    return { selectedRole, selectedDiet, selectedCanteen, canteens, confirmSelection,allChoicesMade, router, generateTimestampedHex};
   }
 };
 </script>

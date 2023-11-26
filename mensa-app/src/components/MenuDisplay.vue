@@ -1,7 +1,3 @@
-I have this component. If selectedDiet is “Veganer”, I only want meals to be displayed where the bagde “Vegan” is present
-
-
-
 <template>
   <input type="date" v-model="startDate" @change="fetchMenu" />
   <button class="btn-active" @click="navigateToProfile">Einstellungen ändern</button>
@@ -18,12 +14,14 @@ I have this component. If selectedDiet is “Veganer”, I only want meals to be
       <h3>{{ date }}</h3>
       <div v-for="(categoryMeals, category) in categories" :key="category">
         <h4>{{ category }}</h4>
-        <div v-for="meal in categoryMeals" :key="meal.id">
+        <div v-for="meal in categoryMeals" :key="meal.id" >
           <p>
-            {{ meal.name || 'Unbekanntes Gericht' }} - Preis: {{ getPrice(meal) }}
+
             <img v-if="isBadgePresent(meal.badges, 'Vegan')" :src="veganIcon" alt="Vegan" class="icon-inline">
             <img v-if="isBadgePresent(meal.badges, 'Vegetarisch')" :src="annaIcon" alt="Vegetarisch" class="icon-inline">
             <img v-if="!isBadgePresent(meal.badges, 'Vegetarisch') && !isBadgePresent(meal.badges, 'Vegan')" :src="chickenIcon" alt="Fleischgericht" class="icon-inline">
+            {{ meal.name || 'Unbekanntes Gericht' }} - Preis: {{ getPrice(meal) }}
+            <button class="btn-active" @click="selectMeal(meal)">Klick mich!</button>
           </p>
         </div>
       </div>
@@ -35,10 +33,11 @@ I have this component. If selectedDiet is “Veganer”, I only want meals to be
 import {ref, watch, computed, onMounted} from 'vue';
 import {useRouter} from "vue-router";
 import axios from 'axios';
-import veganIcon from '../assets/vegan.png';
+import veganIcon from '../assets/leafFull.png';
 import veggieIcon from '../assets/veggie.png'
-import chickenIcon from '../assets/chicken.png'
+import chickenIcon from '../assets/fullChicken.png'
 import annaIcon from '../assets/annalena.png'
+
 
 
 export default {
@@ -59,6 +58,8 @@ export default {
       }
       return true;
     }
+
+
   },
   computed: {
     filteredMeals() {
@@ -66,23 +67,34 @@ export default {
       for (const date in this.meals) {
         filtered[date] = {};
         for (const category in this.meals[date]) {
-          // Apply filtering based on selectedDiet and selectedRole
           filtered[date][category] = this.meals[date][category].filter(meal => {
             if (this.selectedDiet === 'Veganer') {
               return this.isBadgePresent(meal.badges, 'Vegan');
             } else if (this.selectedDiet === 'Vegetarier') {
               return this.isBadgePresent(meal.badges, 'Vegetarisch') || this.isBadgePresent(meal.badges, 'Vegan');
             }
-            return true; // If no specific diet/role filtering is applied, show all meals
+            return true; //sonst alle essen zurück
           });
         }
       }
+      console.log(filtered)
       return filtered;
     }
   },
   setup(props) {
+
+    const startDate = ref(sessionStorage.getItem('selectedDate') || new Date().toISOString().slice(0, 10));
     const meals = ref([]);
-    const startDate = ref(new Date().toISOString().slice(0, 10)); // heute
+    const storedMeals =sessionStorage.getItem('meals');
+    const selectedMeal = ref(null);
+
+    const selectMeal = (meal) => {
+      selectedMeal.value = meal;
+      router.push({ path:'/Meal', query: { mealId: meal.id } });
+    };
+    if (storedMeals){
+      meals.value=JSON.parse(storedMeals)
+    }
 
     const isWeekend = computed(() => {
       const day = new Date(startDate.value).getDay();
@@ -117,7 +129,7 @@ export default {
           return acc;
         }, {});
         meals.value = mealsByDateAndCategory;
-        console.log(meals)
+        sessionStorage.setItem('meals', JSON.stringify(meals.value))
       } catch (error) {
         console.error(error);
       }
@@ -127,7 +139,10 @@ export default {
 
 
     watch(() => props.selectedCanteen, fetchMenu);
-    watch(startDate, fetchMenu);
+    watch(startDate, (newValue) => {
+      fetchMenu();
+      sessionStorage.setItem('selectedDate', newValue);
+    });
 
     //watch(endDate, fetchMenu);
 
@@ -161,7 +176,9 @@ export default {
       chickenIcon,
       getPrice,
       isWeekend,
-      navigateToProfile
+      navigateToProfile,
+      selectedMeal,
+      selectMeal
     };
   }
 };
@@ -176,6 +193,7 @@ export default {
 .btn-active {
   background-color: #76B900; /* Ist das HTW grün... */
   color: white;
+  margin-left: 10px;
 }
 </style>
 

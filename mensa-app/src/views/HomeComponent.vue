@@ -15,6 +15,8 @@ import axios from 'axios';
 console.log(process.env)
 
 import MenuDisplay from "@/components/MenuDisplay.vue";
+import db from "@/db";
+import {Canteen} from "@/types";
 
 
 
@@ -26,7 +28,7 @@ export default defineComponent({
     const selectedRole = ref(localStorage.getItem('selectedRole') || 'defaultRole');
     const selectedDiet = ref(localStorage.getItem('selectedDiet') || 'defaultDiet');
     const selectedCanteen = ref(localStorage.getItem('selectedCanteen') || 'defaultCanteen');
-    const canteens = ref([]);
+    const canteens = ref<Canteen[]>([]);
 
 
     const fetchCanteens = async () => {
@@ -42,8 +44,8 @@ export default defineComponent({
       }
     };
 
-    onMounted(() => {
-      fetchCanteens();
+    onMounted( async () => {
+
       const storedRole = localStorage.getItem('selectedRole');
       const storedCanteen = localStorage.getItem('selectedCanteen')
       const storedDiet = localStorage.getItem('selectedDiet');
@@ -53,8 +55,18 @@ export default defineComponent({
 
       }
       else {
-        router.push('/Profile');
+       router.push('/Profile');
       }
+
+      const storedCanteens = await db.canteens.toArray();
+      if (storedCanteens.length > 0) {
+        canteens.value = storedCanteens;
+      } else {
+        await fetchCanteens();
+      }
+
+
+
     });
 
     return {
