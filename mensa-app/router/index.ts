@@ -5,6 +5,7 @@ import SelectOptions from "@/views/SelectOptions.vue";
 import MealComponent from "@/views/MealComponent.vue";
 
 
+
 const routes = [
     {
         path: '/',
@@ -23,8 +24,8 @@ const routes = [
     {
         path: '/Meal',
         component: MealComponent
-    }
-    // other routes...
+    },
+
 ];
 
 const router = createRouter({

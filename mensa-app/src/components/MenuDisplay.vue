@@ -14,12 +14,14 @@
       <h3>{{ date }}</h3>
       <div v-for="(categoryMeals, category) in categories" :key="category">
         <h4>{{ category }}</h4>
-        <div v-for="meal in categoryMeals" :key="meal.id" @click="selectMeal(meal)">
+        <div v-for="meal in categoryMeals" :key="meal.id" >
           <p>
-            {{ meal.name || 'Unbekanntes Gericht' }} - Preis: {{ getPrice(meal) }}
+
             <img v-if="isBadgePresent(meal.badges, 'Vegan')" :src="veganIcon" alt="Vegan" class="icon-inline">
             <img v-if="isBadgePresent(meal.badges, 'Vegetarisch')" :src="annaIcon" alt="Vegetarisch" class="icon-inline">
             <img v-if="!isBadgePresent(meal.badges, 'Vegetarisch') && !isBadgePresent(meal.badges, 'Vegan')" :src="chickenIcon" alt="Fleischgericht" class="icon-inline">
+            {{ meal.name || 'Unbekanntes Gericht' }} - Preis: {{ getPrice(meal) }}
+            <button class="btn-active" @click="selectMeal(meal)">Klick mich!</button>
           </p>
         </div>
       </div>
@@ -65,14 +67,13 @@ export default {
       for (const date in this.meals) {
         filtered[date] = {};
         for (const category in this.meals[date]) {
-          // Apply filtering based on selectedDiet and selectedRole
           filtered[date][category] = this.meals[date][category].filter(meal => {
             if (this.selectedDiet === 'Veganer') {
               return this.isBadgePresent(meal.badges, 'Vegan');
             } else if (this.selectedDiet === 'Vegetarier') {
               return this.isBadgePresent(meal.badges, 'Vegetarisch') || this.isBadgePresent(meal.badges, 'Vegan');
             }
-            return true; // If no specific diet/role filtering is applied, show all meals
+            return true; //sonst alle essen zurück
           });
         }
       }
@@ -191,6 +192,7 @@ export default {
 .btn-active {
   background-color: #76B900; /* Ist das HTW grün... */
   color: white;
+  margin-left: 10px;
 }
 </style>
 
