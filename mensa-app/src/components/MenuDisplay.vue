@@ -1,7 +1,3 @@
-I have this component. If selectedDiet is “Veganer”, I only want meals to be displayed where the bagde “Vegan” is present
-
-
-
 <template>
   <input type="date" v-model="startDate" @change="fetchMenu" />
   <button class="btn-active" @click="navigateToProfile">Einstellungen ändern</button>
@@ -18,7 +14,7 @@ I have this component. If selectedDiet is “Veganer”, I only want meals to be
       <h3>{{ date }}</h3>
       <div v-for="(categoryMeals, category) in categories" :key="category">
         <h4>{{ category }}</h4>
-        <div v-for="meal in categoryMeals" :key="meal.id">
+        <div v-for="meal in categoryMeals" :key="meal.id" @click="selectMeal(meal)">
           <p>
             {{ meal.name || 'Unbekanntes Gericht' }} - Preis: {{ getPrice(meal) }}
             <img v-if="isBadgePresent(meal.badges, 'Vegan')" :src="veganIcon" alt="Vegan" class="icon-inline">
@@ -41,6 +37,7 @@ import chickenIcon from '../assets/chicken.png'
 import annaIcon from '../assets/annalena.png'
 
 
+
 export default {
   name: 'MenuDisplay',
   props: {
@@ -59,6 +56,8 @@ export default {
       }
       return true;
     }
+
+
   },
   computed: {
     filteredMeals() {
@@ -81,8 +80,19 @@ export default {
     }
   },
   setup(props) {
+
+    const startDate = ref(sessionStorage.getItem('selectedDate') || new Date().toISOString().slice(0, 10));
     const meals = ref([]);
-    const startDate = ref(new Date().toISOString().slice(0, 10)); // heute
+    const storedMeals =sessionStorage.getItem('meals');
+    const selectedMeal = ref(null);
+
+    const selectMeal = (meal) => {
+      selectedMeal.value = meal;
+      router.push({ path:'/Meal', query: { mealId: meal.id } });
+    };
+    if (storedMeals){
+      meals.value=JSON.parse(storedMeals)
+    }
 
     const isWeekend = computed(() => {
       const day = new Date(startDate.value).getDay();
@@ -117,7 +127,7 @@ export default {
           return acc;
         }, {});
         meals.value = mealsByDateAndCategory;
-        console.log(meals)
+        sessionStorage.setItem('meals', JSON.stringify(meals.value))
       } catch (error) {
         console.error(error);
       }
@@ -127,7 +137,10 @@ export default {
 
 
     watch(() => props.selectedCanteen, fetchMenu);
-    watch(startDate, fetchMenu);
+    watch(startDate, (newValue) => {
+      fetchMenu();
+      sessionStorage.setItem('selectedDate', newValue); // Save the new date to sessionStorage
+    });
 
     //watch(endDate, fetchMenu);
 
@@ -161,7 +174,9 @@ export default {
       chickenIcon,
       getPrice,
       isWeekend,
-      navigateToProfile
+      navigateToProfile,
+      selectedMeal,
+      selectMeal
     };
   }
 };
