@@ -33,9 +33,9 @@
 import {ref, watch, computed, onMounted} from 'vue';
 import {useRouter} from "vue-router";
 import axios from 'axios';
-import veganIcon from '../assets/vegan.png';
+import veganIcon from '../assets/leafFull.png';
 import veggieIcon from '../assets/veggie.png'
-import chickenIcon from '../assets/chicken.png'
+import chickenIcon from '../assets/fullChicken.png'
 import annaIcon from '../assets/annalena.png'
 
 
@@ -77,6 +77,7 @@ export default {
           });
         }
       }
+      console.log(filtered)
       return filtered;
     }
   },
@@ -140,7 +141,7 @@ export default {
     watch(() => props.selectedCanteen, fetchMenu);
     watch(startDate, (newValue) => {
       fetchMenu();
-      sessionStorage.setItem('selectedDate', newValue); // Save the new date to sessionStorage
+      sessionStorage.setItem('selectedDate', newValue);
     });
 
     //watch(endDate, fetchMenu);

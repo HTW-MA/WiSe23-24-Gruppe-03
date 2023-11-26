@@ -2,7 +2,7 @@
   <div v-if="mealDetails">
     <h2>{{ mealDetails.name }}</h2>
     <p>Kategorie: {{ mealDetails.category }}</p>
-    <p>Kosten für dich:  {{ displayPrice }} €</p>
+    <p>Kosten für dich:  {{ displayPrice }} € </p>
 
     <div v-if="filteredBadges && filteredBadges.length">
       <h3>Badges:</h3>
@@ -16,12 +16,17 @@
     <div v-if="showReviewPopup" class="review-popup">
       <div class="popup-content">
         <h3>Bewertung abgeben</h3>
-        <input type="number" v-model="reviewRating" min="1" max="5" placeholder="Bewertung (1-5)" />
+        <div class="star-rating">
+      <span v-for="item in 5" :key="item" @click="setRating(item)">
+     <img :src="item <= starRating ? filledSymbol : emptySymbol" alt="rating symbol" class="small-image" />
+</span>
+        </div>
         <textarea v-model="reviewComment" placeholder="Kommentar"></textarea>
-        <button class="btn-active" @click="submitReview" >Senden</button>
-        <button class="btn-active" @click="showReviewPopup = false">Abbrechen</button>
+        <button @click="submitReview" class="btn-active">Senden</button>
+        <button @click="showReviewPopup = false" class="btn-active">Abbrechen</button>
       </div>
     </div>
+
     <p></p>
     <button class="btn-active" @click="addToFavorites">Zu Lieblingsessen hinzufügen</button>
 
@@ -37,6 +42,8 @@ import {computed, onMounted, ref} from "vue";
 import axios from "axios";
 import fav_db from "@/fav_db";
 
+
+
 export default {
   name: 'MealComponent',
   props: {
@@ -46,26 +53,52 @@ export default {
 
   setup() {
 
+
     const starRating = ref(0);
+    let filledSymbol;
+    let emptySymbol;
+    const selectedDiet = ref(localStorage.getItem('selectedDiet'));
+    console.log(selectedDiet)
+
+    if (selectedDiet.value === "Allesfresser") {
+      filledSymbol = require('@/assets/fullChicken.png');
+      emptySymbol = require('@/assets/emptyChicken.png');
+    } else {
+      filledSymbol = require('@/assets/leafFull.png');
+      emptySymbol = require('@/assets/leafEmpty.png');
+    }
+
+
     function setRating(newRating) {
       starRating.value = newRating;
     }
 
     function submitReview() {
-      if (reviewRating.value && reviewComment.value) {
-        console.log(mealDetails.value.id, reviewRating.value, reviewComment.value)
-        postMealReview(mealDetails.value.id, reviewRating.value, reviewComment.value);
+      if (starRating.value&& reviewComment.value) {
+
+
+        const reviewBody = {
+          mealID: mealDetails.value.id,
+          rating: starRating.value,
+          comment: reviewComment.value,
+          category: mealDetails.value.category
+        };
+
+        // Log the entire review body
+        console.log('Review Data:', reviewBody);
+
+        postMealReview(mealDetails.value.id, starRating.value.value, reviewComment.value, mealDetails.value.category);
         showReviewPopup.value = false;
         reviewComment.value = '';
-        reviewRating.value = 0;
+        starRating.value = 0;
       } else {
         alert('Bitte geben Sie eine Bewertung und einen Kommentar ein.');
       }
     }
 
-    async function postMealReview(mealID, rating, comment) {
-      // Assuming you have a function to get or generate the userID
-      const userID = localStorage.getItem('userID') // Replace with your method to obtain/generate userID
+    async function postMealReview(mealID, rating, comment, category) {
+
+      const userID = localStorage.getItem('userID')
 
       const config = {
         headers: {
@@ -74,13 +107,13 @@ export default {
       };
 
       const review = {
-        ID: generateTimestampedHex(24), // Generates a unique ID for the review
+        ID: generateTimestampedHex(24),
         mealID: mealID,
         userID: userID,
         detailRatings: [
           {
             rating: rating,
-            name: "Essen"
+            name: category
           }
         ],
         comment: comment
@@ -96,8 +129,8 @@ export default {
       }
     }
 
-    const showReviewPopup = ref(false); // Controls the visibility of the review popup
-    const reviewComment = ref(''); // Stores the user's comment
+    const showReviewPopup = ref(false);
+    const reviewComment = ref('');
     const reviewRating = ref(0);
 
 
@@ -120,6 +153,7 @@ export default {
 
     const mealDetails = ref(null); // To store the fetched meal details
     const selectedRole = ref(localStorage.getItem('selectedRole') || 'defaultRole');
+
 
     const displayPrice = computed(() => {
       if (mealDetails.value && mealDetails.value.prices) {
@@ -196,7 +230,11 @@ export default {
       reviewComment,
       reviewRating,
       submitReview,
-      setRating
+      setRating,
+      starRating,
+      filledSymbol,
+      emptySymbol,
+      selectedDiet
 
     };
   },
@@ -234,4 +272,15 @@ export default {
   width: 100%;
   margin-bottom: 10px;
 }
+
+.responsive-image {
+  max-width: 100%;
+  height: auto;
+}
+
+ .small-image {
+   width: 50px;
+   height: 50px;
+ }
+
 </style>
