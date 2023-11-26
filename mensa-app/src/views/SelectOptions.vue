@@ -52,29 +52,20 @@
 import axios from 'axios';
 import { ref, onMounted, computed } from 'vue';
 import {useRouter} from "vue-router";
-import Dexie from "dexie";
 
-interface Canteen {
-  id: string;
-  name: string;
-  address: {
-    street: string;
-  };
-}
+import db from "@/db";
+import {Canteen} from "@/types";
+
+
 
 export default {
   name: 'SelectedOptions',
   setup() {
 
-    class MyDexie extends Dexie {
-      canteens!: Dexie.Table<Canteen, string>;
-    }
 
 
-    const db = new MyDexie('Mensen');
-    db.version(1).stores({
-      canteens: 'id,name,address'
-    });
+
+
 
     const router = useRouter()
     const selectedRole = ref(localStorage.getItem('selectedRole') || '');
@@ -93,16 +84,22 @@ export default {
             'X-API-KEY': process.env.VUE_APP_API_KEY
           }
         });
+
         await db.canteens.bulkPut(response.data);
         canteens.value = response.data;
-
+        console.log(canteens.value)
       } catch (error) {
         console.log(error);
       }
     };
 
     onMounted(async () => {
-      await fetchCanteens();
+      const storedCanteens = await db.canteens.toArray();
+      if (storedCanteens.length > 0) {
+        canteens.value = storedCanteens;
+      } else {
+        await fetchCanteens();
+      }
 
       const storedCanteenId = localStorage.getItem('selectedCanteen');
       if (storedCanteenId && canteens.value.some(canteen => canteen.id === storedCanteenId)) {
@@ -123,7 +120,7 @@ export default {
 
     };
 
-    return { selectedRole, selectedDiet, selectedCanteen, canteens, confirmSelection,allChoicesMade, router };
+    return { selectedRole, selectedDiet, selectedCanteen, canteens, confirmSelection,allChoicesMade, router};
   }
 };
 </script>
@@ -160,3 +157,4 @@ export default {
   background-color: #cccccc;
 }
 </style>
+
