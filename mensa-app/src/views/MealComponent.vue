@@ -12,7 +12,7 @@
         </li>
       </ul>
     </div>
-    <button class="btn-active" @click="showReviewPopup = true">Bewertung abgeben</button>
+    <button class="htw-btn-active" @click="showReviewPopup = true">Bewertung abgeben</button>
     <div v-if="showReviewPopup" class="review-popup">
       <div class="popup-content">
         <h3>Bewertung abgeben</h3>
@@ -22,43 +22,59 @@
 </span>
         </div>
         <textarea v-model="reviewComment" placeholder="Kommentar"></textarea>
-        <button @click="submitReview" class="btn-active">Senden</button>
-        <button @click="showReviewPopup = false" class="btn-active">Abbrechen</button>
+        <button @click="submitReview" class="htw-btn-active">Senden</button>
+        <button @click="showReviewPopup = false" class="htw-btn-active">Abbrechen</button>
+
+
       </div>
     </div>
 
     <p></p>
-    <button class="btn-active" @click="addToFavorites">Zu Lieblingsessen hinzufügen</button>
+    <button class="htw-btn-active" @click="addToFavorites">Zu Lieblingsessen hinzufügen</button>
+
+    <div v-if="showFavoritePopup" class="favorite-popup">
+      <div class="popup-content">
+        <p>Alles klar. Wir geben dir bescheid, wenn es dieses Essen gibt:)</p>
+        <button @click="showFavoritePopup = false" class="htw-btn-active">Schließen</button>
+      </div>
+    </div>
+    <button class="htw-btn-active" @click="goToHome">Zurück</button>
+
+
 
   </div>
-  <div v-else>
-    Suche...
-  </div>
+
 </template>
 
 <script>
-import {useRoute} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import {computed, onMounted, ref} from "vue";
 import axios from "axios";
 import fav_db from "@/fav_db";
+//import SingleMeal from "@/components/SingleMeal.vue";
+
 
 
 
 export default {
   name: 'MealComponent',
+  methods: {useRouter},
   props: {
     meal: Object,
 
   },
-
+  //components:{
+  //  SingleMeal
+  //},
   setup() {
 
 
+    const showFavoritePopup = ref(false);
     const starRating = ref(0);
     let filledSymbol;
     let emptySymbol;
     const selectedDiet = ref(localStorage.getItem('selectedDiet'));
-    console.log(selectedDiet)
+
 
     if (selectedDiet.value === "Allesfresser") {
       filledSymbol = require('@/assets/fullChicken.png');
@@ -151,9 +167,15 @@ export default {
     const route = useRoute();
     const mealId = ref(route.query.mealId);
 
+
+    const router = useRouter();
+    const goToHome = () => {
+      router.push('/');
+    };
+
     const mealDetails = ref(null); // To store the fetched meal details
     const selectedRole = ref(localStorage.getItem('selectedRole') || 'defaultRole');
-
+    const loseWeight = ref(localStorage.getItem('loseWeight')|| 'defaultRole');
 
     const displayPrice = computed(() => {
       if (mealDetails.value && mealDetails.value.prices) {
@@ -185,7 +207,10 @@ export default {
                 comment: mealDetails.value.mealReviews?.comment
               }
             });
-            console.log("Meal added to favorites");
+            showFavoritePopup.value=true
+            setTimeout(() => {
+              showFavoritePopup.value = false;
+            }, 3000);
           }
         } catch (error) {
           console.error("Error handling favorites:", error);
@@ -234,7 +259,11 @@ export default {
       starRating,
       filledSymbol,
       emptySymbol,
-      selectedDiet
+      selectedDiet,
+      showFavoritePopup,
+      goToHome,
+      loseWeight,
+
 
     };
   },
@@ -243,7 +272,7 @@ export default {
 
 <style>
 
-.btn-active {
+.htw-btn-active {
   background-color: #76B900; /* Ist das HTW grün... */
   color: white;
   margin-left: 10px;
@@ -282,5 +311,37 @@ export default {
    width: 50px;
    height: 50px;
  }
+
+.favorite-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.favorite-popup p {
+  margin: 10px 0;
+}
+
+.favorite-popup button {
+  background-color: #76B900;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.favorite-popup button:hover {
+  background-color: #659700;
+}
+
 
 </style>

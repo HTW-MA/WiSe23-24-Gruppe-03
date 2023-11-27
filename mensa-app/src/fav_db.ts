@@ -1,8 +1,7 @@
 import Dexie from "dexie";
-import {Canteen} from "@/types";
 
 class MyDexie extends Dexie {
-    canteens!: Dexie.Table<Canteen, string>;
+
 }
 
 
