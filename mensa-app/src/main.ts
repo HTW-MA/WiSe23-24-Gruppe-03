@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+//import './registerServiceWorker_Ignorieren'
 import './registerServiceWorker'
 import router from "../router";
 import 'bootstrap/dist/css/bootstrap.min.css'
