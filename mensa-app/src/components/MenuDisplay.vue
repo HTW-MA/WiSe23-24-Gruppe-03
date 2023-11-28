@@ -1,6 +1,7 @@
 <template>
+
   <input type="date" v-model="startDate" @change="fetchMenu" />
-  <button class="btn-active" @click="navigateToProfile">Einstellungen ändern</button>
+  <button class="htw-btn-active" @click="navigateToProfile">Einstellungen ändern</button>
   <div v-if="isWeekend">
     Am Wochenende hat die Mensa zu - Geh nach Hause, kleiner Streber!
   </div>
@@ -13,7 +14,10 @@
     <div v-for="(categories, date) in filteredMeals" :key="date">
       <h3>{{ date }}</h3>
       <div v-for="(categoryMeals, category) in categories" :key="category">
-        <h4>{{ category }}</h4>
+        <h4>{{ category }}
+          <button @click="toggleCategory(category)" class="htw-btn-active">{{ expandedCategories[category] ? '-' : '+' }}</button>
+        </h4>
+        <div v-if="expandedCategories[category]">
         <div v-for="meal in categoryMeals" :key="meal.id" >
           <p>
 
@@ -21,23 +25,24 @@
             <img v-if="isBadgePresent(meal.badges, 'Vegetarisch')" :src="annaIcon" alt="Vegetarisch" class="icon-inline">
             <img v-if="!isBadgePresent(meal.badges, 'Vegetarisch') && !isBadgePresent(meal.badges, 'Vegan')" :src="chickenIcon" alt="Fleischgericht" class="icon-inline">
             {{ meal.name || 'Unbekanntes Gericht' }} - Preis: {{ getPrice(meal) }}
-            <button class="btn-active" @click="selectMeal(meal)">Klick mich!</button>
+            <button class="htw-btn-active" @click="selectMeal(meal)">Klick mich!</button>
           </p>
         </div>
       </div>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
-import {ref, watch, computed, onMounted} from 'vue';
+import {ref, watch, computed, onMounted, reactive} from 'vue';
 import {useRouter} from "vue-router";
 import axios from 'axios';
 import veganIcon from '../assets/leafFull.png';
 import veggieIcon from '../assets/veggie.png'
 import chickenIcon from '../assets/fullChicken.png'
 import annaIcon from '../assets/annalena.png'
-
+import fav_db from "@/fav_db";
 
 
 export default {
@@ -46,6 +51,7 @@ export default {
     selectedCanteen: String,
     selectedRole: String,
     selectedDiet: String,
+    loseWeight: String,
   },
 
   methods:{
@@ -63,10 +69,14 @@ export default {
   },
   computed: {
     filteredMeals() {
+      console.log(this.loseWeight)
       const filtered = {};
       for (const date in this.meals) {
         filtered[date] = {};
         for (const category in this.meals[date]) {
+          if (this.loseWeight === 'tooFat' && category === 'Desserts') {
+            continue;
+          }
           filtered[date][category] = this.meals[date][category].filter(meal => {
             if (this.selectedDiet === 'Veganer') {
               return this.isBadgePresent(meal.badges, 'Vegan');
@@ -83,6 +93,19 @@ export default {
   },
   setup(props) {
 
+    const expandedCategories = reactive({
+      Essen: true
+
+    });
+
+    const toggleCategory = (category) => {
+      if (expandedCategories[category]) {
+        expandedCategories[category] = false;
+      } else {
+        expandedCategories[category] = true;
+      }
+    };
+
     const startDate = ref(sessionStorage.getItem('selectedDate') || new Date().toISOString().slice(0, 10));
     const meals = ref([]);
     const storedMeals =sessionStorage.getItem('meals');
@@ -98,7 +121,7 @@ export default {
 
     const isWeekend = computed(() => {
       const day = new Date(startDate.value).getDay();
-      return day === 0 || day === 6; // 0 for Sunday, 6 for Saturday
+      return day === 0 || day === 6;
     });
     //falls doch noch benötigt:
     //const endDate = ref(new Date().toISOString().slice(0, 10));
@@ -135,7 +158,44 @@ export default {
       }
     };
 
-    onMounted(fetchMenu)
+
+
+    onMounted(() => {
+      fetchMenu();
+      checkAndCompareMeals();
+    });
+
+    const checkAndCompareMeals = () => {
+      const today = new Date().toISOString().split('T')[0];
+      const lastRunDate = localStorage.getItem('lastRunDate');
+
+      if (today !== lastRunDate) {
+        compareMealsWithDatabase();
+        localStorage.setItem('lastRunDate', today);
+      }
+    };
+
+    const compareMealsWithDatabase = async () => {
+      let allMealIds = [];
+      for (const date in meals.value) {
+        for (const category in meals.value[date]) {
+          allMealIds = allMealIds.concat(meals.value[date][category].map(meal => meal.id));
+        }
+      }
+
+      const matchingMeals = await fav_db.meal.where('id').anyOf(allMealIds).toArray();
+
+      if (matchingMeals.length > 0) {
+        const mealNames = matchingMeals.map(meal => meal.name).join(', ');
+        if (Notification.permission === "granted") {
+          new Notification("Whoop! Whoop!", {
+            body: `Es gibt dein(e) Lieblingsessen: ${mealNames}`,
+
+          });
+        }
+      }
+    };
+
 
 
     watch(() => props.selectedCanteen, fetchMenu);
@@ -178,7 +238,11 @@ export default {
       isWeekend,
       navigateToProfile,
       selectedMeal,
-      selectMeal
+      selectMeal,
+      expandedCategories,
+      toggleCategory,
+
+
     };
   }
 };
@@ -190,7 +254,7 @@ export default {
   vertical-align: middle;
 }
 
-.btn-active {
+.htw-btn-active {
   background-color: #76B900; /* Ist das HTW grün... */
   color: white;
   margin-left: 10px;

@@ -33,6 +33,16 @@
       <label>
         <input type="radio" value="Veganer" v-model="selectedDiet"> Veganer
       </label>
+      <p></p>
+      <p>Sollen wir dir helfen? Wir müssen den Nachtisch nicht anzeigen...</p>
+      <div>
+        <label>
+          <input type="radio" value="tooFat" v-model="loseWeight"> Ja
+        </label>
+        <label>
+          <input type="radio" value="skinnyAF" v-model="loseWeight"> Nein
+        </label>
+      </div>
     </div>
 
 
@@ -85,6 +95,7 @@ export default {
     const selectedDiet = ref(localStorage.getItem('selectedDiet') || '');
     const selectedCanteen = ref<string | null>(null);
     const canteens = ref<Canteen[]>([]);
+    const loseWeight = ref (localStorage.getItem('loseWeight')|| '');
 
     const getUserID = () => {
       let userID = localStorage.getItem('userID');
@@ -97,7 +108,7 @@ export default {
 
 
     const allChoicesMade = computed(() => {
-      return selectedRole.value !== '' && selectedDiet.value !== '' && selectedCanteen.value !== null;
+      return selectedRole.value !== '' && selectedDiet.value !== '' && selectedCanteen.value !== null && loseWeight.value !=='';
     });
     const fetchCanteens = async () => {
       try {
@@ -135,6 +146,8 @@ export default {
       const userID = getUserID();
       localStorage.setItem('selectedRole', selectedRole.value);
       localStorage.setItem('selectedDiet', selectedDiet.value);
+      localStorage.setItem('loseWeight', loseWeight.value);
+      console.log(loseWeight.value)
       if (selectedCanteen.value !== null) {
         localStorage.setItem('selectedCanteen', selectedCanteen.value.toString());
       } else {
@@ -145,7 +158,7 @@ export default {
 
     };
 
-    return { selectedRole, selectedDiet, selectedCanteen, canteens, confirmSelection,allChoicesMade, router, generateTimestampedHex};
+    return { selectedRole, selectedDiet, selectedCanteen, canteens, confirmSelection,allChoicesMade, router, generateTimestampedHex,loseWeight};
   }
 };
 </script>

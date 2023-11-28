@@ -4,7 +4,8 @@
   <menu-display
       :selectedCanteen="selectedCanteen"
       :selectedRole="selectedRole"
-      :selected-diet="selectedDiet">
+      :selected-diet="selectedDiet"
+      :lose-weight="loseWeight">
   </menu-display>
 </template>
 
@@ -28,6 +29,7 @@ export default defineComponent({
     const selectedRole = ref(localStorage.getItem('selectedRole') || 'defaultRole');
     const selectedDiet = ref(localStorage.getItem('selectedDiet') || 'defaultDiet');
     const selectedCanteen = ref(localStorage.getItem('selectedCanteen') || 'defaultCanteen');
+    const loseWeight = ref(localStorage.getItem('loseWeight')|| 'skinnyAF');
     const canteens = ref<Canteen[]>([]);
 
 
@@ -44,7 +46,9 @@ export default defineComponent({
       }
     };
 
-    onMounted( async () => {
+    onMounted(
+
+        async () => {
 
       const storedRole = localStorage.getItem('selectedRole');
       const storedCanteen = localStorage.getItem('selectedCanteen')
@@ -57,6 +61,13 @@ export default defineComponent({
       else {
        router.push('/Profile');
       }
+          Notification.requestPermission().then(permission => {
+            if (permission === "granted") {
+              console.log("Notifications erlaubt");
+            } else {
+              console.log("Nope");
+            }
+          });
 
       const storedCanteens = await db.canteens.toArray();
       if (storedCanteens.length > 0) {
@@ -73,7 +84,8 @@ export default defineComponent({
       selectedRole,
       selectedCanteen,
       selectedDiet,
-      canteens
+      canteens,
+      loseWeight
     };
   }
 });
