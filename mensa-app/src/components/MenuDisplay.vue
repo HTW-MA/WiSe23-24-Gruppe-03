@@ -15,7 +15,7 @@
       <h3>{{ date }}</h3>
       <div v-for="(categoryMeals, category) in categories" :key="category">
         <h4>{{ category }}
-          <button @click="toggleCategory(category)" class="htw-btn-active">Anzeigen</button>
+          <button @click="toggleCategory(category)" class="htw-btn-active">{{ expandedCategories[category] ? '-' : '+' }}</button>
         </h4>
         <div v-if="expandedCategories[category]">
         <div v-for="meal in categoryMeals" :key="meal.id" >
