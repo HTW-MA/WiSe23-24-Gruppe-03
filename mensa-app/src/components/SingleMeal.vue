@@ -1,10 +1,10 @@
 <template>
   <div v-if="mealDetails">
     <h2>{{ mealDetails.name }}</h2>
-    <p>Kategorie: {{ mealDetails.category }}</p>
+
     <p>Kosten für dich:  {{ displayPrice }} € </p>
 
-    <div v-if="filteredBadges && filteredBadges.length">
+    <div v-if="filteredBadges && filteredBadges.length>0">
       <h3>Badges:</h3>
       <ul>
         <li v-for="badge in filteredBadges" :key="badge.id">
@@ -12,6 +12,15 @@
         </li>
       </ul>
     </div>
+    <div v-if="filteredAdditives && filteredAdditives.length>0">
+      <h3>Zusatzstoffe:</h3>
+      <ul>
+        <li v-for="additive in filteredAdditives" :key="additive.id">
+          <p>{{ additive.text }}</p>
+        </li>
+      </ul>
+    </div>
+
     <button class="htw-btn-active" @click="showReviewPopup = true">Bewertung abgeben</button>
     <div v-if="showReviewPopup" class="review-popup">
       <div class="popup-content">
@@ -93,15 +102,15 @@ export default {
       if (starRating.value&& reviewComment.value) {
 
 
-        const reviewBody = {
-          mealID: mealDetails.value.id,
-          rating: starRating.value,
-          comment: reviewComment.value,
-          category: mealDetails.value.category
-        };
-
-        // Log the entire review body
-        console.log('Review Data:', reviewBody);
+        // const reviewBody = {
+        //   mealID: mealDetails.value.id,
+        //   rating: starRating.value,
+        //   comment: reviewComment.value,
+        //   category: mealDetails.value.category
+        // };
+        //
+        //
+        // console.log('Review Data:', reviewBody);
 
         postMealReview(mealDetails.value.id, starRating.value.value, reviewComment.value, mealDetails.value.category);
         showReviewPopup.value = false;
@@ -138,10 +147,10 @@ export default {
       try {
         const response = await axios.post('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
         console.log(response.data);
-        // Handle success
+
       } catch (error) {
-        console.error('Error posting meal review:', error);
-        // Handle error
+        console.error('Fehler beim Posten:', error);
+
       }
     }
 
@@ -173,7 +182,7 @@ export default {
       router.push('/');
     };
 
-    const mealDetails = ref(null); // To store the fetched meal details
+    const mealDetails = ref(null);
     const selectedRole = ref(localStorage.getItem('selectedRole') || 'defaultRole');
     const loseWeight = ref(localStorage.getItem('loseWeight')|| 'defaultRole');
 
@@ -186,8 +195,18 @@ export default {
     });
 
     const filteredBadges = computed(() => {
+
       if (mealDetails.value && mealDetails.value.badges) {
         return mealDetails.value.badges.filter(badge => badge.name !== 'Vegan' && badge.name !== 'Vegetarisch');
+      }
+      return [];
+    });
+
+    const filteredAdditives = computed(()=>{
+      console.log("hallo")
+      if(mealDetails.value && mealDetails.value.additives){
+        console.log("asdfasdf"+mealDetails.value.additives)
+        return mealDetails.value.additives
       }
       return [];
     });
@@ -197,7 +216,7 @@ export default {
         try {
           const existingMeal = await fav_db.meal.get(mealDetails.value.id);
           if (existingMeal) {
-            alert("Wissen wir schon: Isst du gerne :)"); // Simple alert, replace with custom popup if needed
+            alert("Wissen wir schon: Isst du gerne :)");
           } else {
             await fav_db.meal.add({
               id: mealDetails.value.id,
@@ -213,7 +232,7 @@ export default {
             }, 3000);
           }
         } catch (error) {
-          console.error("Error handling favorites:", error);
+          console.error("Fehler mit den Favoriten:", error);
         }
       }
     };
@@ -223,8 +242,8 @@ export default {
 
 
     onMounted(async () => {
-      console.log(selectedRole.value)
-      console.log(mealId.value)
+
+
       if (mealId.value) {
         try {
           const response = await axios.get(`https://mensa.gregorflachs.de/api/v1/meal?ID=${mealId.value}&loadingtype=complete`, {
@@ -235,7 +254,7 @@ export default {
           });
           mealDetails.value = response.data[0];
         } catch (error) {
-          console.error('Error fetching meal details:', error);
+          console.error('Fehler beim holen der Speiße:', error);
         }
       }
     });
@@ -263,7 +282,7 @@ export default {
       showFavoritePopup,
       goToHome,
       loseWeight,
-
+      filteredAdditives,
 
     };
   },

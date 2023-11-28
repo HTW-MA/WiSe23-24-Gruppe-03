@@ -121,7 +121,7 @@ export default {
 
     const isWeekend = computed(() => {
       const day = new Date(startDate.value).getDay();
-      return day === 0 || day === 6; // 0 for Sunday, 6 for Saturday
+      return day === 0 || day === 6;
     });
     //falls doch noch benötigt:
     //const endDate = ref(new Date().toISOString().slice(0, 10));
@@ -166,7 +166,7 @@ export default {
     });
 
     const checkAndCompareMeals = () => {
-      const today = new Date().toISOString().split('T')[0]; // Get current date in 'YYYY-MM-DD' format
+      const today = new Date().toISOString().split('T')[0];
       const lastRunDate = localStorage.getItem('lastRunDate');
 
       if (today !== lastRunDate) {

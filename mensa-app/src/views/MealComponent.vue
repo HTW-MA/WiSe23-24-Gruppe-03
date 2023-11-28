@@ -22,14 +22,12 @@ export default {
 
 
   },
-  //components:{
-  //  SingleMeal
-  //},
+
   setup() {
 
 
 
-    const mealDetails = ref(null); // To store the fetched meal details
+    const mealDetails = ref(null);
 
 
 
