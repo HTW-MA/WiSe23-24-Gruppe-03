@@ -1,13 +1,13 @@
-import { reactive, watch } from 'vue';
+import { reactive } from 'vue';
 
 const state = reactive({
     selectedCanteen: localStorage.getItem('selectedCanteen') || 'defaultCanteen'
 });
 
 
-watch(() => state.selectedCanteen, (newValue) => {
-    localStorage.setItem('selectedCanteen', newValue);
-});
+//watch(() => state.selectedCanteen, (newValue) => {
+  //  localStorage.setItem('selectedCanteen', newValue);
+//});
 
 function updateSelectedCanteen() {
     state.selectedCanteen = localStorage.getItem('selectedCanteen') || 'defaultCanteen';

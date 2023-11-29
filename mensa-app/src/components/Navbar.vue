@@ -25,7 +25,6 @@ export default {
   name: 'Navbar',
 
   setup() {
-    // Function to change color scheme based on local storage
     function changeColorScheme() {
       const selectedCanteen = store.state.selectedCanteen;
       let navbarColor;
@@ -45,12 +44,11 @@ export default {
       document.documentElement.style.setProperty('--navbar-bg-color', navbarColor);
     }
 
-    // Event handler for local storage changes
     onMounted(() => {
-      changeColorScheme(); // Initial setup
+      changeColorScheme();
     });
 
-    // Setup a watcher to react to changes in global state
+
     watch(() => store.state.selectedCanteen, () => {
       changeColorScheme();
     });
@@ -71,11 +69,11 @@ export default {
 
 .nav-item {
   display: flex;
-  align-items: center; /* Optional, for vertical alignment */
+  align-items: center;
 }
 
 .nav-link {
-  margin-right: 10px; /* Optional, for some space between the links */
+  margin-right: 10px;
 }
 
 </style>
