@@ -12,6 +12,20 @@ export default {
       };
       return { close };
     }
+  },
+  mounted() {
+    let self = this
+
+    setTimeout(function () {
+      self.closed = true
+    }, 4000)
+  },
+  created() {
+    let self = this
+
+    setTimeout(function () {
+      self.closed = true
+    }, 4000)
   }
 }
 </script>
