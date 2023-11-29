@@ -1,3 +1,5 @@
+I have this component:
+
 <template>
   <div v-if="mealDetails">
     <h2>{{ mealDetails.name }}</h2>
@@ -26,10 +28,11 @@
       <div class="popup-content">
         <h3>Bewertung abgeben</h3>
         <div class="star-rating">
-      <span v-for="item in 5" :key="item" @click="setRating(item)">
-     <img :src="item <= starRating ? filledSymbol : emptySymbol" alt="rating symbol" class="small-image" />
-</span>
+  <span v-for="item in 5" :key="item" @click="setRating(item, $event.offsetX < $event.target.offsetWidth / 2)">
+    <img :src="getChickenImage(item)" alt="rating symbol" class="small-image" />
+  </span>
         </div>
+
         <textarea v-model="reviewComment" placeholder="Kommentar"></textarea>
         <button @click="submitReview" class="htw-btn-active">Senden</button>
         <button @click="showReviewPopup = false" class="htw-btn-active">Abbrechen</button>
@@ -82,20 +85,32 @@ export default {
     const starRating = ref(0);
     let filledSymbol;
     let emptySymbol;
+    let halfSymbol;
     const selectedDiet = ref(localStorage.getItem('selectedDiet'));
 
 
     if (selectedDiet.value === "Allesfresser") {
       filledSymbol = require('@/assets/fullChicken.png');
       emptySymbol = require('@/assets/emptyChicken.png');
+      halfSymbol = require('@/assets/halfChicken.png')
     } else {
       filledSymbol = require('@/assets/leafFull.png');
       emptySymbol = require('@/assets/leafEmpty.png');
+      halfSymbol = require('@/assets/leafHalf.png');
     }
 
 
-    function setRating(newRating) {
-      starRating.value = newRating;
+    function setRating(newRating, isHalf = false) {
+      starRating.value = isHalf ? newRating - 0.5 : newRating;
+    }
+    function getChickenImage(item) {
+      const image = starRating.value >= item
+          ? filledSymbol
+          : starRating.value >= item - 0.5
+              ? halfSymbol
+              : emptySymbol;
+      console.log("Item: ", item, "Image: ", image);
+      return image;
     }
 
     function submitReview() {
@@ -278,11 +293,14 @@ export default {
       starRating,
       filledSymbol,
       emptySymbol,
+      halfSymbol,
       selectedDiet,
       showFavoritePopup,
       goToHome,
       loseWeight,
       filteredAdditives,
+      getChickenImage
+
 
     };
   },
@@ -307,6 +325,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 5%;
 }
 
 .popup-content {
@@ -321,14 +340,15 @@ export default {
   margin-bottom: 10px;
 }
 
-.responsive-image {
-  max-width: 100%;
-  height: auto;
+//das sind nur beispiele für responsive sizes - sollte man sicher differenzieren
+h2, h3, p {
+  font-size: 1vw; /* or use rem, e.g., 1.2rem */
 }
-
 .small-image {
-  width: 50px;
-  height: 50px;
+
+  width: 5vw;
+  height: auto;
+  max-width: 100px;
 }
 
 .favorite-popup {
@@ -364,3 +384,9 @@ export default {
 
 
 </style>
+
+
+
+
+
+Right now,
