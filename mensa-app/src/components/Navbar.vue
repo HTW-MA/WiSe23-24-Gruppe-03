@@ -1,4 +1,6 @@
 <template>
+
+
   <nav class="navbar">
     <div class="container-fluid">
       <a class="navbar-brand" href="/">Mensa App</a>
@@ -10,19 +12,63 @@
       </ul>
     </div>
   </nav>
+
 </template>
 
 <script>
+import {onMounted,watch} from "vue";
+import store from "@/store";
+
+
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
-  name: 'Navbar'
+  name: 'Navbar',
+
+  setup() {
+    // Function to change color scheme based on local storage
+    function changeColorScheme() {
+      const selectedCanteen = store.state.selectedCanteen;
+      let navbarColor;
+
+      switch (selectedCanteen) {
+        case '655ff175136d3b580c970f83':
+          navbarColor = '#5b89b0';
+          break;
+        case '655ff175136d3b580c970f80':
+          navbarColor = '#76B900';
+          break;
+        default:
+          navbarColor = '#f57373';
+          break;
+      }
+
+      document.documentElement.style.setProperty('--navbar-bg-color', navbarColor);
+    }
+
+    // Event handler for local storage changes
+    onMounted(() => {
+      changeColorScheme(); // Initial setup
+    });
+
+    // Setup a watcher to react to changes in global state
+    watch(() => store.state.selectedCanteen, () => {
+      changeColorScheme();
+    });
+
+    return { changeColorScheme };
+  },
 }
 </script>
-
 <style scoped>
 .navbar{
-  background-color: #f57373;
+  background-color: var(--navbar-bg-color);
 }
+:root{
+  --navbar-bg-color:#f57373;
+}
+
+
+
 .nav-item {
   display: flex;
   align-items: center; /* Optional, for vertical alignment */

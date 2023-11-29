@@ -51,7 +51,7 @@
 
     <button
         :class="{'btn-active': allChoicesMade, 'btn-inactive': !allChoicesMade}"
-        @click="allChoicesMade ? confirmSelection() : null"
+        @click="allChoicesMade ? confirmSelection() : null;  this.$emit('refreshNavbar');"
     >
       Okay
     </button>
@@ -64,8 +64,7 @@ import { ref, onMounted, computed } from 'vue';
 import {useRouter} from "vue-router";
 import db from "@/db";
 import {Canteen} from "@/types";
-
-
+import store from "../store";
 
 
 export default {
@@ -150,6 +149,7 @@ export default {
       console.log(loseWeight.value)
       if (selectedCanteen.value !== null) {
         localStorage.setItem('selectedCanteen', selectedCanteen.value.toString());
+        store.updateSelectedCanteen();
       } else {
         localStorage.removeItem('selectedCanteen');
       }

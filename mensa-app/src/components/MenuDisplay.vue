@@ -2,11 +2,16 @@
 
   <input type="date" v-model="startDate" @change="fetchMenu" />
   <button class="htw-btn-active" @click="navigateToProfile">Einstellungen ändern</button>
+  <div v-if="mensaSucks">
+    Tja... da musst du dich an deine Uni wenden. Wir haben keine Daten von deiner Mensa erhalten :(
+  </div>
+  <div v-else>
   <div v-if="isWeekend">
     Am Wochenende hat die Mensa zu - Geh nach Hause, kleiner Streber!
   </div>
 
   <div v-else-if="Object.keys(meals).length === 0 && !isWeekend">
+
     <p>Hm....da finden wir irgendwie nichts zu essen. Vielleicht bist du zu zeitig oder zu spät? Vielleicht will dir dein Handy auch sagen, dass du abnehmen sollst?</p>
   </div>
 
@@ -30,6 +35,7 @@
         </div>
       </div>
     </div>
+  </div>
   </div>
   </div>
 </template>
@@ -68,6 +74,13 @@ export default {
 
   },
   computed: {
+
+    mensaSucks() {
+      // Use a computed property to check if the object at a specific date is empty
+      const meal = this.meals[this.startDate];
+      return meal && Object.keys(meal).length === 0;
+    },
+
     filteredMeals() {
       console.log(this.loseWeight)
       const filtered = {};
@@ -241,6 +254,7 @@ export default {
       selectMeal,
       expandedCategories,
       toggleCategory,
+
 
 
     };
