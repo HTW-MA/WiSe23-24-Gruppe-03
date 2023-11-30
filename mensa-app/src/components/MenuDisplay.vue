@@ -2,7 +2,7 @@
 
   <input type="date" v-model="startDate" @change="fetchMenu" />
   <button class="htw-btn-active" @click="navigateToProfile">Einstellungen ändern</button>
-  <div v-if="mensaSucks">
+  <div v-if="mensaSucks && !isWeekend">
     Tja... da musst du dich an deine Uni wenden. Wir haben keine Daten von deiner Mensa erhalten :(
   </div>
   <div v-else>
@@ -76,7 +76,6 @@ export default {
   computed: {
 
     mensaSucks() {
-      // Use a computed property to check if the object at a specific date is empty
       const meal = this.meals[this.startDate];
       return meal && Object.keys(meal).length === 0;
     },
@@ -217,7 +216,6 @@ export default {
       sessionStorage.setItem('selectedDate', newValue);
     });
 
-    //watch(endDate, fetchMenu);
 
     const categorizedMeals = computed(() => {
       return meals.value.reduce((acc, meal) => {
