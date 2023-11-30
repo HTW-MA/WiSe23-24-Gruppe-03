@@ -1,18 +1,23 @@
 <template>
-
-
   <nav class="navbar">
     <div class="container-fluid">
-      <a class="navbar-brand" href="/">Mensa App</a>
-      <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/Budget">Budget</a>
-          <a class="nav-link active" aria-current="page" href="/Profile">Profil</a>
-        </li>
+      <button class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Toggle navigation">
+        Mensa-App
+      </button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="/">Home</a></li>
+        <li><a class="dropdown-item" href="/Budget">Budget</a></li>
+        <li><a class="dropdown-item" href="/Profile">Profil</a></li>
       </ul>
+      <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
+        <ul class="navbar-nav">
+          <li class="nav-item dropdown">
+
+          </li>
+        </ul>
+      </div>
     </div>
   </nav>
-
 </template>
 
 <script>
