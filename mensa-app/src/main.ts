@@ -11,7 +11,7 @@ import store from "./store";
 createApp(App).use(router).provide('store', store).mount('#app')
 
 
-//createApp(App).use(router).mount('#app')
+
 
 
 if ('serviceWorker' in navigator) {

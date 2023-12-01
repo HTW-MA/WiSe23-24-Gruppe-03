@@ -177,7 +177,7 @@ export default {
 }
 
 .btn-active {
-  background-color: #76B900; /* Ist das HTW grün... */
+  background-color: #76B900;
   color: white;
 }
 

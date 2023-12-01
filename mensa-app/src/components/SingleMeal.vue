@@ -117,17 +117,16 @@ export default {
       if (starRating.value&& reviewComment.value) {
 
 
-        // const reviewBody = {
-        //   mealID: mealDetails.value.id,
-        //   rating: starRating.value,
-        //   comment: reviewComment.value,
-        //   category: mealDetails.value.category
-        // };
+         const reviewBody = {
+          mealId: mealDetails.value.id,
+           rating: starRating.value,
+           comment: reviewComment.value,
+           category: mealDetails.value.category
+         };
         //
-        //
-        // console.log('Review Data:', reviewBody);
+         console.log('Review Data:', reviewBody);
 
-        postMealReview(mealDetails.value.id, starRating.value.value, reviewComment.value, mealDetails.value.category);
+        postMealReview(mealDetails.value.id, starRating.value, reviewComment.value, mealDetails.value.category);
         showReviewPopup.value = false;
         reviewComment.value = '';
         starRating.value = 0;
@@ -147,9 +146,9 @@ export default {
       };
 
       const review = {
-        ID: generateTimestampedHex(24),
-        mealID: mealID,
-        userID: userID,
+
+        mealId: mealID,
+        userId: userID,
         detailRatings: [
           {
             rating: rating,
@@ -164,6 +163,16 @@ export default {
         console.log(response.data);
 
       } catch (error) {
+        if (error.response.status === 409){
+          try{
+            const response = await axios.put('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
+            console.log(response.data)
+            console.log('put')
+          }
+          catch (error){
+            console.error('Fehler beim Posten:', error);
+          }
+        }
         console.error('Fehler beim Posten:', error);
 
       }
@@ -384,9 +393,3 @@ h2, h3, p {
 
 
 </style>
-
-
-
-
-
-Right now,

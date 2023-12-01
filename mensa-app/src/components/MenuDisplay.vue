@@ -95,7 +95,7 @@ export default {
             } else if (this.selectedDiet === 'Vegetarier') {
               return this.isBadgePresent(meal.badges, 'Vegetarisch') || this.isBadgePresent(meal.badges, 'Vegan');
             }
-            return true; //sonst alle essen zurück
+            return true;
           });
         }
       }
@@ -135,8 +135,7 @@ export default {
       const day = new Date(startDate.value).getDay();
       return day === 0 || day === 6;
     });
-    //falls doch noch benötigt:
-    //const endDate = ref(new Date().toISOString().slice(0, 10));
+
 
     const router = useRouter();
 
@@ -146,7 +145,7 @@ export default {
 
     const fetchMenu = async () => {
       try {
-        //note: hier wird aus gründen der übersichtlichkeit immer nur 1 Tag angezeigt...
+
         const response = await axios.get(`https://mensa.gregorflachs.de/api/v1/menue?loadingtype=complete&canteenId=${props.selectedCanteen}&startdate=${startDate.value}&enddate=${startDate.value}`, {
           headers: {  'X-API-KEY':  process.env.VUE_APP_API_KEY
           }
@@ -267,7 +266,7 @@ export default {
 }
 
 .htw-btn-active {
-  background-color: #76B900; /* Ist das HTW grün... */
+  background-color: #76B900;
   color: white;
   margin-left: 10px;
 }

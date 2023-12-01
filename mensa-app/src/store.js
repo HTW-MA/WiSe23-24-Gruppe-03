@@ -5,9 +5,6 @@ const state = reactive({
 });
 
 
-//watch(() => state.selectedCanteen, (newValue) => {
-  //  localStorage.setItem('selectedCanteen', newValue);
-//});
 
 function updateSelectedCanteen() {
     state.selectedCanteen = localStorage.getItem('selectedCanteen') || 'defaultCanteen';
