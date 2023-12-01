@@ -41,7 +41,6 @@ I have this component:
       </div>
     </div>
 
-    <p></p>
     <button class="htw-btn-active" @click="addToFavorites">Zu Lieblingsessen hinzufügen</button>
 
     <div v-if="showFavoritePopup" class="favorite-popup">
@@ -123,7 +122,7 @@ export default {
            comment: reviewComment.value,
            category: mealDetails.value.category
          };
-        //
+
          console.log('Review Data:', reviewBody);
 
         postMealReview(mealDetails.value.id, starRating.value, reviewComment.value, mealDetails.value.category);
