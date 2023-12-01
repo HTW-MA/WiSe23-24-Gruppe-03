@@ -1,7 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-//import './registerServiceWorker_Ignorieren'
-import './registerServiceWorker'
+import "/register-service-worker"
 import router from "../router";
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.min'
@@ -16,7 +15,7 @@ createApp(App).use(router).provide('store', store).mount('#app')
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/registerServiceWorker.js')
+        navigator.serviceWorker.register('/register-service-worker.js')
             .then(registration => {
                 console.log('Service Worker registered with scope:', registration.scope);
             })
