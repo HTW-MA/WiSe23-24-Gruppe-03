@@ -318,7 +318,7 @@ export default {
 <style>
 
 .htw-btn-active {
-  background-color: #76B900; /* Ist das HTW grün... */
+  background-color: #76B900;
   color: white;
   margin-left: 10px;
 }
@@ -348,9 +348,8 @@ export default {
   margin-bottom: 10px;
 }
 
-//das sind nur beispiele für responsive sizes - sollte man sicher differenzieren
 h2, h3, p {
-  font-size: 1vw; /* or use rem, e.g., 1.2rem */
+  font-size: 1vw;
 }
 .small-image {
 
