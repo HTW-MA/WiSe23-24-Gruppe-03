@@ -1,21 +1,34 @@
-var responseContent = "<html>" +
-    "<body>" +
-    "<style>" +
-    "body {text-align: center; background-color: #333; color: #eee;}" +
-    "</style>" +
-    "<h1>Gotham Imperial Hotel</h1>" +
-    "<p>There seems to be a problem with your connection.</p>" +
-    "<p>Come visit us at 1 Imperial Plaza, Gotham City for free WiFi.</p>" +
-    "</body>" +
-    "</html>";
+/* eslint-disable no-console */
+import { register } from 'register-service-worker'
 
-self.addEventListener("fetch", function(event) {
-    event.respondWith(
-        fetch(event.request).catch(function() {
-            return new Response(responseContent, {headers: {"Content-Type": "text/html"}});
-        })
-    );
-});
+if (process.env.NODE_ENV === 'production') {
+    register(`${process.env.BASE_URL}service-worker.js`, {
+        ready () {
+            console.log(
+                'App is being served from cache by a service worker.\n' +
+                'For more details, visit https://goo.gl/AFskqB'
+            )
+        },
+        registered () {
+            console.log('Service worker has been registered.')
+        },
+        cached () {
+            console.log('Content has been cached for offline use.')
+        },
+        updatefound () {
+            console.log('New content is downloading.')
+        },
+        updated () {
+            console.log('New content is available; please refresh.')
+        },
+        offline () {
+            console.log('No internet connection found. App is running in offline mode.')
+        },
+        error (error) {
+            console.error('Error during service worker registration:', error)
+        }
+    })
+}
 
 
 //
