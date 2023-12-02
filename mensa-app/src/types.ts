@@ -14,3 +14,12 @@ export interface Canteen {
     };
 }
 
+// types.ts
+export interface Meal {
+    id: string;
+    name: string;
+    mealReviews: {
+        averageRating: number;
+        comment: string;
+    };
+}
