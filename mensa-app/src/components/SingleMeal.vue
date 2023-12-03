@@ -164,7 +164,7 @@ export default {
       } catch (error) {
         if (error.response.status === 409){
           try{
-            const response = await axios.put('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
+            const response = await axios.put('https://mensa.gregorflachs.de/api/v1/mealreview/', review, config);
             console.log(response.data)
             console.log('put')
           }

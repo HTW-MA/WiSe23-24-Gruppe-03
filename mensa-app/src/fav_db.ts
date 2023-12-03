@@ -1,7 +1,8 @@
 import Dexie from "dexie";
+import {Meal} from "@/types";
 
 class MyDexie extends Dexie {
-
+    meal!: Dexie.Table<Meal, string>; // Use 'string' if 'id' is of type string
 }
 
 
