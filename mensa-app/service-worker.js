@@ -1,3 +1,9 @@
+import {precacheAndRoute} from 'workbox-precaching';
+
+precacheAndRoute(self.__WB_MANIFEST);
+
+// Additional code goes here.
+
 var responseContent = "<html>" +
     "<body>" +
     "<style>" +
