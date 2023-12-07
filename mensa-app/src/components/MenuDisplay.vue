@@ -6,37 +6,37 @@
     Tja... da musst du dich an deine Uni wenden. Wir haben keine Daten von deiner Mensa erhalten :(
   </div>
   <div v-else>
-  <div v-if="isWeekend">
-    Am Wochenende hat die Mensa zu - Geh nach Hause, kleiner Streber!
-  </div>
+    <div v-if="isWeekend">
+      Am Wochenende hat die Mensa zu - Geh nach Hause, kleiner Streber!
+    </div>
 
-  <div v-else-if="Object.keys(meals).length === 0 && !isWeekend">
+    <div v-else-if="Object.keys(meals).length === 0 && !isWeekend">
 
-    <p>Hm....da finden wir irgendwie nichts zu essen. Vielleicht bist du zu zeitig oder zu spät? Vielleicht will dir dein Handy auch sagen, dass du abnehmen sollst?</p>
-  </div>
+      <p>Hm....da finden wir irgendwie nichts zu essen. Vielleicht bist du zu zeitig oder zu spät? Vielleicht will dir dein Handy auch sagen, dass du abnehmen sollst?</p>
+    </div>
 
-  <div v-else>
-    <div v-for="(categories, date) in filteredMeals" :key="date">
-      <h3>{{ date }}</h3>
-      <div v-for="(categoryMeals, category) in categories" :key="category">
-        <h4>{{ category }}
-          <button @click="toggleCategory(category)" class="htw-btn-active">{{ expandedCategories[category] ? '-' : '+' }}</button>
-        </h4>
-        <div v-if="expandedCategories[category]">
-        <div v-for="meal in categoryMeals" :key="meal.id" >
-          <p>
+    <div v-else>
+      <div v-for="(categories, date) in filteredMeals" :key="date">
+        <h3>{{ date }}</h3>
+        <div v-for="(categoryMeals, category) in categories" :key="category">
+          <h4>{{ category }}
+            <button @click="toggleCategory(category)" class="htw-btn-active">{{ expandedCategories[category] ? '-' : '+' }}</button>
+          </h4>
+          <div v-if="expandedCategories[category]">
+            <div v-for="meal in categoryMeals" :key="meal.id" >
+              <p>
 
-            <img v-if="isBadgePresent(meal.badges, 'Vegan')" :src="veganIcon" alt="Vegan" class="icon-inline">
-            <img v-if="isBadgePresent(meal.badges, 'Vegetarisch')" :src="annaIcon" alt="Vegetarisch" class="icon-inline">
-            <img v-if="!isBadgePresent(meal.badges, 'Vegetarisch') && !isBadgePresent(meal.badges, 'Vegan')" :src="chickenIcon" alt="Fleischgericht" class="icon-inline">
-            {{ meal.name || 'Unbekanntes Gericht' }} - Preis: {{ getPrice(meal) }}
-            <button class="htw-btn-active" @click="selectMeal(meal)">Klick mich!</button>
-          </p>
+                <img v-if="isBadgePresent(meal.badges, 'Vegan')" :src="veganIcon" alt="Vegan" class="icon-inline">
+                <img v-if="isBadgePresent(meal.badges, 'Vegetarisch')" :src="annaIcon" alt="Vegetarisch" class="icon-inline">
+                <img v-if="!isBadgePresent(meal.badges, 'Vegetarisch') && !isBadgePresent(meal.badges, 'Vegan')" :src="chickenIcon" alt="Fleischgericht" class="icon-inline">
+                {{ meal.name || 'Unbekanntes Gericht' }} - Preis: {{ getPrice(meal) }}
+                <button class="htw-btn-active" @click="selectMeal(meal)">Klick mich!</button>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  </div>
   </div>
 </template>
 
@@ -49,6 +49,8 @@ import veggieIcon from '../assets/veggie.png'
 import chickenIcon from '../assets/fullChicken.png'
 import annaIcon from '../assets/annalena.png'
 import fav_db from "@/fav_db";
+import {changeColorScheme} from "@/utils";
+import store from "@/store";
 
 
 export default {
@@ -104,6 +106,8 @@ export default {
     }
   },
   setup(props) {
+
+
 
     const expandedCategories = reactive({
       Essen: true
@@ -174,6 +178,7 @@ export default {
     onMounted(() => {
       fetchMenu();
       checkAndCompareMeals();
+      updateButtonColor();
     });
 
     const checkAndCompareMeals = () => {
@@ -207,7 +212,10 @@ export default {
       }
     };
 
-
+    const updateButtonColor = () => {
+      changeColorScheme(store.state.selectedCanteen, 'backgroundColor', '.htw-btn-active');
+    };
+    watch(() => store.state.selectedCanteen, updateButtonColor);
 
     watch(() => props.selectedCanteen, fetchMenu);
     watch(startDate, (newValue) => {

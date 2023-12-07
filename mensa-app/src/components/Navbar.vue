@@ -12,7 +12,7 @@
       <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
         <ul class="navbar-nav">
           <li class="nav-item dropdown">
-
+            <!-- Dropdown items can be added here -->
           </li>
         </ul>
       </div>
@@ -21,56 +21,40 @@
 </template>
 
 <script>
-import {onMounted,watch} from "vue";
+import { onMounted, watch } from 'vue';
+import { changeColorScheme } from '@/utils';
 import store from "@/store";
-
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Navbar',
 
   setup() {
-    function changeColorScheme() {
-      const selectedCanteen = store.state.selectedCanteen;
-      let navbarColor;
-
-      switch (selectedCanteen) {
-        case '655ff175136d3b580c970f83':
-          navbarColor = '#5b89b0';
-          break;
-        case '655ff175136d3b580c970f80':
-          navbarColor = '#76B900';
-          break;
-        default:
-          navbarColor = '#f57373';
-          break;
-      }
-
-      document.documentElement.style.setProperty('--navbar-bg-color', navbarColor);
-    }
 
     onMounted(() => {
-      changeColorScheme();
+      changeColorScheme(store.state.selectedCanteen, 'backgroundColor', '.navbar');
     });
 
 
-    watch(() => store.state.selectedCanteen, () => {
-      changeColorScheme();
+
+
+    watch(() => store.state.selectedCanteen, (newCanteen) => {
+      changeColorScheme(newCanteen, 'backgroundColor', '.navbar');
     });
 
-    return { changeColorScheme };
+
   },
 }
 </script>
+
 <style scoped>
-.navbar{
+.navbar {
   background-color: var(--navbar-bg-color);
 }
-:root{
-  --navbar-bg-color:#f57373;
+
+:root {
+  --navbar-bg-color: #f57373;
 }
-
-
 
 .nav-item {
   display: flex;
@@ -80,5 +64,4 @@ export default {
 .nav-link {
   margin-right: 10px;
 }
-
 </style>
