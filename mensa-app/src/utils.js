@@ -88,9 +88,7 @@ export function changeColorScheme(selectedCanteen, property, selector) {
             navbarColor = '#f57373';
             break;
     }
-    // ... existing switch case logic to determine the color based on selectedCanteen ...
 
-    // Apply the color to the specified property of the elements matched by selector
     document.querySelectorAll(selector).forEach(element => {
         element.style[property] = navbarColor;
     });

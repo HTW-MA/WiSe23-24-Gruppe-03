@@ -60,11 +60,13 @@
 
 <script lang="ts">
 import axios from 'axios';
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import {useRouter} from "vue-router";
 import db from "@/db";
 import {Canteen} from "@/types";
 import store from "../store";
+import {changeColorScheme} from "@/utils";
+
 
 
 export default {
@@ -125,6 +127,11 @@ export default {
       }
     };
 
+    const updateButtonColor = () => {
+       changeColorScheme(store.state.selectedCanteen, 'backgroundColor', '.btn-inactive');
+    };
+    watch(() => store.state.selectedCanteen, updateButtonColor);
+
     onMounted(async () => {
       const storedCanteens = await db.canteens.toArray();
       if (storedCanteens.length > 0) {
@@ -137,7 +144,11 @@ export default {
       if (storedCanteenId && canteens.value.some(canteen => canteen.id === storedCanteenId)) {
         selectedCanteen.value = storedCanteenId;
       }
+
+      updateButtonColor();
     });
+
+
 
 
     const confirmSelection = () => {
@@ -177,22 +188,16 @@ export default {
 }
 
 .btn-active {
-  background-color: #76B900;
+  background-color: #f57373;
   color: white;
 }
 
-.btn-active:hover {
-  background-color: #64a000;
-}
 
 .btn-inactive {
-  background-color: #cccccc;
-  color: #666666;
+  background-color: #d5d5d5;
   cursor: not-allowed;
 }
 
-.btn-inactive:hover {
-  background-color: #cccccc;
-}
+
 </style>
 

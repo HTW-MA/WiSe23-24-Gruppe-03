@@ -19,22 +19,32 @@
       <div v-for="(categories, date) in filteredMeals" :key="date">
         <h3>{{ date }}</h3>
         <div v-for="(categoryMeals, category) in categories" :key="category">
-          <h4>{{ category }}
-            <button @click="toggleCategory(category)" class="htw-btn-active">{{ expandedCategories[category] ? '-' : '+' }}</button>
-          </h4>
-          <div v-if="expandedCategories[category]">
-            <div v-for="meal in categoryMeals" :key="meal.id" >
-              <p>
+          <h4>{{ category }}</h4>
+          <div>
+            <div v-for="meal in categoryMeals" :key="meal.id">
+              <div @click="openPopup(meal)">
+
 
                 <img v-if="isBadgePresent(meal.badges, 'Vegan')" :src="veganIcon" alt="Vegan" class="icon-inline">
                 <img v-if="isBadgePresent(meal.badges, 'Vegetarisch')" :src="annaIcon" alt="Vegetarisch" class="icon-inline">
                 <img v-if="!isBadgePresent(meal.badges, 'Vegetarisch') && !isBadgePresent(meal.badges, 'Vegan')" :src="chickenIcon" alt="Fleischgericht" class="icon-inline">
+                <img v-if="meal.additives.length >0 " :src="addOns" class="icon-inline" @click="openAdditivesPopup(meal)" >
+                <div v-if="showAdditivesPopup" class="popup" @click="closePopupOnOverlayClick">
+                  <div class="popup-content">
+                    <h3>Zusatzstoffe</h3>
+                    <ul>
+                      <li v-for="additive in additivesList" :key="additive">{{ additive }}</li>
+                    </ul>
+                    <button @click="showAdditivesPopup = false" class="htw-btn-active">Schließen</button>
+                  </div>
+                </div>
                 {{ meal.name || 'Unbekanntes Gericht' }} - Preis: {{ getPrice(meal) }}
                 <button class="htw-btn-active" @click="selectMeal(meal)">Klick mich!</button>
-              </p>
+
+              </div>
             </div>
           </div>
-        </div>
+      </div>
       </div>
     </div>
   </div>
@@ -48,6 +58,11 @@ import veganIcon from '../assets/leafFull.png';
 import veggieIcon from '../assets/veggie.png'
 import chickenIcon from '../assets/fullChicken.png'
 import annaIcon from '../assets/annalena.png'
+import addOns from '../assets/zusatzstoffe.png'
+
+
+
+
 import fav_db from "@/fav_db";
 import {changeColorScheme} from "@/utils";
 import store from "@/store";
@@ -62,7 +77,10 @@ export default {
     loseWeight: String,
   },
 
-  methods:{
+  methods: {
+
+
+
     isBadgePresent(badges, badgeName) {
       return badges.some(badge => badge.name === badgeName);
     },
@@ -71,19 +89,18 @@ export default {
         return this.isBadgePresent(meal.badges, 'Vegan');
       }
       return true;
-    }
+    },
+
+    openPopup(meal) {
+      meal.showPopup = true;
+    },
 
 
   },
   computed: {
 
-    mensaSucks() {
-      const meal = this.meals[this.startDate];
-      return meal && Object.keys(meal).length === 0;
-    },
 
     filteredMeals() {
-      console.log(this.loseWeight)
       const filtered = {};
       for (const date in this.meals) {
         filtered[date] = {};
@@ -101,11 +118,50 @@ export default {
           });
         }
       }
-      console.log(filtered)
-      return filtered;
-    }
-  },
+
+      // Sort categories with "Essen" at the top
+      const sortedFiltered = {};
+      for (const date in filtered) {
+        if (filtered[date]['Essen']) {
+          sortedFiltered[date] = { 'Essen': filtered[date]['Essen'] };
+        } else {
+          sortedFiltered[date] = {};
+        }
+
+        for (const category in filtered[date]) {
+          if (category !== 'Essen') {
+            sortedFiltered[date][category] = filtered[date][category];
+          }
+        }
+      }
+
+      return sortedFiltered;
+    },
+
+    mensaSucks() {
+      const meal = this.meals[this.startDate];
+      return meal && Object.keys(meal).length === 0;
+    }},
+
+
   setup(props) {
+
+
+    const showAdditivesPopup = ref(false);
+    const additivesList = ref([]);
+
+    const openAdditivesPopup = (meal) => {
+      additivesList.value = meal.additives.map(additive => additive.text);
+      showAdditivesPopup.value = true;
+    };
+
+    const closePopupOnOverlayClick = (event) => {
+      // Check if the click was outside the popup content
+      if (!event.target.closest('.popup-content')) {
+        showAdditivesPopup.value = false;
+      }
+    };
+
 
 
 
@@ -114,13 +170,7 @@ export default {
 
     });
 
-    const toggleCategory = (category) => {
-      if (expandedCategories[category]) {
-        expandedCategories[category] = false;
-      } else {
-        expandedCategories[category] = true;
-      }
-    };
+
 
     const startDate = ref(sessionStorage.getItem('selectedDate') || new Date().toISOString().slice(0, 10));
     const meals = ref([]);
@@ -179,6 +229,7 @@ export default {
       fetchMenu();
       checkAndCompareMeals();
       updateButtonColor();
+
     });
 
     const checkAndCompareMeals = () => {
@@ -258,7 +309,13 @@ export default {
       selectedMeal,
       selectMeal,
       expandedCategories,
-      toggleCategory,
+      addOns,
+      showAdditivesPopup,
+      additivesList,
+      openAdditivesPopup,
+      closePopupOnOverlayClick
+      //closePopup,
+
 
 
 
@@ -272,6 +329,27 @@ export default {
   height: 1em;
   vertical-align: middle;
 }
+
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.popup-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
 
 .htw-btn-active {
   background-color: #76B900;

@@ -12,7 +12,6 @@
       <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
         <ul class="navbar-nav">
           <li class="nav-item dropdown">
-            <!-- Dropdown items can be added here -->
           </li>
         </ul>
       </div>

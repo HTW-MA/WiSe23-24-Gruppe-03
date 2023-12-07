@@ -226,9 +226,7 @@ export default {
     });
 
     const filteredAdditives = computed(()=>{
-      console.log("hallo")
       if(mealDetails.value && mealDetails.value.additives){
-        console.log("asdfasdf"+mealDetails.value.additives)
         return mealDetails.value.additives
       }
       return [];
