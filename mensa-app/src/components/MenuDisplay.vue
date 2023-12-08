@@ -26,19 +26,6 @@
 
 
 
-              <div v-if="meal.badges.length > 0">
-                <div v-for="badge in meal.badges" :key="badge.id">
-                  <img :src="getBadgeSymbol(badge.name)" class="icon-inline" @click.stop="openBadgePopup(meal.id, badge)">
-
-
-                  <div v-if="showBadgePopup === meal.id" class="popup" @click="closePopupOnOverlayClick">
-                    <div class="popup-content">
-                      <p>{{ currentBadge.description }}</p>
-                      <button @click="closeBadgePopup" class="htw-btn-active">Schließen</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
 
 
 
@@ -60,6 +47,22 @@
 
                 {{ meal.name || 'Unbekanntes Gericht' }} - Preis: {{ getPrice(meal) }}
                 <button class="htw-btn-active" @click="selectMeal(meal)">Klick mich!</button>
+
+                <div class="badge-container" v-if="meal.badges.length > 0">
+
+                  <div v-for="badge in meal.badges" :key="badge.id">
+                    <img :src="getBadgeSymbol(badge.name)" class="icon-inline" @click.stop="openBadgePopup(meal.id, badge)">
+
+
+                    <div v-if="showBadgePopup === meal.id" class="popup" @click="closePopupOnOverlayClick">
+                      <div class="popup-content">
+                        <h4>{{currentBadge.name}}</h4>
+                        <p>{{ currentBadge.description }}</p>
+                        <button @click="closeBadgePopup" class="htw-btn-active">Schließen</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -76,7 +79,6 @@ import axios from 'axios';
 import veganIcon from '../assets/leafFull.png';
 import veggieIcon from '../assets/veggie.png'
 import chickenIcon from '../assets/fullChicken.png'
-import annaIcon from '../assets/annalena.png'
 import addOns from '../assets/zusatzstoffe.png'
 import gruen from '../assets/grueneAmpel.jpg'
 import aggro from '../assets/aggriculture.png'
@@ -446,4 +448,13 @@ export default {
   color: white;
   margin-left: 10px;
 }
+
+.badge-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
 </style>
