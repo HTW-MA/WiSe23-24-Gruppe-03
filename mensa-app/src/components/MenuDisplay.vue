@@ -388,7 +388,6 @@ export default {
       meals,
       veganIcon,
       veggieIcon,
-      annaIcon,
       chickenIcon,
       getPrice,
       isWeekend,
