@@ -40,6 +40,7 @@ export default defineComponent({
             'X-API-KEY': process.env.VUE_APP_API_KEY
           }
         });
+        await db.canteens.bulkPut(response.data);
         canteens.value = response.data;
       } catch (error) {
         console.log(error);

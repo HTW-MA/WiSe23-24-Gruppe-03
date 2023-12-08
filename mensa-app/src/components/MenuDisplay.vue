@@ -1,17 +1,17 @@
 <template>
-
   <input type="date" v-model="startDate" @change="fetchMenu" />
   <button class="htw-btn-active" @click="navigateToProfile">Einstellungen ändern</button>
+
   <div v-if="mensaSucks && !isWeekend">
     Tja... da musst du dich an deine Uni wenden. Wir haben keine Daten von deiner Mensa erhalten :(
   </div>
+
   <div v-else>
     <div v-if="isWeekend">
       Am Wochenende hat die Mensa zu - Geh nach Hause, kleiner Streber!
     </div>
 
     <div v-else-if="Object.keys(meals).length === 0 && !isWeekend">
-
       <p>Hm....da finden wir irgendwie nichts zu essen. Vielleicht bist du zu zeitig oder zu spät? Vielleicht will dir dein Handy auch sagen, dass du abnehmen sollst?</p>
     </div>
 
@@ -22,13 +22,32 @@
           <h4>{{ category }}</h4>
           <div>
             <div v-for="meal in categoryMeals" :key="meal.id">
+              <img v-if="!isBadgePresent(meal.badges, 'Vegetarisch') && !isBadgePresent(meal.badges, 'Vegan')" :src="chickenIcon" alt="Fleischgericht" class="icon-inline">
+
+
+
+              <div v-if="meal.badges.length > 0">
+                <div v-for="badge in meal.badges" :key="badge.id">
+                  <img :src="getBadgeSymbol(badge.name)" class="icon-inline" @click.stop="openBadgePopup(meal.id, badge)">
+
+
+                  <div v-if="showBadgePopup === meal.id" class="popup" @click="closePopupOnOverlayClick">
+                    <div class="popup-content">
+                      <p>{{ currentBadge.description }}</p>
+                      <button @click="closeBadgePopup" class="htw-btn-active">Schließen</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+
               <div @click="openPopup(meal)">
 
+                <img v-if="meal.additives.length > 0" :src="addOns" class="icon-inline" @click="openAdditivesPopup(meal)" >
 
-                <img v-if="isBadgePresent(meal.badges, 'Vegan')" :src="veganIcon" alt="Vegan" class="icon-inline">
-                <img v-if="isBadgePresent(meal.badges, 'Vegetarisch')" :src="annaIcon" alt="Vegetarisch" class="icon-inline">
-                <img v-if="!isBadgePresent(meal.badges, 'Vegetarisch') && !isBadgePresent(meal.badges, 'Vegan')" :src="chickenIcon" alt="Fleischgericht" class="icon-inline">
-                <img v-if="meal.additives.length >0 " :src="addOns" class="icon-inline" @click="openAdditivesPopup(meal)" >
+
                 <div v-if="showAdditivesPopup" class="popup" @click="closePopupOnOverlayClick">
                   <div class="popup-content">
                     <h3>Zusatzstoffe</h3>
@@ -38,13 +57,13 @@
                     <button @click="showAdditivesPopup = false" class="htw-btn-active">Schließen</button>
                   </div>
                 </div>
+
                 {{ meal.name || 'Unbekanntes Gericht' }} - Preis: {{ getPrice(meal) }}
                 <button class="htw-btn-active" @click="selectMeal(meal)">Klick mich!</button>
-
               </div>
             </div>
           </div>
-      </div>
+        </div>
       </div>
     </div>
   </div>
@@ -59,13 +78,23 @@ import veggieIcon from '../assets/veggie.png'
 import chickenIcon from '../assets/fullChicken.png'
 import annaIcon from '../assets/annalena.png'
 import addOns from '../assets/zusatzstoffe.png'
-
+import gruen from '../assets/grueneAmpel.jpg'
+import aggro from '../assets/aggriculture.png'
+import co2 from '../assets/co2.jpg'
+import fairtrade from '../assets/fairtrade.png'
+import fish from '../assets/fish.png'
+import gelb from '../assets/gelbeAMpel.png'
+import rot from '../assets/roteAmpel.png'
+import water from '../assets/water.png'
+import klima from '../assets/klima.jpg'
 
 
 
 import fav_db from "@/fav_db";
 import {changeColorScheme} from "@/utils";
 import store from "@/store";
+import badges_db from "@/badges_db";
+
 
 
 export default {
@@ -119,7 +148,7 @@ export default {
         }
       }
 
-      // Sort categories with "Essen" at the top
+
       const sortedFiltered = {};
       for (const date in filtered) {
         if (filtered[date]['Essen']) {
@@ -156,7 +185,7 @@ export default {
     };
 
     const closePopupOnOverlayClick = (event) => {
-      // Check if the click was outside the popup content
+
       if (!event.target.closest('.popup-content')) {
         showAdditivesPopup.value = false;
       }
@@ -174,6 +203,8 @@ export default {
 
     const startDate = ref(sessionStorage.getItem('selectedDate') || new Date().toISOString().slice(0, 10));
     const meals = ref([]);
+    const badges = ref([])
+
     const storedMeals =sessionStorage.getItem('meals');
     const selectedMeal = ref(null);
 
@@ -224,13 +255,67 @@ export default {
     };
 
 
+    const getBadgeSymbol = (badgeName) => {
+      const badgeSymbols = {
+        "Grüner Ampelpunkt":gruen,
+        "Gelber Ampelpunkt":gelb,
+        "Roter Ampelpunkt":rot,
+        "Vegan": veganIcon,
+        "Fairtrade": fairtrade,
+        "Klimaessen": klima,
+        "Vegetarisch": veggieIcon,
+        "Nachhaltige Landwirtschaft": aggro,
+        "Nachhaltige Fischerei": fish,
+        "CO2_bewertung_A": co2,
+        "CO2_bewertung_B": co2,
+        "CO2_bewertung_C": co2,
+        "H2O_bewertung_A": water,
+        "H2O_bewertung_B": water,
+        "H2O_bewertung_C": water,
+      };
+      return badgeSymbols[badgeName] || "path/to/default-icon.png";
+    };
 
-    onMounted(() => {
-      fetchMenu();
+
+    const fetchBadges = async () => {
+      try {
+        const response = await axios.get('https://mensa.gregorflachs.de/api/v1/badge', {
+          headers: { 'X-API-KEY': process.env.VUE_APP_API_KEY }
+        });
+        await badges_db.badges.bulkPut(response.data);
+        badges.value = response.data;
+        console.log(badges.value)
+      } catch (error) {
+        console.error('Error fetching badges:', error);
+      }
+    };
+
+    const showBadgePopup=ref(false);
+    const currentBadge = ref({});
+  const openBadgePopup = (mealId, badge) => {
+      currentBadge.value = badge;
+      showBadgePopup.value = mealId;
+    };
+
+    const closeBadgePopup = () => {
+      showBadgePopup.value = null;
+    };
+
+    onMounted(async () => {
+      await fetchMenu();
       checkAndCompareMeals();
       updateButtonColor();
 
+      const storedBadges = await badges_db.badges.toArray();
+      if (storedBadges.length > 0) {
+        badges.value = storedBadges;
+      } else {
+        await fetchBadges();
+      }
+
     });
+
+
 
     const checkAndCompareMeals = () => {
       const today = new Date().toISOString().split('T')[0];
@@ -313,8 +398,13 @@ export default {
       showAdditivesPopup,
       additivesList,
       openAdditivesPopup,
-      closePopupOnOverlayClick
-      //closePopup,
+      closePopupOnOverlayClick,
+      klima,
+      getBadgeSymbol,
+      openBadgePopup,
+      showBadgePopup,
+      currentBadge,
+      closeBadgePopup
 
 
 
@@ -357,4 +447,3 @@ export default {
   margin-left: 10px;
 }
 </style>
-
