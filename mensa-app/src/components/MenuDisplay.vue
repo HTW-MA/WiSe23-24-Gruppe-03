@@ -115,12 +115,6 @@ export default {
     isBadgePresent(badges, badgeName) {
       return badges.some(badge => badge.name === badgeName);
     },
-    shouldDisplayMeal(meal) {
-      if (this.selectedDiet === 'Veganer') {
-        return this.isBadgePresent(meal.badges, 'Vegan');
-      }
-      return true;
-    },
 
     openPopup(meal) {
       meal.showPopup = true;
@@ -259,7 +253,7 @@ export default {
 
     const getBadgeSymbol = (badgeName) => {
       const badgeSymbols = {
-        "Grüner Ampelpunkt":gruen,
+
         "Gelber Ampelpunkt":gelb,
         "Roter Ampelpunkt":rot,
         "Vegan": veganIcon,
