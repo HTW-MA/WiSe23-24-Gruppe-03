@@ -312,6 +312,7 @@ export default {
 
       }
       catch (exception){
+        console.log(exception)
 
       }
 
@@ -331,24 +332,32 @@ export default {
     };
 
     const compareMealsWithDatabase = async () => {
-      let allMealIds = [];
-      for (const date in meals.value) {
-        for (const category in meals.value[date]) {
-          allMealIds = allMealIds.concat(meals.value[date][category].map(meal => meal.id));
+      try{
+        let allMealIds = [];
+        for (const date in meals.value) {
+          for (const category in meals.value[date]) {
+            allMealIds = allMealIds.concat(meals.value[date][category].map(meal => meal.id));
+          }
         }
+
+        const matchingMeals = await fav_db.meal.where('id').anyOf(allMealIds).toArray();
+
+        if (matchingMeals.length > 0) {
+          const mealNames = matchingMeals.map(meal => meal.name).join(', ');
+          if (Notification.permission === "granted") {
+            new Notification("Whoop! Whoop!", {
+              body: `Es gibt dein(e) Lieblingsessen: ${mealNames}`,
+
+            });
+          }
+        }
+
+      }
+      catch (error){
+        console.log(error)
+
       }
 
-      const matchingMeals = await fav_db.meal.where('id').anyOf(allMealIds).toArray();
-
-      if (matchingMeals.length > 0) {
-        const mealNames = matchingMeals.map(meal => meal.name).join(', ');
-        if (Notification.permission === "granted") {
-          new Notification("Whoop! Whoop!", {
-            body: `Es gibt dein(e) Lieblingsessen: ${mealNames}`,
-
-          });
-        }
-      }
     };
 
     const updateButtonColor = () => {
