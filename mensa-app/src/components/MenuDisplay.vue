@@ -253,7 +253,7 @@ export default {
 
     const getBadgeSymbol = (badgeName) => {
       const badgeSymbols = {
-
+        "Grüner Ampelpunkt":gruen,
         "Gelber Ampelpunkt":gelb,
         "Roter Ampelpunkt":rot,
         "Vegan": veganIcon,
@@ -298,16 +298,23 @@ export default {
     };
 
     onMounted(async () => {
-      await fetchMenu();
-      checkAndCompareMeals();
-      updateButtonColor();
+      try{
+        await fetchMenu();
+        checkAndCompareMeals();
+        updateButtonColor();
 
-      const storedBadges = await badges_db.badges.toArray();
-      if (storedBadges.length > 0) {
-        badges.value = storedBadges;
-      } else {
-        await fetchBadges();
+        const storedBadges = await badges_db.badges.toArray();
+        if (storedBadges.length > 0) {
+          badges.value = storedBadges;
+        } else {
+          await fetchBadges();
+        }
+
       }
+      catch (exception){
+
+      }
+
 
     });
 
