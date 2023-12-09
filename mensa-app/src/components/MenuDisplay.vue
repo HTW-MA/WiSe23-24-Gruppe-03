@@ -12,7 +12,10 @@
     </div>
 
     <div v-else-if="Object.keys(meals).length === 0 && !isWeekend">
-      <p>Hm....da finden wir irgendwie nichts zu essen. Vielleicht bist du zu zeitig oder zu spät? Vielleicht will dir dein Handy auch sagen, dass du abnehmen sollst?</p>
+      <p>
+        Hm....da finden wir irgendwie nichts zu essen. Vielleicht bist du zu zeitig oder zu spät?
+        Vielleicht will dir dein Handy auch sagen, dass du abnehmen sollst?
+      </p>
     </div>
 
     <div v-else>
@@ -22,18 +25,16 @@
           <h4>{{ category }}</h4>
           <div>
             <div v-for="meal in categoryMeals" :key="meal.id">
-              <img v-if="!isBadgePresent(meal.badges, 'Vegetarisch') && !isBadgePresent(meal.badges, 'Vegan')" :src="chickenIcon" alt="Fleischgericht" class="icon-inline">
-
-
-
-
-
-
+              <img v-if="!isBadgePresent(meal.badges, 'Vegetarisch') && !isBadgePresent(meal.badges, 'Vegan')"
+                   :src="chickenIcon"
+                   alt="Fleischgericht"
+                   class="icon-inline">
 
               <div @click="openPopup(meal)">
-
-                <img v-if="meal.additives.length > 0" :src="addOns" class="icon-inline" @click="openAdditivesPopup(meal)" >
-
+                <img v-if="meal.additives.length > 0"
+                     :src="addOns"
+                     class="icon-inline"
+                     @click="openAdditivesPopup(meal)">
 
                 <div v-if="showAdditivesPopup" class="popup" @click="closePopupOnOverlayClick">
                   <div class="popup-content">
@@ -49,14 +50,14 @@
                 <button class="htw-btn-active" @click="selectMeal(meal)">Klick mich!</button>
 
                 <div class="badge-container" v-if="meal.badges.length > 0">
-
                   <div v-for="badge in meal.badges" :key="badge.id">
-                    <img :src="getBadgeSymbol(badge.name)" class="icon-inline" @click.stop="openBadgePopup(meal.id, badge)">
-
+                    <img :src="getBadgeSymbol(badge.name)"
+                         class="icon-inline"
+                         @click.stop="openBadgePopup(meal.id, badge)">
 
                     <div v-if="showBadgePopup === meal.id" class="popup" @click="closePopupOnOverlayClick">
                       <div class="popup-content">
-                        <h4>{{currentBadge.name}}</h4>
+                        <h4>{{ currentBadge.name }}</h4>
                         <p>{{ currentBadge.description }}</p>
                         <button @click="closeBadgePopup" class="htw-btn-active">Schließen</button>
                       </div>
@@ -71,6 +72,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import {ref, watch, computed, onMounted, reactive} from 'vue';
