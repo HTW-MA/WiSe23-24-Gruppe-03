@@ -3,6 +3,8 @@
     "target": "es5",
     "module": "esnext",
     "baseUrl": "./",
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
     "paths": {
       "@/*": [
