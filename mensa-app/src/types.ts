@@ -25,8 +25,8 @@ export interface Meal {
 }
 
 export interface Badge {
-
+    id: string;
     name: string;
     description: string
-    id: string;
+
 }
