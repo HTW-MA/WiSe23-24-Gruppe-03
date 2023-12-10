@@ -1,3 +1,4 @@
+
 export function changeColorScheme(selectedCanteen, property, selector) {
 
     let navbarColor;
@@ -93,3 +94,4 @@ export function changeColorScheme(selectedCanteen, property, selector) {
         element.style[property] = navbarColor;
     });
 }
+
