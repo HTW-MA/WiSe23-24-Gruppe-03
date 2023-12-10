@@ -7,7 +7,7 @@
   </div>
   <div v-else>
     <div v-if="isWeekend">
-      Am Wochenende hat die Mensa zu - Geh nach Hause, kleiner Streber!
+      Am Wochenende hat die Mensa zu - Geh nach Hause, kleiner Streber!!!
     </div>
 
     <div v-else-if="Object.keys(meals).length === 0 && !isWeekend">
