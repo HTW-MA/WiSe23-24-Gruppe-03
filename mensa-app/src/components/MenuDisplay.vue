@@ -1,6 +1,8 @@
 <template>
   <input type="date" v-model="startDate" @change="fetchMenu" />
-  <button class="htw-btn-active" @click="navigateToProfile">Einstellungen ändern</button>
+  <button class="htw-btn-active" @click="navigateToProfile">
+    Einstellungen ändern
+  </button>
 
   <div v-if="mensaSucks && !isWeekend">
     Tja... da musst du dich an deine Uni wenden. Wir haben keine Daten von deiner Mensa erhalten :(
@@ -24,51 +26,117 @@
         <div v-for="(categoryMeals, category) in categories" :key="category">
           <h4>{{ category }}</h4>
           <div>
-
             <div v-for="meal in categoryMeals" :key="meal.id">
+              <img
+                  v-if="category === 'Essen' || category === 'Desserts'"
+                  :src="isFavorite(meal) ? fullStar : emptyStar"
+                  alt="Star"
+                  class="icon-inline"
+                  @click="toggleFavorite(meal); openFavPopup(meal, $event)"
+              >
 
-              <img :src="isFavorite(meal) ? fullStar : emptyStar" alt="Star" class="icon-inline" @click="toggleFavorite(meal)">
+              <div
+                  v-if="showMessage"
+                  :style="{ top: popupPosition.y + 'px', left: popupPosition.x + 'px' }"
+                  class="favorite-popup"
+              >
+                {{ message }}
+              </div>
 
-
-              <img v-if="!isBadgePresent(meal.badges, 'Vegetarisch') && !isBadgePresent(meal.badges, 'Vegan')"
-                   :src="chickenIcon"
-                   alt="Fleischgericht"
-                   class="icon-inline">
+              <img
+                  v-if="!isBadgePresent(meal.badges, 'Vegetarisch') && !isBadgePresent(meal.badges, 'Vegan')"
+                  :src="chickenIcon"
+                  alt="Fleischgericht"
+                  class="icon-inline"
+              >
 
               <div @click="openPopup(meal)">
-                <img v-if="meal.additives.length > 0"
-                     :src="addOns"
-                     class="icon-inline"
-                     @click="openAdditivesPopup(meal, $event)"
-                    @touchstart="openAdditivesPopup(meal, $event)"
+                <img
+                    v-if="meal.additives.length > 0"
+                    :src="addOns"
+                    class="icon-inline"
+                    @click.stop="openAdditivesPopup(meal, $event)"
+                    @touchstart.stop="openAdditivesPopup(meal, $event)"
                 >
 
-                <div v-if="showAdditivesPopup" class="popup" :style="{ top: popupPosition.y + 'px', left: popupPosition.x + 'px' }" >
+                <div
+                    v-if="showAdditivesPopup"
+                    class="popup"
+                    :style="{ top: popupPosition.y + 'px', left: popupPosition.x + 'px' }"
+                >
                   <div class="popup-content">
                     <h3>Zusatzstoffe</h3>
                     <ul>
-                      <li v-for="additive in additivesList" :key="additive">{{ additive }}</li>
+                      <li v-for="additive in additivesList" :key="additive">
+                        {{ additive }}
+                      </li>
                     </ul>
-                    <button @click="showAdditivesPopup = false" class="htw-btn-active">Schließen</button>
+                    <button @click="showAdditivesPopup = false" class="htw-btn-active">
+                      Schließen
+                    </button>
                   </div>
                 </div>
 
                 {{ meal.name || 'Unbekanntes Gericht' }} - Preis: {{ getPrice(meal) }}
-                <button class="htw-btn-active" @click="selectMeal(meal)">Klick mich!</button>
 
+
+
+                <button class="htw-btn-active" @click="showReviewPopup = true">
+                  Bewertung abgeben
+                </button>
+
+                <div v-if="showReviewPopup" class="review-popup">
+                  <div class="popup-content">
+                    <h3>Bewertung abgeben</h3>
+                    <div class="star-rating">
+                      <span
+                          v-for="item in 5"
+                          :key="item"
+                          @click="setRating(item, $event.offsetX < $event.target.offsetWidth / 2)"
+                      >
+                        <img :src="getChickenImage(item)" alt="rating symbol" class="small-image" />
+                      </span>
+                    </div>
+
+                    <textarea
+                        v-model="reviewComment"
+                        placeholder="Kommentar"
+                    ></textarea>
+
+                    <button @click="submitReview(meal)" class="htw-btn-active">
+                      Senden
+                    </button>
+
+                    <button @click="showReviewPopup = false" class="htw-btn-active">
+                      Abbrechen
+                    </button>
+
+                  </div>
+
+                </div>
+                <button class="htw-btn-active" @click="selectMeal(meal)">
+                  Nur für Entwicklung
+                </button>
                 <div class="badge-container" v-if="meal.badges.length > 0">
                   <div v-for="badge in meal.badges" :key="badge.id">
-                    <img :src="getBadgeSymbol(badge.name)"
-                         class="icon-inline"
-                         @click="openBadgePopup(meal.id, badge,$event)"
-                        @touchstart="openBadgePopup(meal.id, badge, $event)"
+                    <img
+                        :src="getBadgeSymbol(badge.name)"
+                        class="icon-inline"
+                        @click.stop="openBadgePopup(meal.id, badge, $event)"
+                        @touchstart.stop="openBadgePopup(meal.id, badge, $event)"
                     >
 
-                    <div v-if="showBadgePopup === meal.id" class="popup" :style="{ top: popupPosition.y + 'px', left: popupPosition.x + 'px' }">
+                    <div
+                        v-if="showBadgePopup === meal.id"
+                        class="popup"
+                        :style="{ top: popupPosition.y + 'px', left: popupPosition.x + 'px' }"
+                    >
                       <div class="popup-content">
                         <h4>{{ currentBadge.name }}</h4>
                         <p>{{ currentBadge.description }}</p>
-                        <button @click="closeBadgePopup" class="htw-btn-active">Schließen</button>
+                        <button @click="closeBadgePopup" class="htw-btn-active">
+                          Schließen
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -81,6 +149,7 @@
     </div>
   </div>
 </template>
+
 
 
 <script>
@@ -134,9 +203,6 @@ export default {
 
 
 
-
-
-
     isBadgePresent(badges, badgeName) {
       return badges.some(badge => badge.name === badgeName);
     },
@@ -144,6 +210,7 @@ export default {
     openPopup(meal) {
       meal.showPopup = true;
     },
+
 
 
   },
@@ -197,15 +264,138 @@ export default {
 
 
   setup(props) {
+    const showReviewPopup = ref(false);
+    const reviewComment = ref('');
+    const reviewRating = ref(0);
+
+    const popupPosition  =ref({x:0,y:0});
+
+    const showMessage = ref(false);
+    const message = ref('');
+
+    const showFavoritePopup = ref(false);
+    const starRating = ref(0);
+    let filledSymbol;
+    let emptySymbol;
+    let halfSymbol;
+    const selectedDiet = ref(localStorage.getItem('selectedDiet'));
+
+
+    if (selectedDiet.value === "Allesfresser") {
+      filledSymbol = require('@/assets/fullChicken.png');
+      emptySymbol = require('@/assets/emptyChicken.png');
+      halfSymbol = require('@/assets/halfChicken.png')
+    } else {
+      filledSymbol = require('@/assets/leafFull.png');
+      emptySymbol = require('@/assets/leafEmpty.png');
+      halfSymbol = require('@/assets/leafHalf.png');
+    }
+    function setRating(newRating, isHalf = false) {
+      starRating.value = isHalf ? newRating - 0.5 : newRating;
+    }
+    function getChickenImage(item) {
+      const image = starRating.value >= item
+          ? filledSymbol
+          : starRating.value >= item - 0.5
+              ? halfSymbol
+              : emptySymbol;
+
+      return image;
+    }
+
+    function submitReview(meal) {
+
+      if (starRating.value&& reviewComment.value) {
+
+
+        const reviewBody = {
+          mealId: meal.id,
+          rating: starRating.value,
+          comment: reviewComment.value,
+          category: meal.category
+        };
+
+        console.log('Review Data:', reviewBody);
+
+        postMealReview(meal.id, starRating.value, reviewComment.value, meal.category);
+        showReviewPopup.value = false;
+        reviewComment.value = '';
+        starRating.value = 0;
+      } else {
+        alert('Bitte geben Sie eine Bewertung und einen Kommentar ein.');
+      }
+    }
+
+    async function postMealReview(mealID, rating, comment, category) {
+
+      const userID = localStorage.getItem('userID')
+
+      const config = {
+        headers: {
+          'X-API-KEY': process.env.VUE_APP_API_KEY
+        }
+      };
+
+      const review = {
+
+        mealId: mealID,
+        userId: userID,
+        detailRatings: [
+          {
+            rating: rating,
+            name: category
+          }
+        ],
+        comment: comment
+      };
+
+      try {
+        console.log('i bims')
+        console.log(review)
+
+        const response = await axios.post('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
+        console.log('data' +response.data);
+
+      } catch (error) {
+        if (error.response.status === 409){
+          try{
+            console.log('you are here')
+            const response = await axios.put('https://mensa.gregorflachs.de/api/v1/mealreview/', review, config);
+            console.log(response.data)
+            console.log('put')
+          }
+          catch (error){
+            console.error('Fehler beim Posten:', error);
+          }
+        }
+        console.error('Fehler beim Posten:', error);
+
+      }
+    }
+
+    function generateTimestampedHex(len) {
+      const timestampHex = Date.now().toString(16);
+
+      const remainingLen = len - timestampHex.length;
+
+      let randomHex = '';
+      const characters = '0123456789abcdef';
+      for (let i = 0; i < remainingLen; i++) {
+        randomHex += characters.charAt(Math.floor(Math.random() * characters.length));
+      }
+      return timestampHex + randomHex;
+    }
 
     const isFavorite = (meal) => {
       return favoriteStatuses.value[meal.id];
     };
 
+
     const toggleFavorite = async (meal) => {
       if (isFavorite(meal)) {
         await fav_db.meal.delete(meal.id);
         favoriteStatuses.value[meal.id] = false;
+        message.value = 'gelöscht';
       } else {
         await fav_db.meal.add({
           id: meal.id,
@@ -216,8 +406,12 @@ export default {
           }
         });
         favoriteStatuses.value[meal.id] = true;
+        message.value = 'zu Favoriten hinzugefügt';
       }
+
     };
+
+
 
     const meals = ref([]);
 
@@ -239,6 +433,26 @@ export default {
 
     const showAdditivesPopup = ref(false);
     const additivesList = ref([]);
+
+    const openFavPopup=(meal, event) =>{
+      event.stopPropagation();
+      let x,y;
+      if (event.type.startsWith('touch')){
+        const touch = event.touches[0] || event.changedTouches[0];
+        x=touch.clientX;
+        y=touch.clientY;
+      }
+      else {
+        x=event.clientX;
+        y=event.clientY;
+      }
+      showMessage.value = true;
+      popupPosition.value = {x,y}
+
+      setTimeout(() => {
+        showMessage.value = false;
+      }, 3000);
+    }
 
     const openAdditivesPopup = (meal,event) => {
           event.stopPropagation();
@@ -367,7 +581,7 @@ export default {
       }
     };
 
-    const popupPosition  =ref({x:0,y:0});
+
 
     const showBadgePopup=ref(false);
     const currentBadge = ref({});
@@ -531,7 +745,18 @@ export default {
       isFavorite,
       fullStar,
       emptyStar,
-      toggleFavorite
+      toggleFavorite,
+      showMessage,
+      message,
+      openFavPopup,
+      generateTimestampedHex,
+      submitReview,
+      setRating,
+      reviewRating,
+      getChickenImage,
+      reviewComment,
+      showReviewPopup,
+      showFavoritePopup
 
 
 
@@ -553,6 +778,20 @@ export default {
   background-color: rgba(0, 0, 0, 0);
   z-index: 100;
 }
+
+.review-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5%;
+}
+
 .popup-content {
   background-color: white;
   padding: 20px;
@@ -573,6 +812,22 @@ export default {
   gap: 10px;
   justify-content: center;
   align-items: center;
+}
+
+
+
+.favorite-popup {
+  position: fixed;
+  background-color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.18);
+  z-index: 1000;
+  max-width: 80%;
+  word-wrap: break-word;
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  opacity: 1; /* Ensure it's initially visible */
+  transform: translateY(0); /* No initial transform */
 }
 
 </style>
