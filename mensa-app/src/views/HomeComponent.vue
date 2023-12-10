@@ -40,7 +40,6 @@ export default defineComponent({
             'X-API-KEY': process.env.VUE_APP_API_KEY
           }
         });
-        await db.canteens.bulkPut(response.data);
         canteens.value = response.data;
       } catch (error) {
         console.log(error);
@@ -50,44 +49,36 @@ export default defineComponent({
     onMounted(
 
         async () => {
-          try{
 
-            const storedRole = localStorage.getItem('selectedRole');
-            const storedCanteen = localStorage.getItem('selectedCanteen')
-            const storedDiet = localStorage.getItem('selectedDiet');
-            if(storedRole && storedCanteen && storedDiet){
-              selectedRole.value=storedRole;
-              selectedDiet.value=storedDiet;
+      const storedRole = localStorage.getItem('selectedRole');
+      const storedCanteen = localStorage.getItem('selectedCanteen')
+      const storedDiet = localStorage.getItem('selectedDiet');
+      if(storedRole && storedCanteen && storedDiet){
+        selectedRole.value=storedRole;
+        selectedDiet.value=storedDiet;
 
-            }
-            else {
-              router.push('/Profile');
-            }
-            Notification.requestPermission().then(permission => {
-              if (permission === "granted") {
-                console.log("Notifications erlaubt");
-              } else {
-                console.log("Nope");
-              }
-            });
-
-            const storedCanteens = await db.canteens.toArray();
-            if (storedCanteens.length > 0) {
-              canteens.value = storedCanteens;
+      }
+      else {
+       router.push('/Profile');
+      }
+          Notification.requestPermission().then(permission => {
+            if (permission === "granted") {
+              console.log("Notifications erlaubt");
             } else {
-              await fetchCanteens();
+              console.log("Nope");
             }
+          });
 
-          }
-          catch (error){
-            console.log(error)
-          }
+      const storedCanteens = await db.canteens.toArray();
+      if (storedCanteens.length > 0) {
+        canteens.value = storedCanteens;
+      } else {
+        await fetchCanteens();
+      }
 
 
 
-
-    }
-    );
+    });
 
     return {
       selectedRole,

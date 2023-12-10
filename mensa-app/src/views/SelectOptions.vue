@@ -133,26 +133,19 @@ export default {
     watch(() => store.state.selectedCanteen, updateButtonColor);
 
     onMounted(async () => {
-      try{
-        const storedCanteens = await db.canteens.toArray();
-        if (storedCanteens.length > 0) {
-          canteens.value = storedCanteens;
-        } else {
-          await fetchCanteens();
-        }
-
-        const storedCanteenId = localStorage.getItem('selectedCanteen');
-        if (storedCanteenId && canteens.value.some(canteen => canteen.id === storedCanteenId)) {
-          selectedCanteen.value = storedCanteenId;
-        }
-
-        updateButtonColor();
-
-      }
-      catch (error){
-        console.log(error)
+      const storedCanteens = await db.canteens.toArray();
+      if (storedCanteens.length > 0) {
+        canteens.value = storedCanteens;
+      } else {
+        await fetchCanteens();
       }
 
+      const storedCanteenId = localStorage.getItem('selectedCanteen');
+      if (storedCanteenId && canteens.value.some(canteen => canteen.id === storedCanteenId)) {
+        selectedCanteen.value = storedCanteenId;
+      }
+
+      updateButtonColor();
     });
 
 
