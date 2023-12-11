@@ -24,12 +24,7 @@
         <div v-for="(categoryMeals, category) in categories" :key="category">
           <h4>{{ category }}</h4>
           <div>
-
             <div v-for="meal in categoryMeals" :key="meal.id">
-
-              <img :src="isFavorite(meal) ? fullStar : emptyStar" alt="Star" class="icon-inline" @click="toggleFavorite(meal)">
-
-
               <img v-if="!isBadgePresent(meal.badges, 'Vegetarisch') && !isBadgePresent(meal.badges, 'Vegan')"
                    :src="chickenIcon"
                    alt="Fleischgericht"
@@ -39,11 +34,9 @@
                 <img v-if="meal.additives.length > 0"
                      :src="addOns"
                      class="icon-inline"
-                     @click="openAdditivesPopup(meal, $event)"
-                    @touchstart="openAdditivesPopup(meal, $event)"
-                >
+                     @click="openAdditivesPopup(meal)">
 
-                <div v-if="showAdditivesPopup" class="popup" :style="{ top: popupPosition.y + 'px', left: popupPosition.x + 'px' }" >
+                <div v-if="showAdditivesPopup" class="popup" @click="closePopupOnOverlayClick">
                   <div class="popup-content">
                     <h3>Zusatzstoffe</h3>
                     <ul>
@@ -60,11 +53,9 @@
                   <div v-for="badge in meal.badges" :key="badge.id">
                     <img :src="getBadgeSymbol(badge.name)"
                          class="icon-inline"
-                         @click="openBadgePopup(meal.id, badge,$event)"
-                        @touchstart="openBadgePopup(meal.id, badge, $event)"
-                    >
+                         @click.stop="openBadgePopup(meal.id, badge)">
 
-                    <div v-if="showBadgePopup === meal.id" class="popup" :style="{ top: popupPosition.y + 'px', left: popupPosition.x + 'px' }">
+                    <div v-if="showBadgePopup === meal.id" class="popup" @click="closePopupOnOverlayClick">
                       <div class="popup-content">
                         <h4>{{ currentBadge.name }}</h4>
                         <p>{{ currentBadge.description }}</p>
@@ -84,7 +75,7 @@
 
 
 <script>
-import {ref, watch, computed, onMounted, reactive, onUnmounted} from 'vue';
+import {ref, watch, computed, onMounted, reactive} from 'vue';
 import {useRouter} from "vue-router";
 import axios from 'axios';
 import veganIcon from '../assets/leafFull.png';
@@ -100,8 +91,7 @@ import gelb from '../assets/gelbeAMpel.png'
 import rot from '../assets/roteAmpel.png'
 import water from '../assets/water.png'
 import klima from '../assets/klima.jpg'
-import fullStar from '../assets/fullStar.png'
-import emptyStar from '../assets/emptyStar.png'
+
 
 
 import fav_db from "@/fav_db";
@@ -120,20 +110,7 @@ export default {
     loseWeight: String,
   },
 
-
-
-
   methods: {
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -148,8 +125,6 @@ export default {
 
   },
   computed: {
-
-
 
 
     filteredMeals() {
@@ -198,64 +173,12 @@ export default {
 
   setup(props) {
 
-    const isFavorite = (meal) => {
-      return favoriteStatuses.value[meal.id];
-    };
-
-    const toggleFavorite = async (meal) => {
-      if (isFavorite(meal)) {
-        await fav_db.meal.delete(meal.id);
-        favoriteStatuses.value[meal.id] = false;
-      } else {
-        await fav_db.meal.add({
-          id: meal.id,
-          name: meal.name,
-          mealReviews: {
-            averageRating: meal.mealReviews?.averageRating,
-            comment: meal.mealReviews?.comment
-          }
-        });
-        favoriteStatuses.value[meal.id] = true;
-      }
-    };
-
-    const meals = ref([]);
-
-    const favoriteStatuses = ref({});
-
-    const updateFavoriteStatuses = async () => {
-      for (let date in meals.value) {
-        for (let category in meals.value[date]) {
-          for (let meal of meals.value[date][category]) {
-            const res = await fav_db.meal.get(meal.id);
-            favoriteStatuses.value[meal.id] = !!res;
-          }
-        }
-      }
-    };
-
-    watch(meals, updateFavoriteStatuses, { deep: true });
-
 
     const showAdditivesPopup = ref(false);
     const additivesList = ref([]);
 
-    const openAdditivesPopup = (meal,event) => {
-          event.stopPropagation();
-      let x,y;
-      if (event.type.startsWith('touch')){
-        const touch = event.touches[0] || event.changedTouches[0];
-        x=touch.clientX;
-        y=touch.clientY;
-      }
-      else {
-        x=event.clientX;
-        y=event.clientY;
-      }
-
-
+    const openAdditivesPopup = (meal) => {
       additivesList.value = meal.additives.map(additive => additive.text);
-      popupPosition.value = {x,y}
       showAdditivesPopup.value = true;
     };
 
@@ -263,7 +186,6 @@ export default {
 
       if (!event.target.closest('.popup-content')) {
         showAdditivesPopup.value = false;
-        showBadgePopup.value = null;
       }
     };
 
@@ -278,9 +200,8 @@ export default {
 
 
     const startDate = ref(sessionStorage.getItem('selectedDate') || new Date().toISOString().slice(0, 10));
-
+    const meals = ref([]);
     const badges = ref([])
-
 
     const storedMeals =sessionStorage.getItem('meals');
     const selectedMeal = ref(null);
@@ -326,7 +247,6 @@ export default {
         }, {});
         meals.value = mealsByDateAndCategory;
         sessionStorage.setItem('meals', JSON.stringify(meals.value))
-
       } catch (error) {
         console.error(error);
       }
@@ -362,46 +282,24 @@ export default {
         });
         await badges_db.badges.bulkPut(response.data);
         badges.value = response.data;
+        console.log(badges.value)
       } catch (error) {
         console.error('Error fetching badges:', error);
       }
     };
 
-    const popupPosition  =ref({x:0,y:0});
-
     const showBadgePopup=ref(false);
     const currentBadge = ref({});
-    const openBadgePopup = (mealId, badge,event) => {
-      event.stopPropagation();
-      let x,y;
-      if (event.type.startsWith('touch')){
-        const touch = event.touches[0] || event.changedTouches[0];
-        x=touch.clientX;
-        y=touch.clientY;
-      }
-      else {
-        x=event.clientX;
-        y=event.clientY;
-      }
+    const openBadgePopup = (mealId, badge) => {
       currentBadge.value = badge;
       showBadgePopup.value = mealId;
-      popupPosition.value = {x,y};
     };
 
     const closeBadgePopup = () => {
       showBadgePopup.value = null;
     };
 
-    onUnmounted(() => {
-      document.removeEventListener('click', closePopupOnOverlayClick);
-      document.addEventListener('touchstart', closePopupOnOverlayClick);
-    });
-
-    onMounted(
-
-
-        async () => {
-
+    onMounted(async () => {
       try{
         await fetchMenu();
         checkAndCompareMeals();
@@ -419,12 +317,9 @@ export default {
         console.log(exception)
 
       }
-          document.addEventListener('click', closePopupOnOverlayClick);
-          document.addEventListener('touchstart', closePopupOnOverlayClick);
 
-    },
 
-        );
+    });
 
 
 
@@ -472,15 +367,11 @@ export default {
     };
     watch(() => store.state.selectedCanteen, updateButtonColor);
 
-
-
     watch(() => props.selectedCanteen, fetchMenu);
     watch(startDate, (newValue) => {
       fetchMenu();
       sessionStorage.setItem('selectedDate', newValue);
     });
-
-
 
 
     const categorizedMeals = computed(() => {
@@ -526,13 +417,7 @@ export default {
       openBadgePopup,
       showBadgePopup,
       currentBadge,
-      closeBadgePopup,
-      popupPosition,
-      isFavorite,
-      fullStar,
-      emptyStar,
-      toggleFavorite
-
+      closeBadgePopup
 
 
 
@@ -550,9 +435,17 @@ export default {
 
 .popup {
   position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-color: rgba(0, 0, 0, 0);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   z-index: 100;
 }
+
 .popup-content {
   background-color: white;
   padding: 20px;
