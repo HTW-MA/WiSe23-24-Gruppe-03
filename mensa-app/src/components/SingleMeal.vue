@@ -1,5 +1,3 @@
-I have this component:
-
 <template>
   <div v-if="mealDetails">
     <h2>{{ mealDetails.name }}</h2>
@@ -108,7 +106,7 @@ export default {
           : starRating.value >= item - 0.5
               ? halfSymbol
               : emptySymbol;
-      console.log("Item: ", item, "Image: ", image);
+
       return image;
     }
 
@@ -158,12 +156,16 @@ export default {
       };
 
       try {
+        console.log('i bims')
+        console.log(review)
+
         const response = await axios.post('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
-        console.log(response.data);
+        console.log('data' +response.data);
 
       } catch (error) {
         if (error.response.status === 409){
           try{
+            console.log('you are here')
             const response = await axios.put('https://mensa.gregorflachs.de/api/v1/mealreview/', review, config);
             console.log(response.data)
             console.log('put')
@@ -226,9 +228,7 @@ export default {
     });
 
     const filteredAdditives = computed(()=>{
-      console.log("hallo")
       if(mealDetails.value && mealDetails.value.additives){
-        console.log("asdfasdf"+mealDetails.value.additives)
         return mealDetails.value.additives
       }
       return [];
@@ -314,6 +314,9 @@ export default {
   },
 };
 </script>
+
+
+
 
 <style>
 

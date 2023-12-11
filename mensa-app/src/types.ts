@@ -23,3 +23,10 @@ export interface Meal {
         comment: string;
     };
 }
+
+export interface Badge {
+    id: string;
+    name: string;
+    description: string
+
+}
