@@ -1,5 +1,12 @@
 <script lang="js">
 import PopUp from "@/components/PopUp.vue";
+//Nutzen falls es mit dem NDEFReader nicht klappen sollte
+//import NFC from '@ionic-native/nfc';
+
+//import NDEFReader from '@types/w3c-web-nfc';
+//import NDEFRecord from '@types/w3c-web-nfc';
+//import NDEFMessage from '@types/w3c-web-nfc';
+
 
 export default {
   name: 'BudgetComponent',
@@ -35,6 +42,25 @@ export default {
         console.log("5 Sek rum")
         this.popUpShown = false;
       }, 5000)
+    },
+
+    readCard() {
+      if ('NDEFReader' in window) {
+        // eslint-disable-next-line
+        const ndef = new NDEFReader();
+        ndef.scan().then(() => {
+          console.log("Scan started successfully.");
+          ndef.onreadingerror = () => {
+            console.log("Cannot read data from the NFC tag. Try another one?");
+          };
+          ndef.onreading = event => {
+            console.log("NDEF message read.");
+            console.log(event)
+          };
+        }).catch(error => {
+          console.log(`Error! Scan failed to start: ${error}.`);
+        });
+      }
     }
   }
 }
@@ -48,7 +74,7 @@ export default {
   <br>
   <!-- Click on img triggers modal -->
   <div v-if="!budgetGescannt">
-    <img v-on:click="closeModal" src="../assets/NFC_Placeholder.png" alt="NFC" data-bs-toggle="modal" data-bs-target="#exampleModal" style="cursor: pointer">
+    <img v-on:click="readCard" src="../assets/NFC_Placeholder.png" alt="NFC" data-bs-toggle="modal" data-bs-target="#exampleModal" style="cursor: pointer">
   </div>
   <div v-if="budgetGescannt">
     {{betrag}}
