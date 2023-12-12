@@ -1,9 +1,16 @@
 <template>
+
+  <div id="app" @touchstart="handleTouchStart" @touchend="handleTouchEnd">
+
+  <div v-if="!isTouchDevice" class="arrow" @click="decrementDate">
+    <img :src="left" >
+  </div>
+
+<div class="content">
   <input type="date" v-model="startDate" @change="fetchMenu" />
   <button class="htw-btn-active" @click="navigateToProfile">
     Einstellungen ändern
   </button>
-
   <div v-if="mensaSucks && !isWeekend">
     Tja... da musst du dich an deine Uni wenden. Wir haben keine Daten von deiner Mensa erhalten :(
   </div>
@@ -148,6 +155,13 @@
       </div>
     </div>
   </div>
+</div>
+
+
+  <div class="arrow" @click="incrementDate">
+   <img :src="right">
+  </div>
+  </div>
 </template>
 
 
@@ -171,6 +185,8 @@ import water from '../assets/water.png'
 import klima from '../assets/klima.jpg'
 import fullStar from '../assets/fullStar.png'
 import emptyStar from '../assets/emptyStar.png'
+import left from '../assets/leftArrow.png'
+import right from '../assets/rightArrow.png'
 
 
 import fav_db from "@/fav_db";
@@ -215,6 +231,9 @@ export default {
 
   },
   computed: {
+    store() {
+      return store
+    },
 
 
 
@@ -264,6 +283,9 @@ export default {
 
 
   setup(props) {
+
+
+
     const showReviewPopup = ref(false);
     const reviewComment = ref('');
     const reviewRating = ref(0);
@@ -492,6 +514,39 @@ export default {
 
 
     const startDate = ref(sessionStorage.getItem('selectedDate') || new Date().toISOString().slice(0, 10));
+    const isTouchDevice = ref('ontouchstart' in window || navigator.maxTouchPoints > 0);
+
+
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    const handleTouchStart = (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    };
+
+    const handleTouchEnd = (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleGesture();
+    };
+
+    const handleGesture = () => {
+      if (touchEndX < touchStartX) incrementDate();
+      if (touchEndX > touchStartX) decrementDate();
+    };
+
+    const incrementDate = () => {
+      let date = new Date(startDate.value);
+      date.setDate(date.getDate() + 1);
+      startDate.value = date.toISOString().slice(0, 10);
+      fetchMenu();
+    };
+
+    const decrementDate = () => {
+      let date = new Date(startDate.value);
+      date.setDate(date.getDate() - 1);
+      startDate.value = date.toISOString().slice(0, 10);
+      fetchMenu();
+    };
 
     const badges = ref([])
 
@@ -612,6 +667,7 @@ export default {
     });
 
     onMounted(
+
 
 
         async () => {
@@ -756,7 +812,14 @@ export default {
       getChickenImage,
       reviewComment,
       showReviewPopup,
-      showFavoritePopup
+      showFavoritePopup,
+      left,
+      right,
+      incrementDate,
+      decrementDate,
+      handleTouchEnd,
+      handleTouchStart,
+      isTouchDevice
 
 
 
@@ -768,6 +831,19 @@ export default {
 </script>
 
 <style scoped>
+#app {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100vh;
+  margin-top:60vh;
+}
+
+
+.content {
+  width: 80%;
+
+}
 .icon-inline {
   height: 1em;
   vertical-align: middle;
@@ -826,8 +902,14 @@ export default {
   max-width: 80%;
   word-wrap: break-word;
   transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-  opacity: 1; /* Ensure it's initially visible */
-  transform: translateY(0); /* No initial transform */
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.arrow {
+  cursor: pointer;
+  font-size: 1vw;
+
 }
 
 </style>
