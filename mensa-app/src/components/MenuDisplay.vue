@@ -88,9 +88,7 @@
 
 
 
-                <button class="htw-btn-active" @click="showReviewPopup = true">
-                  Bewertung abgeben
-                </button>
+                <button @click="prepareReview(meal)" class="htw-btn-active">Bewertung abgeben</button>
 
                 <div v-if="showReviewPopup" class="review-popup">
                   <div class="popup-content">
@@ -110,7 +108,7 @@
                         placeholder="Kommentar"
                     ></textarea>
 
-                    <button @click="submitReview(meal)" class="htw-btn-active">
+                    <button @click="() =>submitReview(meal)" class="htw-btn-active">
                       Senden
                     </button>
 
@@ -284,6 +282,12 @@ export default {
 
   setup(props) {
 
+    const currentMealForReview = ref(null);
+
+    function prepareReview(meal) {
+      currentMealForReview.value = meal;
+      showReviewPopup.value = true;
+    }
 
 
     const showReviewPopup = ref(false);
@@ -321,11 +325,11 @@ export default {
           : starRating.value >= item - 0.5
               ? halfSymbol
               : emptySymbol;
-
       return image;
     }
 
-    function submitReview(meal) {
+    function submitReview() {
+      const meal = currentMealForReview.value;
 
       if (starRating.value&& reviewComment.value) {
 
@@ -337,7 +341,7 @@ export default {
           category: meal.category
         };
 
-        console.log('Review Data:', reviewBody);
+        console.log('1', reviewBody);
 
         postMealReview(meal.id, starRating.value, reviewComment.value, meal.category);
         showReviewPopup.value = false;
@@ -346,6 +350,7 @@ export default {
       } else {
         alert('Bitte geben Sie eine Bewertung und einen Kommentar ein.');
       }
+      currentMealForReview.value = null;
     }
 
     async function postMealReview(mealID, rating, comment, category) {
@@ -372,16 +377,15 @@ export default {
       };
 
       try {
-        console.log('i bims')
+        console.log('you are here')
         console.log(review)
-
         const response = await axios.post('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
-        console.log('data' +response.data);
+        console.log('but not here')
+        console.log(response.data);
 
-      } catch (error) {
+      }catch (error) {
         if (error.response.status === 409){
           try{
-            console.log('you are here')
             const response = await axios.put('https://mensa.gregorflachs.de/api/v1/mealreview/', review, config);
             console.log(response.data)
             console.log('put')
@@ -819,7 +823,8 @@ export default {
       decrementDate,
       handleTouchEnd,
       handleTouchStart,
-      isTouchDevice
+      isTouchDevice,
+      prepareReview
 
 
 

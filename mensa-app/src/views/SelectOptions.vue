@@ -55,23 +55,73 @@
     >
       Okay
     </button>
+
+
   </div>
+  <div v-if="favorites.length > 0" class="container">
+    <h2>Lieblingsessen</h2>
+    <div v-for="meal in favorites" :key="meal.id" class="meal-item">
+      <p class="meal-name">{{ meal.name }}<button @click="deleteMeal(meal.id)" class="delete-button">X</button></p>
+
+      <div class="rating-symbols">
+        <img v-for="symbol in getRatingSymbols(meal.mealReviews.averageRating)" :src="symbol" :key="symbol" alt="Rating Symbol" class="rating-symbol">
+      </div>
+    </div>
+  </div>
+
+
 </template>
 
 <script lang="ts">
 import axios from 'axios';
-import { ref, onMounted, computed, watch } from 'vue';
+import { ref, onMounted, computed, watch, Ref } from 'vue';
 import {useRouter} from "vue-router";
 import db from "@/db";
 import {Canteen} from "@/types";
 import store from "../store";
 import {changeColorScheme} from "@/utils";
-
-
+import fav_db from "@/fav_db";
+import {Meal} from "@/types";
 
 export default {
   name: 'SelectedOptions',
+
+
   setup() {
+
+
+
+
+
+    const favorites: Ref<Meal[]> = ref([]);
+
+    const deleteMeal = async (mealId:string) => {
+      try {
+        await fav_db.meal.delete(mealId);
+        favorites.value = favorites.value.filter(meal => meal.id !== mealId);
+      } catch (error) {
+        console.error('Error deleting meal:', error);
+      }
+    };
+
+    async function loadFavorites() {
+      const meals = await fav_db.meal.toArray();
+      if (meals.length > 0) {
+        for (const meal of meals) {
+          try {
+            const response = await axios.get(`https://mensa.gregorflachs.de/api/v1/meal?ID=${meal.id}&loadingtype=complete`, {
+              headers: { 'X-API-KEY': process.env.VUE_APP_API_KEY }
+            });
+            meal.mealReviews.averageRating = response.data[0]?.mealReviews[0]?.averageRating;
+          } catch (error) {
+            console.error('Error fetching meal details:', error);
+          }
+        }
+        favorites.value=meals
+
+      }
+    }
+
 
 
     function generateTimestampedHex(len: number):string {
@@ -111,6 +161,8 @@ export default {
     const allChoicesMade = computed(() => {
       return selectedRole.value !== '' && selectedDiet.value !== '' && selectedCanteen.value !== null && loseWeight.value !=='';
     });
+
+
     const fetchCanteens = async () => {
       try {
         const response = await axios.get('https://mensa.gregorflachs.de/api/v1/canteen?loadingtype=lazy',  {
@@ -132,7 +184,41 @@ export default {
     };
     watch(() => store.state.selectedCanteen, updateButtonColor);
 
+
+
+    let filledSymbol:string;
+    let emptySymbol:string;
+    let halfSymbol:string;
+
+
+    if (selectedDiet.value === "Allesfresser") {
+      filledSymbol = require('@/assets/fullChicken.png');
+      emptySymbol = require('@/assets/emptyChicken.png');
+      halfSymbol = require('@/assets/halfChicken.png')
+    } else {
+      filledSymbol = require('@/assets/leafFull.png');
+      emptySymbol = require('@/assets/leafEmpty.png');
+      halfSymbol = require('@/assets/leafHalf.png');
+    }
+    const getRatingSymbols = (rating:number) => {
+      const maxRating = 5;
+      let symbols = [];
+
+      for (let i = 1; i <= maxRating; i++) {
+        if (i <= Math.floor(rating)) {
+          symbols.push(filledSymbol);
+        } else if (i - 1 < rating && rating < i) {
+          symbols.push(halfSymbol);
+        } else {
+          symbols.push(emptySymbol);
+        }
+      }
+      return symbols
+    }
+
+
     onMounted(async () => {
+      await loadFavorites()
       try{
         const storedCanteens = await db.canteens.toArray();
         if (storedCanteens.length > 0) {
@@ -174,10 +260,32 @@ export default {
 
       router.push('/');
 
+
     };
 
-    return { selectedRole, selectedDiet, selectedCanteen, canteens, confirmSelection,allChoicesMade, router, generateTimestampedHex,loseWeight};
+
+
+    return {
+      selectedRole,
+      selectedDiet,
+      selectedCanteen,
+      canteens,
+      confirmSelection,
+      allChoicesMade,
+      router,
+      generateTimestampedHex,
+      loseWeight,
+      favorites,
+      halfSymbol,
+      filledSymbol,
+      emptySymbol,
+      getRatingSymbols,
+      deleteMeal
+
+    };
+
   }
+
 };
 </script>
 
@@ -204,7 +312,49 @@ export default {
   background-color: #d5d5d5;
   cursor: not-allowed;
 }
+.container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
 
+.meal-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1em;
+}
+
+.meal-name {
+  margin-bottom: 0.5em;
+}
+
+.rating-symbols {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.rating-symbol {
+  margin-right: 0.3em;
+  width: 1em;
+  height: auto;
+}
+
+.delete-button {
+  color: red;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 1.2em;
+}
+
+.meal-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
 </style>
 
