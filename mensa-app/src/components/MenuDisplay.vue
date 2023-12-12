@@ -93,14 +93,13 @@
                 <div v-if="showReviewPopup" class="review-popup">
                   <div class="popup-content">
                     <h3>Bewertung abgeben</h3>
-                    <div class="star-rating">
-                      <span
-                          v-for="item in 5"
-                          :key="item"
-                          @click="setRating(item, $event.offsetX < $event.target.offsetWidth / 2)"
-                      >
-                        <img :src="getChickenImage(item)" alt="rating symbol" class="small-image" />
-                      </span>
+                    <div class="star-rating" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
+                      <span v-for="item in 5" :key="item" ref="stars" @click="handleClick($event, item)">
+  <img :src="getChickenImage(item)" alt="rating symbol" class="small-image" />
+</span>
+
+
+
                     </div>
 
                     <textarea
@@ -316,6 +315,19 @@ export default {
       emptySymbol = require('@/assets/leafEmpty.png');
       halfSymbol = require('@/assets/leafHalf.png');
     }
+
+    function handleClick(event, item) {
+      const starElement = event.currentTarget;
+      const { left, width } = starElement.getBoundingClientRect();
+      const clickX = event.clientX;
+      const midPoint = left + width / 2;
+
+      if (clickX < midPoint) {
+        setRating(item - 0.5);
+      } else {
+        setRating(item);
+      }
+    }
     function setRating(newRating, isHalf = false) {
       starRating.value = isHalf ? newRating - 0.5 : newRating;
     }
@@ -524,6 +536,8 @@ export default {
     let touchStartX = 0;
     let touchEndX = 0;
 
+    const stars=ref([])
+
     const handleTouchStart = (e) => {
       touchStartX = e.changedTouches[0].screenX;
     };
@@ -533,6 +547,27 @@ export default {
       handleGesture();
     };
 
+    const handleTouchMove = (event) => {
+      event.preventDefault();
+
+
+      const touch = event.touches[0];
+      updateRatingBasedOnTouch(touch);
+    };
+
+    const updateRatingBasedOnTouch = (touch) => {
+      const touchX = touch.clientX;
+      stars.value.forEach((star, index) => {
+        const { left, right } = star.getBoundingClientRect();
+        const midPoint = left + (right - left) / 2; // Calculate the midpoint of the star
+
+        if (touchX >= left && touchX < midPoint) {
+          setRating(index + 0.5); // Set a half star rating if touch is in the first half
+        } else if (touchX >= midPoint && touchX <= right) {
+          setRating(index + 1); // Set a full star rating if touch is in the second half
+        }
+      });
+    };
     const handleGesture = () => {
       if (touchEndX < touchStartX) incrementDate();
       if (touchEndX > touchStartX) decrementDate();
@@ -824,7 +859,10 @@ export default {
       handleTouchEnd,
       handleTouchStart,
       isTouchDevice,
-      prepareReview
+      prepareReview,
+      handleTouchMove,
+      stars,
+      handleClick
 
 
 
