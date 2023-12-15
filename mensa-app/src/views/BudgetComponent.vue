@@ -46,6 +46,7 @@ export default {
 
     readCard() {
       if ('NDEFReader' in window) {
+        console.log("NDEFReader erkannt")
         // eslint-disable-next-line
         const ndef = new NDEFReader();
         ndef.scan().then(() => {
@@ -60,6 +61,8 @@ export default {
         }).catch(error => {
           console.log(`Error! Scan failed to start: ${error}.`);
         });
+      } else {
+        console.log("NDEFReader nicht erkannt")
       }
     }
   }
@@ -74,7 +77,7 @@ export default {
   <br>
   <!-- Click on img triggers modal -->
   <div v-if="!budgetGescannt">
-    <img v-on:click="readCard" src="../assets/NFC_Placeholder.png" alt="NFC" data-bs-toggle="modal" data-bs-target="#exampleModal" style="cursor: pointer">
+    <img class="center fit" v-on:click="readCard" src="../assets/NFC.png" alt="NFC" data-bs-toggle="modal" data-bs-target="#exampleModal" style="cursor: pointer">
   </div>
   <div v-if="budgetGescannt">
     {{betrag}}
@@ -92,6 +95,16 @@ export default {
 </template>
 
 <style scoped>
-
-
+  * {
+    padding: 0;
+    margin: 0;
+  }
+  .fit { /* set relative picture size */
+    max-width: 30%;
+    max-height: 30%;
+  }
+  .center {
+    display: block;
+    margin: auto;
+  }
 </style>
