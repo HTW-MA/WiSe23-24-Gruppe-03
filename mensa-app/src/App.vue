@@ -28,19 +28,24 @@ export default class App extends Vue {}
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 0px;
 }
 
 nav {
-  padding: 30px;
-  top: -60px;
+  padding: 2vw;
+  top: 0;
   background-color: red;
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
 }
+
 
 nav a {
   font-weight: bold;
   color: #2c3e50;
 }
+
 
 nav a.router-link-exact-active {
   color: #42b983;

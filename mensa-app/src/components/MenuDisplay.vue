@@ -1,9 +1,16 @@
 <template>
+
+  <div id="app" @touchstart="handleTouchStart" @touchend="handleTouchEnd">
+
+  <div v-if="!isTouchDevice" class="arrow" @click="decrementDate">
+    <img :src="left" >
+  </div>
+
+<div class="content">
   <input type="date" v-model="startDate" @change="fetchMenu" />
   <button class="htw-btn-active" @click="navigateToProfile">
     Einstellungen ändern
   </button>
-
   <div v-if="mensaSucks && !isWeekend">
     Tja... da musst du dich an deine Uni wenden. Wir haben keine Daten von deiner Mensa erhalten :(
   </div>
@@ -81,21 +88,18 @@
 
 
 
-                <button class="htw-btn-active" @click="showReviewPopup = true">
-                  Bewertung abgeben
-                </button>
+                <button @click="prepareReview(meal)" class="htw-btn-active">Bewertung abgeben</button>
 
                 <div v-if="showReviewPopup" class="review-popup">
                   <div class="popup-content">
                     <h3>Bewertung abgeben</h3>
-                    <div class="star-rating">
-                      <span
-                          v-for="item in 5"
-                          :key="item"
-                          @click="setRating(item, $event.offsetX < $event.target.offsetWidth / 2)"
-                      >
-                        <img :src="getChickenImage(item)" alt="rating symbol" class="small-image" />
-                      </span>
+                    <div class="star-rating" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
+                      <span v-for="item in 5" :key="item" ref="stars" @click="handleClick($event, item)">
+  <img :src="getChickenImage(item)" alt="rating symbol" class="small-image" />
+</span>
+
+
+
                     </div>
 
                     <textarea
@@ -103,7 +107,7 @@
                         placeholder="Kommentar"
                     ></textarea>
 
-                    <button @click="submitReview(meal)" class="htw-btn-active">
+                    <button @click="() =>submitReview(meal)" class="htw-btn-active">
                       Senden
                     </button>
 
@@ -148,6 +152,13 @@
       </div>
     </div>
   </div>
+</div>
+
+
+  <div class="arrow" @click="incrementDate">
+   <img :src="right">
+  </div>
+  </div>
 </template>
 
 
@@ -171,6 +182,8 @@ import water from '../assets/water.png'
 import klima from '../assets/klima.jpg'
 import fullStar from '../assets/fullStar.png'
 import emptyStar from '../assets/emptyStar.png'
+import left from '../assets/leftArrow.png'
+import right from '../assets/rightArrow.png'
 
 
 import fav_db from "@/fav_db";
@@ -215,6 +228,9 @@ export default {
 
   },
   computed: {
+    store() {
+      return store
+    },
 
 
 
@@ -264,6 +280,15 @@ export default {
 
 
   setup(props) {
+
+    const currentMealForReview = ref(null);
+
+    function prepareReview(meal) {
+      currentMealForReview.value = meal;
+      showReviewPopup.value = true;
+    }
+
+
     const showReviewPopup = ref(false);
     const reviewComment = ref('');
     const reviewRating = ref(0);
@@ -290,6 +315,19 @@ export default {
       emptySymbol = require('@/assets/leafEmpty.png');
       halfSymbol = require('@/assets/leafHalf.png');
     }
+
+    function handleClick(event, item) {
+      const starElement = event.currentTarget;
+      const { left, width } = starElement.getBoundingClientRect();
+      const clickX = event.clientX;
+      const midPoint = left + width / 2;
+
+      if (clickX < midPoint) {
+        setRating(item - 0.5);
+      } else {
+        setRating(item);
+      }
+    }
     function setRating(newRating, isHalf = false) {
       starRating.value = isHalf ? newRating - 0.5 : newRating;
     }
@@ -299,11 +337,11 @@ export default {
           : starRating.value >= item - 0.5
               ? halfSymbol
               : emptySymbol;
-
       return image;
     }
 
-    function submitReview(meal) {
+    function submitReview() {
+      const meal = currentMealForReview.value;
 
       if (starRating.value&& reviewComment.value) {
 
@@ -315,7 +353,7 @@ export default {
           category: meal.category
         };
 
-        console.log('Review Data:', reviewBody);
+        console.log('1', reviewBody);
 
         postMealReview(meal.id, starRating.value, reviewComment.value, meal.category);
         showReviewPopup.value = false;
@@ -324,6 +362,7 @@ export default {
       } else {
         alert('Bitte geben Sie eine Bewertung und einen Kommentar ein.');
       }
+      currentMealForReview.value = null;
     }
 
     async function postMealReview(mealID, rating, comment, category) {
@@ -350,16 +389,15 @@ export default {
       };
 
       try {
-        console.log('i bims')
+        console.log('you are here')
         console.log(review)
-
         const response = await axios.post('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
-        console.log('data' +response.data);
+        console.log('but not here')
+        console.log(response.data);
 
-      } catch (error) {
+      }catch (error) {
         if (error.response.status === 409){
           try{
-            console.log('you are here')
             const response = await axios.put('https://mensa.gregorflachs.de/api/v1/mealreview/', review, config);
             console.log(response.data)
             console.log('put')
@@ -492,6 +530,62 @@ export default {
 
 
     const startDate = ref(sessionStorage.getItem('selectedDate') || new Date().toISOString().slice(0, 10));
+    const isTouchDevice = ref('ontouchstart' in window || navigator.maxTouchPoints > 0);
+
+
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    const stars=ref([])
+
+    const handleTouchStart = (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    };
+
+    const handleTouchEnd = (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleGesture();
+    };
+
+    const handleTouchMove = (event) => {
+      event.preventDefault();
+
+
+      const touch = event.touches[0];
+      updateRatingBasedOnTouch(touch);
+    };
+
+    const updateRatingBasedOnTouch = (touch) => {
+      const touchX = touch.clientX;
+      stars.value.forEach((star, index) => {
+        const { left, right } = star.getBoundingClientRect();
+        const midPoint = left + (right - left) / 2; // Calculate the midpoint of the star
+
+        if (touchX >= left && touchX < midPoint) {
+          setRating(index + 0.5); // Set a half star rating if touch is in the first half
+        } else if (touchX >= midPoint && touchX <= right) {
+          setRating(index + 1); // Set a full star rating if touch is in the second half
+        }
+      });
+    };
+    const handleGesture = () => {
+      if (touchEndX < touchStartX) incrementDate();
+      if (touchEndX > touchStartX) decrementDate();
+    };
+
+    const incrementDate = () => {
+      let date = new Date(startDate.value);
+      date.setDate(date.getDate() + 1);
+      startDate.value = date.toISOString().slice(0, 10);
+      fetchMenu();
+    };
+
+    const decrementDate = () => {
+      let date = new Date(startDate.value);
+      date.setDate(date.getDate() - 1);
+      startDate.value = date.toISOString().slice(0, 10);
+      fetchMenu();
+    };
 
     const badges = ref([])
 
@@ -612,6 +706,7 @@ export default {
     });
 
     onMounted(
+
 
 
         async () => {
@@ -756,7 +851,18 @@ export default {
       getChickenImage,
       reviewComment,
       showReviewPopup,
-      showFavoritePopup
+      showFavoritePopup,
+      left,
+      right,
+      incrementDate,
+      decrementDate,
+      handleTouchEnd,
+      handleTouchStart,
+      isTouchDevice,
+      prepareReview,
+      handleTouchMove,
+      stars,
+      handleClick
 
 
 
@@ -768,6 +874,19 @@ export default {
 </script>
 
 <style scoped>
+#app {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100vh;
+  margin-top:60vh;
+}
+
+
+.content {
+  width: 80%;
+
+}
 .icon-inline {
   height: 1em;
   vertical-align: middle;
@@ -826,8 +945,14 @@ export default {
   max-width: 80%;
   word-wrap: break-word;
   transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-  opacity: 1; /* Ensure it's initially visible */
-  transform: translateY(0); /* No initial transform */
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.arrow {
+  cursor: pointer;
+  font-size: 1vw;
+
 }
 
 </style>

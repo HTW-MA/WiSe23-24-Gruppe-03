@@ -108,7 +108,6 @@ export default {
           : starRating.value >= item - 0.5
               ? halfSymbol
               : emptySymbol;
-      console.log("Item: ", item, "Image: ", image);
       return image;
     }
 
@@ -123,7 +122,7 @@ export default {
            category: mealDetails.value.category
          };
 
-         console.log('Review Data:', reviewBody);
+         console.log('1', reviewBody);
 
         postMealReview(mealDetails.value.id, starRating.value, reviewComment.value, mealDetails.value.category);
         showReviewPopup.value = false;
@@ -158,6 +157,7 @@ export default {
       };
 
       try {
+        console.log(review)
         const response = await axios.post('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
         console.log(response.data);
 
