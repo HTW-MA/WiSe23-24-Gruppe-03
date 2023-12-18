@@ -27,7 +27,8 @@ export default {
       message_lang: null,
       message_encoding: null,
       message_mediatype: null,
-      message_recordtype: null
+      message_recordtype: null,
+      decodedText: ""
     }
   },
   methods: {
@@ -58,6 +59,7 @@ export default {
 
     readCard() {
       //let mockMessage = new NDEFMessage()
+      const decoder = TextDecoder();
 
       if ('NDEFReader' in window) {
         console.log("NDEFReader erkannt")
@@ -72,15 +74,16 @@ export default {
             console.log("NDEF message read.");
             console.log(event)
             //this.betrag = event
-            this.serialnumber = event.serialNumber
-            this.event = event
-            this.message = event.message
-            this.message_id = event.message.records[0].id
-            this.message_data = event.message.records[0].data
-            this.message_lang = event.message.records[0].lang
-            this.message_encoding = event.message.records[0].encoding
-            this.message_mediatype = event.message.records[0].mediaType
-            this.message_recordtype = event.message.records[0].recordType
+            this.serialnumber = event.serialNumber;
+            this.event = event;
+            this.message = event.message;
+            this.message_id = event.message.records[0].id;
+            this.message_data = event.message.records[0].data;
+            this.message_lang = event.message.records[0].lang;
+            this.message_encoding = event.message.records[0].encoding;
+            this.message_mediatype = event.message.records[0].mediaType;
+            this.message_recordtype = event.message.records[0].recordType;
+            this.decodedText = decoder.decode(event.message.records[0].data);
             this.budgetGescannt = true
           };
         }).catch(error => {
@@ -116,7 +119,7 @@ export default {
     <PopUp ref="My-Modal"/>
   </div>
   <div>
-    Ich habe was geändert: 9
+    Ich habe was geändert: 10
     <br>
     {{betrag}}
     <br>
@@ -139,6 +142,8 @@ export default {
     MediaType: {{ message_mediatype }}
     <br>
     RecordType: {{ message_recordtype }}
+    <br>
+    Decoded Text: {{decodedText}}
   </div>
 </template>
 
