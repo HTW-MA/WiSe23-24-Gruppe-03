@@ -27,8 +27,8 @@ export default {
       message_lang: null,
       message_encoding: null,
       message_mediatype: null,
-      message_recordtype: null,
-      decodedText: ""
+      message_recordtype: null
+      // decodedText: ""
     }
   },
   methods: {
@@ -59,7 +59,7 @@ export default {
 
     readCard() {
       //let mockMessage = new NDEFMessage()
-      const decoder = TextDecoder();
+      // const decoder = TextDecoder();
 
       if ('NDEFReader' in window) {
         console.log("NDEFReader erkannt")
@@ -83,7 +83,7 @@ export default {
             this.message_encoding = event.message.records[0].encoding;
             this.message_mediatype = event.message.records[0].mediaType;
             this.message_recordtype = event.message.records[0].recordType;
-            this.decodedText = decoder.decode(event.message.records[0].data);
+            // this.decodedText = decoder.decode(event.message.records[0].data);
             this.budgetGescannt = true
           };
         }).catch(error => {
@@ -119,7 +119,7 @@ export default {
     <PopUp ref="My-Modal"/>
   </div>
   <div>
-    Ich habe was geändert: 10
+    Ich habe was geändert: 11
     <br>
     {{betrag}}
     <br>
@@ -143,7 +143,7 @@ export default {
     <br>
     RecordType: {{ message_recordtype }}
     <br>
-    Decoded Text: {{decodedText}}
+<!--    Decoded Text: {{decodedText}}-->
   </div>
 </template>
 
