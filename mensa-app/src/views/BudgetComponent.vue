@@ -73,7 +73,7 @@ export default {
           ndef.onreading = event => {
             console.log("NDEF message read.");
             console.log(event)
-            const decoder = TextDecoder();
+            //const decoder = TextDecoder();
             //this.betrag = event
             this.serialnumber = event.serialNumber;
             this.event = event;
