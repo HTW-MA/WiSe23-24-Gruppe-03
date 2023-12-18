@@ -60,7 +60,7 @@ export default {
           ndef.onreading = event => {
             console.log("NDEF message read.");
             console.log(event)
-            this.betrag = event.message
+            this.betrag = event.message.records[0].data
             this.budgetGescannt = true
           };
         }).catch(error => {
