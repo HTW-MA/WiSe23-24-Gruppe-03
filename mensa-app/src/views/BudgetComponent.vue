@@ -98,7 +98,7 @@ export default {
     <PopUp ref="My-Modal"/>
   </div>
   <div>
-    Ich habe was geändert: 1
+    Ich habe was geändert: 2
     <br>
     {{betrag}}
     {{budgetGescannt}}
