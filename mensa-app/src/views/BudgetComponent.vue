@@ -58,8 +58,8 @@ export default {
     },
 
     readCard() {
+      console.log("Read Card aufgerufen")
       //let mockMessage = new NDEFMessage()
-      // const decoder = TextDecoder();
 
       if ('NDEFReader' in window) {
         console.log("NDEFReader erkannt")
@@ -73,6 +73,7 @@ export default {
           ndef.onreading = event => {
             console.log("NDEF message read.");
             console.log(event)
+            const decoder = TextDecoder();
             //this.betrag = event
             this.serialnumber = event.serialNumber;
             this.event = event;
@@ -83,8 +84,12 @@ export default {
             this.message_encoding = event.message.records[0].encoding;
             this.message_mediatype = event.message.records[0].mediaType;
             this.message_recordtype = event.message.records[0].recordType;
-            // this.decodedText = decoder.decode(event.message.records[0].data);
+            //this.decodedText = decoder.decode(event.message.records[0].data);
             this.budgetGescannt = true
+
+            for (const record of event.message.records) {
+
+            }
           };
         }).catch(error => {
           console.log(`Error! Scan failed to start: ${error}.`);
@@ -119,7 +124,7 @@ export default {
     <PopUp ref="My-Modal"/>
   </div>
   <div>
-    Ich habe was geändert: 11
+    Ich habe was geändert: 12
     <br>
     {{betrag}}
     <br>
