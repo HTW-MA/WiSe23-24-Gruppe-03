@@ -87,9 +87,9 @@ export default {
             //this.decodedText = decoder.decode(event.message.records[0].data);
             this.budgetGescannt = true
 
-            for (const record of event.message.records) {
-
-            }
+            // for (const record of event.message.records) {
+            //
+            // }
           };
         }).catch(error => {
           console.log(`Error! Scan failed to start: ${error}.`);
