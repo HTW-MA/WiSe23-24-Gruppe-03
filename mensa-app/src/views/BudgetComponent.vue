@@ -18,7 +18,16 @@ export default {
     return {
       budgetGescannt: false,
       popUpShown: true,
-      betrag: 0
+      betrag: 0,
+      serialnumber: null,
+      event: null,
+      message: null,
+      message_id: null,
+      message_data: null,
+      message_lang: null,
+      message_encoding: null,
+      message_mediatype: null,
+      message_recordtype: null
     }
   },
   methods: {
@@ -48,6 +57,8 @@ export default {
     },
 
     readCard() {
+      let mockMessage = new NDEFMessage()
+
       if ('NDEFReader' in window) {
         console.log("NDEFReader erkannt")
         // eslint-disable-next-line
@@ -60,7 +71,16 @@ export default {
           ndef.onreading = event => {
             console.log("NDEF message read.");
             console.log(event)
-            this.betrag = event.message.records[0].data
+            //this.betrag = event
+            this.serialnumber = event.serialNumber
+            this.event = event
+            this.message = event.message
+            this.message_id = event.message.records[0].id
+            this.message_data = event.message.records[0].data
+            this.message_lang = event.message.records[0].lang
+            this.message_encoding = event.message.records[0].encoding
+            this.message_mediatype = event.message.records[0].mediaType
+            this.message_recordtype = event.message.records[0].recordType
             this.budgetGescannt = true
           };
         }).catch(error => {
@@ -96,11 +116,29 @@ export default {
     <PopUp ref="My-Modal"/>
   </div>
   <div>
-    Ich habe was geändert: 8
+    Ich habe was geändert: 9
     <br>
     {{betrag}}
     <br>
     {{budgetGescannt}}
+    <br>
+    Serialnumber: {{ serialnumber }}
+    <br>
+    Event: {{ event }}
+    <br>
+    Message: {{ message }}
+    <br>
+    Message ID: {{ message_id }}
+    <br>
+    Message Data: {{ message_data }}
+    <br>
+    Message Language: {{ message_lang }}
+    <br>
+    Encoding: {{ message_encoding }}
+    <br>
+    MediaType: {{ message_mediatype }}
+    <br>
+    RecordType: {{ message_recordtype }}
   </div>
 </template>
 
