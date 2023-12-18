@@ -42,6 +42,7 @@ export default {
           <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Loading...</span>
           </div>
+<!--          An dieser stelle vielleicht an Häckchen oder einen Bestätigungstext generieren abhängig von budgetGescannt-->
         </div>
       </div>
     </div>

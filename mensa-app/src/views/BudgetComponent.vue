@@ -84,6 +84,7 @@ export default {
                   // TODO: Handle other records with record data.
               }
             }
+            this.popUpShown = false;
           };
         }).catch(error => {
           console.log(`Error! Scan failed to start: ${error}.`);
@@ -106,7 +107,7 @@ export default {
   <div v-if="!budgetGescannt">
     <img class="center fit" v-on:click="readCard" src="../assets/NFC.png" alt="NFC" data-bs-toggle="modal" data-bs-target="#exampleModal" style="cursor: pointer">
   </div>
-  <div v-if="budgetGescannt">
+  <div v-if="budgetGescannt" v-on:click="readCard">
     {{betrag}}
   </div>
 <!--  <div v-if="!budgetGescannt">-->
