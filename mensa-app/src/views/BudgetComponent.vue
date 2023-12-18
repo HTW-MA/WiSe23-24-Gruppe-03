@@ -60,7 +60,7 @@ export default {
           ndef.onreading = event => {
             console.log("NDEF message read.");
             console.log(event)
-            this.betrag = event.message.records
+            this.betrag = event.message.data
             this.budgetGescannt = true
           };
         }).catch(error => {
@@ -96,7 +96,7 @@ export default {
     <PopUp ref="My-Modal"/>
   </div>
   <div>
-    Ich habe was geändert: 4
+    Ich habe was geändert: 5
     <br>
     {{betrag}}
     <br>
