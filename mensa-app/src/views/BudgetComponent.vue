@@ -61,6 +61,7 @@ export default {
             console.log("Cannot read data from the NFC tag. Try another one?");
           };
           ndef.onreading = (event) => {
+            this.budgetGescannt = true;
             const decoder = new TextDecoder();
             const ndefMessage = event.message;
             for (const record of ndefMessage.records) {
