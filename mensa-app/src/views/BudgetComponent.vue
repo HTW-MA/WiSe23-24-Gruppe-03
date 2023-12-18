@@ -57,7 +57,7 @@ export default {
     },
 
     readCard() {
-      let mockMessage = new NDEFMessage()
+      //let mockMessage = new NDEFMessage()
 
       if ('NDEFReader' in window) {
         console.log("NDEFReader erkannt")
