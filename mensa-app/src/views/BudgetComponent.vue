@@ -60,7 +60,7 @@ export default {
           ndef.onreading = event => {
             console.log("NDEF message read.");
             console.log(event)
-            this.betrag = event
+            this.betrag = event.message
             this.budgetGescannt = true
           };
         }).catch(error => {
@@ -86,8 +86,6 @@ export default {
   </div>
   <div v-if="budgetGescannt">
     {{betrag}}
-    <br>
-    Betrag aktualisieren
   </div>
 <!--  <div v-if="!budgetGescannt">-->
 <!--    <img v-on:click="openModal" src="../assets/NFC_Placeholder.png" alt="NFC" style="cursor: pointer">-->
@@ -98,9 +96,10 @@ export default {
     <PopUp ref="My-Modal"/>
   </div>
   <div>
-    Ich habe was geändert: 2
+    Ich habe was geändert: 3
     <br>
     {{betrag}}
+    <br>
     {{budgetGescannt}}
   </div>
 </template>
