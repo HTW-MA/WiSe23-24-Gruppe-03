@@ -85,7 +85,7 @@ export default {
     <img class="center fit" v-on:click="readCard" src="../assets/NFC.png" alt="NFC" data-bs-toggle="modal" data-bs-target="#exampleModal" style="cursor: pointer">
   </div>
   <div v-if="budgetGescannt">
-    {{betrag.data()}}
+    {{betrag}}
   </div>
 <!--  <div v-if="!budgetGescannt">-->
 <!--    <img v-on:click="openModal" src="../assets/NFC_Placeholder.png" alt="NFC" style="cursor: pointer">-->
@@ -96,9 +96,9 @@ export default {
     <PopUp ref="My-Modal"/>
   </div>
   <div>
-    Ich habe was geändert: 6
+    Ich habe was geändert: 7
     <br>
-    {{betrag.data()}}
+    {{betrag}}
     <br>
     {{budgetGescannt}}
   </div>
