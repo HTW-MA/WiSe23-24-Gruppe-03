@@ -106,7 +106,10 @@ export default {
   <div v-if="!budgetGescannt">
     <img class="center fit" v-on:click="readCard" src="../assets/NFC.png" alt="NFC" data-bs-toggle="modal" data-bs-target="#exampleModal" style="cursor: pointer">
   </div>
-  <div v-if="budgetGescannt" v-on:click="readCard">
+  <div v-if="budgetGescannt">
+    <p v-on:click="readCard" style="font-size: 40px">
+      {{betrag}}
+    </p>
     {{betrag}}
   </div>
 <!--  <div v-if="!budgetGescannt">-->
