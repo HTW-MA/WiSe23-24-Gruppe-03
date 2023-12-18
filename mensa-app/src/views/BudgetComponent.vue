@@ -27,8 +27,8 @@ export default {
       message_lang: null,
       message_encoding: null,
       message_mediatype: null,
-      message_recordtype: null
-      // decodedText: ""
+      message_recordtype: null,
+      decodedText: ""
     }
   },
   methods: {
@@ -70,27 +70,56 @@ export default {
           ndef.onreadingerror = () => {
             console.log("Cannot read data from the NFC tag. Try another one?");
           };
-          ndef.onreading = event => {
-            console.log("NDEF message read.");
-            console.log(event)
-            //const decoder = TextDecoder();
-            //this.betrag = event
-            this.serialnumber = event.serialNumber;
-            this.event = event;
-            this.message = event.message;
-            this.message_id = event.message.records[0].id;
-            this.message_data = event.message.records[0].data;
-            this.message_lang = event.message.records[0].lang;
-            this.message_encoding = event.message.records[0].encoding;
-            this.message_mediatype = event.message.records[0].mediaType;
-            this.message_recordtype = event.message.records[0].recordType;
-            //this.decodedText = decoder.decode(event.message.records[0].data);
-            this.budgetGescannt = true
-
-            // for (const record of event.message.records) {
-            //
-            // }
+          ndef.onreading = (event) => {
+            const decoder = new TextDecoder();
+            const ndefMessage = event.message;
+            for (const record of ndefMessage.records) {
+              console.log(`Record type:  ${record.recordType}`);
+              console.log(`MIME type:    ${record.mediaType}`);
+              console.log(`Record id:    ${record.id}`);
+              this.message_recordtype = record.recordType;
+              this.message_mediatype = record.mediaType;
+              this.message_id = record.id;
+              switch (record.recordType) {
+                case "text":
+                  for (const record of event.message.records) {
+                    console.log("Record type:  " + record.recordType);
+                    console.log("MIME type:    " + record.mediaType);
+                    console.log("=== data ===\n" + decoder.decode(record.data));
+                    this.message_data = record.data;
+                    this.decodedText = decoder.decode(record.data);
+                  }
+                  break;
+                case "url":
+                  // TODO: Read URL record with record data.
+                  break;
+                default:
+                  // TODO: Handle other records with record data.
+              }
+            }
           };
+
+          // ndef.onreading = event => {
+          //   console.log("NDEF message read.");
+          //   console.log(event)
+          //   //const decoder = TextDecoder();
+          //   //this.betrag = event
+          //   this.serialnumber = event.serialNumber;
+          //   this.event = event;
+          //   this.message = event.message;
+          //   this.message_id = event.message.records[0].id;
+          //   this.message_data = event.message.records[0].data;
+          //   this.message_lang = event.message.records[0].lang;
+          //   this.message_encoding = event.message.records[0].encoding;
+          //   this.message_mediatype = event.message.records[0].mediaType;
+          //   this.message_recordtype = event.message.records[0].recordType;
+          //   //this.decodedText = decoder.decode(event.message.records[0].data);
+          //   this.budgetGescannt = true
+          //
+          //   // for (const record of event.message.records) {
+          //   //
+          //   // }
+          // };
         }).catch(error => {
           console.log(`Error! Scan failed to start: ${error}.`);
         });
@@ -124,7 +153,7 @@ export default {
     <PopUp ref="My-Modal"/>
   </div>
   <div>
-    Ich habe was geändert: 12
+    Ich habe was geändert: 13
     <br>
     {{betrag}}
     <br>
@@ -148,7 +177,7 @@ export default {
     <br>
     RecordType: {{ message_recordtype }}
     <br>
-<!--    Decoded Text: {{decodedText}}-->
+    Decoded Text: {{decodedText}}
   </div>
 </template>
 
