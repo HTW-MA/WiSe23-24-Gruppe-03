@@ -84,7 +84,6 @@ export default {
                   // TODO: Handle other records with record data.
               }
             }
-            this.popUpShown = false;
           };
         }).catch(error => {
           console.log(`Error! Scan failed to start: ${error}.`);
