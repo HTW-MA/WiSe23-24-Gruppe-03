@@ -101,7 +101,12 @@ export default {
 
   mounted() {
     this.budgetGescannt = this.betrag !== -1;
-    this.target = this.betrag !== -1;
+
+    if (this.betrag === -1) {
+      this.target = "Icon";
+    } else {
+      this.target = "Budget";
+    }
   }
 }
 
@@ -109,7 +114,7 @@ export default {
 
 <template>
   <h1>
-    Klicken Sie auf das Icon um ihr Budget zu scannen.
+    Klicken Sie auf das {{target}} um ihr Budget zu scannen.
   </h1>
   <br>
   <!-- Click on img triggers modal -->
@@ -117,7 +122,7 @@ export default {
     <img class="center fit" v-on:click="readCard" src="../assets/NFC.png" alt="NFC" data-bs-toggle="modal" data-bs-target="#exampleModal" style="cursor: pointer">
   </div>
   <div v-if="budgetGescannt" v-on:click="readCard" data-bs-toggle="modal" data-bs-target="#exampleModal" style="font-size: 40px">
-    {{betrag}}
+    {{betrag}}€
   </div>
 
   <!-- Modal -->
