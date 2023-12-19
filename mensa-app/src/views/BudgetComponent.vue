@@ -18,7 +18,8 @@ export default {
     return {
       budgetGescannt: false,
       popUpShown: true,
-      betrag: 0
+      betrag: localStorage.getItem("Betrag") || -1,
+      target: "Icon"
     }
   },
   methods: {
@@ -75,6 +76,8 @@ export default {
                     console.log("MIME type:    " + record.mediaType);
                     console.log("=== data ===\n" + decoder.decode(record.data));
                     this.betrag = decoder.decode(record.data);
+                    localStorage.setItem("Betrag", this.betrag);
+                    this.target = "Budget";
                   }
                   break;
                 case "url":
@@ -92,6 +95,10 @@ export default {
         console.log("NDEFReader nicht erkannt")
       }
     }
+  },
+
+  mounted() {
+    this.budgetGescannt = this.betrag !== -1;
   }
 }
 
@@ -106,17 +113,12 @@ export default {
   <div v-if="!budgetGescannt">
     <img class="center fit" v-on:click="readCard" src="../assets/NFC.png" alt="NFC" data-bs-toggle="modal" data-bs-target="#exampleModal" style="cursor: pointer">
   </div>
-  <div v-if="budgetGescannt" @click="readCard" style="font-size: 40px">
-      {{betrag}}
+  <div v-if="budgetGescannt" v-on:click="readCard" data-bs-toggle="modal" data-bs-target="#exampleModal" style="font-size: 40px">
+    {{betrag}}
   </div>
-<!--  <div v-if="!budgetGescannt">-->
-<!--    <img v-on:click="openModal" src="../assets/NFC_Placeholder.png" alt="NFC" style="cursor: pointer">-->
-<!--  </div>-->
 
   <!-- Modal -->
-  <div v-if="popUpShown">
-    <PopUp ref="My-Modal"/>
-  </div>
+  <PopUp ref="My-Modal"/>
 </template>
 
 <style scoped>
