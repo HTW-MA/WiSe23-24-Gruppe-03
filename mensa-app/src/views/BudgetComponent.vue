@@ -19,6 +19,7 @@ export default {
       budgetGescannt: false,
       popUpShown: true,
       betrag: localStorage.getItem("Betrag") || -1,
+      betragDate: localStorage.getItem("Timestamp") || null,
       target: "Icon"
     }
   },
@@ -77,6 +78,7 @@ export default {
                     console.log("=== data ===\n" + decoder.decode(record.data));
                     this.betrag = decoder.decode(record.data);
                     localStorage.setItem("Betrag", this.betrag);
+                    localStorage.setItem("Timestamp", new Date())
                     this.target = "Budget";
                   }
                   break;
@@ -99,6 +101,7 @@ export default {
 
   mounted() {
     this.budgetGescannt = this.betrag !== -1;
+    this.target = this.betrag !== -1;
   }
 }
 
