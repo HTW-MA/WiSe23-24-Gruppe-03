@@ -3,6 +3,7 @@ import Home from '../src/views/HomeComponent.vue'
 import Budget from '../src/views/BudgetComponent.vue'
 import SelectOptions from "@/views/SelectOptions.vue";
 import MealComponent from "@/views/MealComponent.vue";
+import GeoLocationTestComponent from "@/views/GeoLocationTestComponent.vue";
 
 
 
@@ -25,6 +26,11 @@ const routes = [
         path: '/Meal',
         component: MealComponent
     },
+
+    {
+        path: '/GeoLoc',
+        component: GeoLocationTestComponent
+    }
 
 ];
 

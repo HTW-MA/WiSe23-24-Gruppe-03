@@ -8,6 +8,7 @@
         <li><a class="dropdown-item" href="/">Home</a></li>
         <li><a class="dropdown-item" href="/Budget">Budget</a></li>
         <li><a class="dropdown-item" href="/Profile">Profil</a></li>
+        <li><a class="dropdown-item" href="/GeoLoc">GeoLocation Test</a></li>
       </ul>
       <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
         <ul class="navbar-nav">

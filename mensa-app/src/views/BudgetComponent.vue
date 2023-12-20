@@ -1,8 +1,6 @@
 <script lang="js">
 import PopUp from "@/components/PopUp.vue";
-//import { useGeolocation } from '@vueuse/core'
 
-//const { coords, locatedAt, error, resume, pause } = useGeolocation()
 //Nutzen falls es mit dem NDEFReader nicht klappen sollte
 //import NFC from '@ionic-native/nfc';
 
