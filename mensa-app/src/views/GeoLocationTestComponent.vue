@@ -112,53 +112,57 @@ export default {
 </script>
 
 <template>
-  <h1>
-    Das ist der GeoLoc Test
-    <br>
-    Dabei gibt es 3 Umsetzungsmöglichkeiten.
-  </h1>
+  <body>
+    <h1>
+      Das ist der GeoLoc Test
+      <br>
+      Dabei gibt es 3 Umsetzungsmöglichkeiten.
+    </h1>
 
-  <h2>
-    1. Man nimmt die normale Liste und sortiert sie nach Nähe.
-  </h2>
-  <br>
-  <h2>
-    2. Man hat eine Karte in der eigene Position und alle Kantinen eingetragen sind und man wählt sie danach aus.
-  </h2>
-  <br>
-  <button v-on:click="sortCanteens">Sortieren</button>
-  <br>
-  <br>
-  <div>
-    Das sind meine Koordinaten: Breite: {{ breite }}, Länge: {{ länge }}
+    <h2>
+      1. Man nimmt die normale Liste und sortiert sie nach Nähe.
+    </h2>
     <br>
-<!--    Kantienen: {{canteens[0]}}-->
-  </div>
+    <h2>
+      2. Man hat eine Karte in der eigene Position und alle Kantinen eingetragen sind und man wählt sie danach aus.
+    </h2>
+    <br>
+    <button v-on:click="sortCanteens">Sortieren</button>
+    <br>
+    <br>
+    <div>
+      Das sind meine Koordinaten: Breite: {{ breite }}, Länge: {{ länge }}
+      <br>
+      <!--    Kantienen: {{canteens[0]}}-->
+    </div>
 
-  <div>
-    <table class="table table-striped">
-      <thead>
-      <tr>
-        <th>Name</th>
-        <th>Länge</th>
-        <th>Breite</th>
-        <th>Differenz Pythagoras</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-if="canteens.length === 0">
-      </tr>
-      <tr v-for="canteen in canteens" :value="canteen.id" :key="canteen.id">
-        <td>{{canteen.name}}</td>
-        <td>{{canteen.address.geoLocation.longitude}}</td>
-        <td>{{canteen.address.geoLocation.latitude}}</td>
-        <td>{{ differenzBerechnenPythagoras(canteen) }}</td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
+    <div>
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Länge</th>
+          <th>Breite</th>
+          <th>Differenz Pythagoras</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-if="canteens.length === 0">
+        </tr>
+        <tr v-for="canteen in canteens" :value="canteen.id" :key="canteen.id">
+          <td>{{canteen.name}}</td>
+          <td>{{canteen.address.geoLocation.longitude}}</td>
+          <td>{{canteen.address.geoLocation.latitude}}</td>
+          <td>{{ differenzBerechnenPythagoras(canteen) }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
 </template>
 
 <style scoped>
-
+body {
+  padding-bottom: 45px;
+}
 </style>
