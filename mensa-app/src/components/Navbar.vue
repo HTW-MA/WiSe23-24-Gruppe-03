@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg fixed-bottom">
+  <nav class="navbar navbar-expand-lg sticky-bottom">
     <div class="container-fluid">
       <a class="navbar-brand" href="/Profile">
         <img src="../assets/ProfilIcon.png" alt="Profil" width="30" height="30">
