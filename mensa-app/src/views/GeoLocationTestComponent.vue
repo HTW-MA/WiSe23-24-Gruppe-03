@@ -27,6 +27,7 @@ export default {
         });
         await db.canteens.bulkPut(response.data);
         this.canteens = response.data;
+        this.sortCanteens();
       } catch (error) {
         console.log(error);
       }
@@ -37,6 +38,7 @@ export default {
         const storedCanteens = await db.canteens.toArray();
         if (storedCanteens.length > 0) {
           this.canteens = storedCanteens;
+          this.sortCanteens();
         } else {
           await this.fetchCanteens();
         }
@@ -45,25 +47,66 @@ export default {
       }
     },
 
-    differenzBerechnen(canteen) {
+    differenzBerechnenPythagoras(canteen) {
       return Math.sqrt((this.länge - canteen.address.geoLocation.longitude) ** 2 + (this.breite - canteen.address.geoLocation.latitude) ** 2)
+    },
+
+    // differenzBerechnenHaversine(canteen) {
+    //   let lat2 = canteen.address.geoLocation.latitude;
+    //   let lat1 = this.breite;
+    //   let lon2 = canteen.address.geoLocation.longitude;
+    //   let lon1 = this.länge;
+    //
+    //   let dLat = lat2-lat1;
+    //   let dLon = lon2-lon1;
+    //
+    //   let a = Math.pow(Math.sin(dLat/2.0), 2) + Math.pow(Math.sin(dLon/2.0), 2) * Math.cos(lat1) * Math.cos(lat2);
+    //   return 6378.388 * 2.0 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0-a))
+    //
+    //   // let dLon = canteen.address.geoLocation.longitude - this.länge;
+    //   // let dLat = canteen.address.geoLocation.latitude - this.breite;
+    //   // let a = Math.pow(Math.sin(dLat/2.0), 2) + Math.pow(Math.sin(dLon/2.0), 2) * Math.cos(this.breite) * Math.cos(canteen.address.geoLocation.latitude);
+    //   // return 6378.388 * 2.0 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0-a));
+    // },
+
+    sortCanteens() {
+      let breite = this.breite;
+      let länge = this.länge;
+
+      this.canteens.sort(function (a, b) {
+        return Math.sqrt((länge - a.address.geoLocation.longitude) ** 2 + (breite - a.address.geoLocation.latitude) ** 2) - Math.sqrt((länge - b.address.geoLocation.longitude) ** 2 + (breite - b.address.geoLocation.latitude) ** 2)
+      });
+    },
+
+    sortCanteensOnMount() {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          let breite = position.coords.latitude;
+          let länge = position.coords.longitude;
+
+          this.canteens.sort(function (a, b) {
+            return Math.sqrt((länge - a.address.geoLocation.longitude) ** 2 + (breite - a.address.geoLocation.latitude) ** 2) - Math.sqrt((länge - b.address.geoLocation.longitude) ** 2 + (breite - b.address.geoLocation.latitude) ** 2)
+          });
+        })
+        console.log("Liste wurde sortiert!")
+      }
     }
   },
 
   mounted() {
     if ("geolocation" in navigator) {
-      console.log("Geht wohl")
       navigator.geolocation.getCurrentPosition((position) => {
         this.breite = position.coords.latitude;
         this.länge = position.coords.longitude;
-        console.log(this.breite);
-        console.log(this.länge);
       })
     } else {
       console.log("Geht nicht")
     }
 
-    this.canteens = this.getCanteens();
+    this.getCanteens();
+    console.log("Vor dem sortieren!")
+    // this.sortCanteensOnMount();
+    console.log("Nach dem sortieren!")
   }
 }
 </script>
@@ -80,13 +123,12 @@ export default {
   </h2>
   <br>
   <h2>
-    2. Man nimmt die Liste und nimmt die nächste Kantine als default value.
+    2. Man hat eine Karte in der eigene Position und alle Kantinen eingetragen sind und man wählt sie danach aus.
   </h2>
   <br>
-  <h2>
-    3. Man hat eine Karte in der eigene Position und alle Kantinen eingetragen sind und man wählt sie danach aus.
-  </h2>
-
+  <button v-on:click="sortCanteens">Sortieren</button>
+  <br>
+  <br>
   <div>
     Das sind meine Koordinaten: Breite: {{ breite }}, Länge: {{ länge }}
     <br>
@@ -100,7 +142,7 @@ export default {
         <th>Name</th>
         <th>Länge</th>
         <th>Breite</th>
-        <th>Differenz</th>
+        <th>Differenz Pythagoras</th>
       </tr>
       </thead>
       <tbody>
@@ -110,7 +152,7 @@ export default {
         <td>{{canteen.name}}</td>
         <td>{{canteen.address.geoLocation.longitude}}</td>
         <td>{{canteen.address.geoLocation.latitude}}</td>
-        <td>{{differenzBerechnen(canteen)}}</td>
+        <td>{{ differenzBerechnenPythagoras(canteen) }}</td>
       </tr>
       </tbody>
     </table>

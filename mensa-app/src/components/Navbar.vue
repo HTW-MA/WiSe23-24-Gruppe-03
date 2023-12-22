@@ -1,21 +1,21 @@
 <template>
-  <nav class="navbar">
+  <nav class="navbar fixed-bottom">
     <div class="container-fluid">
-      <button class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Toggle navigation">
-        Mensa-App
-      </button>
-      <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="/">Home</a></li>
-        <li><a class="dropdown-item" href="/Budget">Budget</a></li>
-        <li><a class="dropdown-item" href="/Profile">Profil</a></li>
-        <li><a class="dropdown-item" href="/GeoLoc">GeoLocation Test</a></li>
-      </ul>
-      <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
-        <ul class="navbar-nav">
-          <li class="nav-item dropdown">
-          </li>
-        </ul>
-      </div>
+      <a class="navbar-brand" href="/Profile">
+        <img src="../assets/ProfilIcon.png" alt="Profil" width="30" height="30">
+      </a>
+      <a class="navbar-brand" href="/Budget">
+        <img src="../assets/NFC.png" alt="Budget" width="30" height="30">
+      </a>
+      <a class="navbar-brand" href="/">
+        <img src="../assets/HomeIcon.png" alt="Home" width="30" height="30">
+      </a>
+      <a class="navbar-brand" href="#">
+        <img src="../assets/FavoritenIcon.png" alt="Favoriten" width="30" height="30">
+      </a>
+      <a class="navbar-brand" href="/GeoLoc">
+        <img src="../assets/GeoLocationIcon.webp" alt="GeoLoc" width="30" height="30">
+      </a>
     </div>
   </nav>
 </template>

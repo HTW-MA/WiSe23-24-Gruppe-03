@@ -31,6 +31,7 @@ export default class App extends Vue {}
   margin-top: 0px;
 }
 
+/*
 nav {
   padding: 2vw;
   top: 0;
@@ -39,6 +40,7 @@ nav {
   width: 100%;
   z-index: 1000;
 }
+ */
 
 
 nav a {
