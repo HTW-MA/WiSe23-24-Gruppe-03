@@ -276,14 +276,7 @@ export default {
 
   setup(props) {
 
-    let canClosePopup = false;
 
-
-    const enablePopupClose = () => {
-      setTimeout(() => {
-        canClosePopup = true;
-      }, 300);
-    };
 
     const currentMealForReview = ref(null);
 
