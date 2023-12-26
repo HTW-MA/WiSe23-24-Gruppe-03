@@ -534,16 +534,20 @@ export default {
 
 
     let touchStartX = 0;
+    let touchStartY = 0;
     let touchEndX = 0;
+    let touchEndY = 0;
 
     const stars=ref([])
 
     const handleTouchStart = (e) => {
       touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
     };
 
     const handleTouchEnd = (e) => {
       touchEndX = e.changedTouches[0].screenX;
+      touchEndY = e.changedTouches[0].screenY;
       handleGesture();
     };
 
@@ -553,6 +557,8 @@ export default {
 
       const touch = event.touches[0];
       updateRatingBasedOnTouch(touch);
+      touchEndX = touch.screenX;
+      touchEndY = touch.screenY;
     };
 
     const updateRatingBasedOnTouch = (touch) => {
@@ -568,9 +574,16 @@ export default {
         }
       });
     };
+
+
     const handleGesture = () => {
-      if (touchEndX < touchStartX) incrementDate();
-      if (touchEndX > touchStartX) decrementDate();
+      const deltaX = touchEndX - touchStartX;
+      const deltaY = touchEndY - touchStartY;
+
+      if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        if (deltaX < 0) incrementDate();
+        else decrementDate();
+      }
     };
 
     const incrementDate = () => {
@@ -578,6 +591,7 @@ export default {
       date.setDate(date.getDate() + 1);
       startDate.value = date.toISOString().slice(0, 10);
       fetchMenu();
+      navigator.vibrate(200);
     };
 
     const decrementDate = () => {
@@ -585,6 +599,7 @@ export default {
       date.setDate(date.getDate() - 1);
       startDate.value = date.toISOString().slice(0, 10);
       fetchMenu();
+      navigator.vibrate(200);
     };
 
     const badges = ref([])
