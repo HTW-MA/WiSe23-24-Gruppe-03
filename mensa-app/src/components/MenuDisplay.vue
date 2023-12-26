@@ -90,11 +90,15 @@
                 <div v-if="showReviewPopup" class="review-popup">
                   <div class="popup-content">
                     <h3>Bewertung abgeben</h3>
+
                     <div class="star-rating" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
+                      <button @click="updateRating(-0.5)" class="rating-change-button">-</button>
                       <span v-for="item in 5" :key="item" ref="stars" @click="handleClick($event, item)">
                           <img :src="getChickenImage(item)" alt="rating symbol" class="small-image" />
                       </span>
+                      <button @click="updateRating(0.5)" class="rating-change-button">+</button>
                     </div>
+
 
                     <textarea
                         v-model="reviewComment"
@@ -574,6 +578,9 @@ export default {
       handleGesture();
     };
 
+    const updateRating = (change) => {
+      starRating.value = Math.max(0, Math.min(5, starRating.value + change));
+    };
     const handleTouchMove = (event) => {
       event.preventDefault();
 
@@ -920,7 +927,9 @@ export default {
       handleClick,
       showMeatPopup,
       openMeatPopup,
-      noice
+      noice,
+      starRating,
+      updateRating
 
 
 
