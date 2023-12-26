@@ -53,12 +53,6 @@
                 {{ message }}
               </div>
 
-              <img
-                  v-if="!isBadgePresent(meal.badges, 'Vegetarisch') && !isBadgePresent(meal.badges, 'Vegan')"
-                  :src="chickenIcon"
-                  alt="Fleischgericht"
-                  class="icon-inline"
-              >
 
               <div @click="openPopup(meal)">
                 <img
@@ -68,6 +62,7 @@
                     @click.stop="openAdditivesPopup(meal, $event)"
                     @touchstart.stop="openAdditivesPopup(meal, $event)"
                 >
+
 
                 <div
                     v-if="showAdditivesPopup"
@@ -127,6 +122,7 @@
                         class="icon-inline"
                         @click.stop="openBadgePopup(meal.id, badge, $event)"
                         @touchstart.stop="openBadgePopup(meal.id, badge, $event)"
+
                     >
 
                     <div
@@ -142,6 +138,25 @@
                       </div>
                     </div>
                   </div>
+
+
+                  <img
+                      v-if="!isBadgePresent(meal.badges, 'Vegetarisch') && !isBadgePresent(meal.badges, 'Vegan')"
+                      :src="chickenIcon"
+                      alt="Fleischgericht"
+                      class="icon-inline"
+                      @click="openMeatPopup"
+                  >
+
+
+                  <div v-if="showMeatPopup" class="meat-popup">
+                    <div class="popup-content">
+                      <h3>GERICHT ENTHÄLT FLEISCH</h3>
+                      <img :src="noice" alt="" />
+                      <button @click="showMeatPopup = false" class="htw-btn-active">Schließen</button>
+                    </div>
+                  </div>
+
                 </div>
               </div>
             </div>
@@ -179,7 +194,7 @@ import fullStar from '../assets/fullStar.png'
 import emptyStar from '../assets/emptyStar.png'
 import left from '../assets/leftArrow.png'
 import right from '../assets/rightArrow.png'
-
+import noice from '../assets/noice.webp'
 
 import fav_db from "@/fav_db";
 import {changeColorScheme} from "@/utils";
@@ -227,6 +242,10 @@ export default {
       return store
     },
 
+    shouldShowChickenIcon() {
+      return !this.isBadgePresent(this.meal.badges, 'Vegetarisch') &&
+          !this.isBadgePresent(this.meal.badges, 'Vegan');
+    },
 
 
 
@@ -514,8 +533,10 @@ export default {
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
         if (!event.target.closest('.popup-content')) {
+          showMeatPopup.value = false;
           showAdditivesPopup.value = false;
           showBadgePopup.value = null;
+
         }
       }, 300);
 
@@ -696,6 +717,23 @@ export default {
 
     const showBadgePopup=ref(false);
     const currentBadge = ref({});
+    const showMeatPopup = ref(false)
+
+    const openMeatPopup =()=>{
+      event.stopPropagation();
+
+      let x, y;
+      if (event.type.startsWith('touch')) {
+        const touch = event.touches[0] || event.changedTouches[0];
+        x = touch.clientX;
+        y = touch.clientY;
+      } else {
+        x = event.clientX;
+        y = event.clientY;
+      }
+      popupPosition.value = { x, y };
+      showMeatPopup.value=true
+    }
     const openBadgePopup = (mealId, badge,event) => {
       event.stopPropagation();
       let x,y;
@@ -879,7 +917,10 @@ export default {
       prepareReview,
       handleTouchMove,
       stars,
-      handleClick
+      handleClick,
+      showMeatPopup,
+      openMeatPopup,
+      noice
 
 
 
@@ -926,6 +967,12 @@ export default {
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.18);
   word-wrap: break-word;
+  font-size: 18px;
+  padding: 20px;
+  line-height: 1.5;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow: auto;
 }
 
 
@@ -982,6 +1029,7 @@ export default {
 
 
 
+
 .favorite-popup {
   position: fixed;
   top: 50%;
@@ -1019,5 +1067,25 @@ export default {
   margin: 0 10px;
   font-size: 20px;
 }
+
+.meat-popup {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.18);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  z-index: 1000;
+  overflow: auto;
+  word-wrap: break-word;
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  opacity: 1;
+  max-width: 80vw;
+  max-height: 80vh;
+  display: inline-block;
+}
+
 
 </style>
