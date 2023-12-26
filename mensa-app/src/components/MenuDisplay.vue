@@ -2,12 +2,15 @@
 
   <div id="app" @touchstart="handleTouchStart" @touchend="handleTouchEnd">
 
-  <div v-if="!isTouchDevice" class="arrow" @click="decrementDate">
-    <img :src="left" >
-  </div>
 
 <div class="content">
-  <input type="date" v-model="startDate" @change="fetchMenu" />
+  <div class="date-picker">
+    <span class="arrow" @click="decrementDate()">&#9664;</span>
+    <input type="date" v-model="startDate" @change="fetchMenu" />
+    <span class="arrow" @click="incrementDate()">&#9654;</span>
+  </div>
+
+
   <button class="htw-btn-active" @click="navigateToProfile">
     Einstellungen ändern
   </button>
@@ -69,7 +72,6 @@
                 <div
                     v-if="showAdditivesPopup"
                     class="popup"
-                    :style="{ top: popupPosition.y + 'px', left: popupPosition.x + 'px' }"
                 >
                   <div class="popup-content">
                     <h3>Zusatzstoffe</h3>
@@ -95,11 +97,8 @@
                     <h3>Bewertung abgeben</h3>
                     <div class="star-rating" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
                       <span v-for="item in 5" :key="item" ref="stars" @click="handleClick($event, item)">
-  <img :src="getChickenImage(item)" alt="rating symbol" class="small-image" />
-</span>
-
-
-
+                          <img :src="getChickenImage(item)" alt="rating symbol" class="small-image" />
+                      </span>
                     </div>
 
                     <textarea
@@ -133,7 +132,6 @@
                     <div
                         v-if="showBadgePopup === meal.id"
                         class="popup"
-                        :style="{ top: popupPosition.y + 'px', left: popupPosition.x + 'px' }"
                     >
                       <div class="popup-content">
                         <h4>{{ currentBadge.name }}</h4>
@@ -155,9 +153,6 @@
 </div>
 
 
-  <div class="arrow" @click="incrementDate">
-   <img :src="right">
-  </div>
   </div>
 </template>
 
@@ -280,6 +275,15 @@ export default {
 
 
   setup(props) {
+
+    let canClosePopup = false;
+
+
+    const enablePopupClose = () => {
+      setTimeout(() => {
+        canClosePopup = true;
+      }, 300);
+    };
 
     const currentMealForReview = ref(null);
 
@@ -489,7 +493,7 @@ export default {
 
       setTimeout(() => {
         showMessage.value = false;
-      }, 3000);
+      }, 1000);
     }
 
     const openAdditivesPopup = (meal,event) => {
@@ -511,12 +515,17 @@ export default {
       showAdditivesPopup.value = true;
     };
 
+    let debounceTimer;
     const closePopupOnOverlayClick = (event) => {
 
-      if (!event.target.closest('.popup-content')) {
-        showAdditivesPopup.value = false;
-        showBadgePopup.value = null;
-      }
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        if (!event.target.closest('.popup-content')) {
+          showAdditivesPopup.value = false;
+          showBadgePopup.value = null;
+        }
+      }, 300);
+
     };
 
 
@@ -889,12 +898,16 @@ export default {
 </script>
 
 <style scoped>
+
+
 #app {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
   height: 100vh;
-  margin-top:60vh;
+  margin-top: 0;
+  padding-top: 10vh;
 }
 
 
@@ -909,28 +922,52 @@ export default {
 
 .popup {
   position: fixed;
-  background-color: rgba(0, 0, 0, 0);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   z-index: 100;
+
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.18);
+  word-wrap: break-word;
 }
 
+
 .review-popup {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.18);
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 5%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  z-index: 1000;
+  overflow: auto;
+  word-wrap: break-word;
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  opacity: 1;
+  max-width: 80vw;
+  max-height: 80vh;
+  display: inline-block;
+
 }
+
+
+
 
 .popup-content {
   background-color: white;
   padding: 20px;
   border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  display: inline-block;
+  word-wrap: break-word;
+  width: 100%;
+  height: 100%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.18);
 }
 
 
@@ -946,28 +983,48 @@ export default {
   gap: 10px;
   justify-content: center;
   align-items: center;
+
 }
+
 
 
 
 .favorite-popup {
   position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   background-color: white;
-  padding: 10px 20px;
+  padding: 20px;
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.18);
   z-index: 1000;
   max-width: 80%;
+  display: inline-block;
   word-wrap: break-word;
   transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
   opacity: 1;
-  transform: translateY(0);
+
 }
+
+
 
 .arrow {
   cursor: pointer;
   font-size: 1vw;
 
+}
+
+.date-picker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arrow {
+  cursor: pointer;
+  margin: 0 10px;
+  font-size: 20px;
 }
 
 </style>
