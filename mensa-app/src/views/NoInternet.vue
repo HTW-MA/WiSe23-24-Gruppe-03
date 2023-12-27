@@ -41,15 +41,17 @@ export default {
 </script>
 
 <style>
+
+
 .heat-image-container {
-  overflow: hidden;
-  touch-action: none;
+  position: relative;
+  width: 100%;
+  overflow-y: auto;
 }
 
 .heat-image-container img {
   width: 100vw;
   height: auto;
   display: block;
-  transform-origin: center;
 }
 </style>
