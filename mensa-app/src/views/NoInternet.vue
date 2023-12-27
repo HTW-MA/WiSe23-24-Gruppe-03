@@ -28,6 +28,20 @@ export default {
 
           const scale = lastScale * e.scale;
           image.value.style.transform = `scale(${scale})`;
+
+          if (e.pointers.length > 1) {
+            e.preventDefault();
+          }
+        });
+
+        // Allow scrolling for single touch
+        mc.add(new Hammer.Pan({ direction: Hammer.DIRECTION_ALL, threshold: 0 }));
+        mc.get('pan').set({ enable: true });
+        mc.on('pan', function(e) {
+          if (e.pointers.length === 1) {
+            container.value.scrollLeft -= e.deltaX;
+            container.value.scrollTop -= e.deltaY;
+          }
         });
       }
     });
@@ -41,18 +55,17 @@ export default {
 </script>
 
 <style>
-
-
 .heat-image-container {
   position: relative;
   width: 100%;
   min-height: 100vh;
-  overflow-x: auto;
+  overflow: auto;
 }
 
 .heat-image-container img {
   width: auto;
   height: 100vh;
   display: block;
+  transform-origin: center;
 }
 </style>
