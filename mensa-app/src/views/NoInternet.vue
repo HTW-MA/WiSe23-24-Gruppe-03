@@ -46,12 +46,13 @@ export default {
 .heat-image-container {
   position: relative;
   width: 100%;
-  overflow-y: auto;
+  min-height: 100vh;
+  overflow-x: auto;
 }
 
 .heat-image-container img {
-  width: 100vw;
-  height: auto;
+  width: auto;
+  height: 100vh;
   display: block;
 }
 </style>
