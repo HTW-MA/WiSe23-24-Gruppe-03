@@ -5,6 +5,7 @@ import SelectOptions from "@/views/SelectOptions.vue";
 import MealComponent from "@/views/MealComponent.vue";
 import GeoLocationTestComponent from "@/views/GeoLocationTestComponent.vue";
 import FavoritesView from "@/views/FavoritesView.vue";
+import NoInternet from "@/views/NoInternet.vue";
 
 
 const routes = [
@@ -17,6 +18,11 @@ const routes = [
         path: '/favorites',
         name: 'Favorites',
         component: FavoritesView
+    },
+    {
+        path: '/heatDeath',
+        name: 'Death',
+        component: NoInternet
     },
     {
         path: '/Budget',

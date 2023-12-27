@@ -116,9 +116,6 @@
                   </div>
 
                 </div>
-                <button class="htw-btn-active" @click="selectMeal(meal)">
-                  Nur für Entwicklung
-                </button>
                 <div class="badge-container" v-if="meal.badges.length > 0">
                   <div v-for="badge in meal.badges" :key="badge.id">
                     <img
