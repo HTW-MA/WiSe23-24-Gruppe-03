@@ -10,7 +10,7 @@
       <a class="navbar-brand" href="/">
         <img src="../assets/HomeIcon.png" alt="Home" width="30" height="30">
       </a>
-      <a class="navbar-brand" href="#">
+      <a class="navbar-brand" href="/favorites">
         <img src="../assets/FavoritenIcon.png" alt="Favoriten" width="30" height="30">
       </a>
       <a class="navbar-brand" href="/GeoLoc">
