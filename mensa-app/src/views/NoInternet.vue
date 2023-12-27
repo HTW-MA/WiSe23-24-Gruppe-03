@@ -12,15 +12,15 @@ export default {
 
 <style>
 .heat-image-container {
-  position: relative; /* Relative positioning */
-  width: 100%; /* Full width of the container */
-  min-height: 100vh; /* Minimum height to cover the full viewport height */
-  overflow-x: auto; /* Enable horizontal scrolling */
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: auto;
 }
 
 .heat-image-container img {
-  width: auto; /* Auto width to maintain aspect ratio */
-  height: 100vh; /* Full viewport height */
-  display: block; /* Remove default inline styling */
+  width: auto;
+  height: 100vh;
+  display: block;
 }
 </style>
