@@ -7,7 +7,7 @@ export interface Canteen {
         city: string;
         zipcode: string;
         district: string;
-        geolocation: {
+        geoLocation: {
             latitude: number;
             longitude: number;
         };

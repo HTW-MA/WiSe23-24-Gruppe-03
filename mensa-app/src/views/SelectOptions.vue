@@ -98,6 +98,12 @@ export default {
       return timestampHex + randomHex;
     }
 
+    function sortCanteens() {
+      canteens.value.sort(function (a, b) {
+        return Math.sqrt((länge - a.address.geoLocation.longitude) ** 2 + (breite - a.address.geoLocation.latitude) ** 2) - Math.sqrt((länge - b.address.geoLocation.longitude) ** 2 + (breite - b.address.geoLocation.latitude) ** 2)
+      });
+    }
+
 
 
 
@@ -108,6 +114,8 @@ export default {
     const selectedCanteen = ref<string | null>(null);
     const canteens = ref<Canteen[]>([]);
     const loseWeight = ref (localStorage.getItem('loseWeight')|| '');
+    let breite = 0;
+    let länge = 0;
 
     const getUserID = () => {
       let userID = localStorage.getItem('userID');
@@ -134,6 +142,7 @@ export default {
 
         await db.canteens.bulkPut(response.data);
         canteens.value = response.data;
+        sortCanteens();
         console.log(canteens.value)
       } catch (error) {
         console.log(error);
@@ -164,11 +173,22 @@ export default {
 
 
     onMounted(async () => {
-
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          breite = position.coords.latitude;
+          länge = position.coords.longitude;
+          console.log("Breite: " + breite);
+          console.log("Länge: " + länge)
+        })
+      } else {
+        console.log("Geht nicht")
+      }
       try{
         const storedCanteens = await db.canteens.toArray();
         if (storedCanteens.length > 0) {
           canteens.value = storedCanteens;
+          console.log("GeoLocation: " + canteens.value[0].address.geoLocation.longitude)
+          sortCanteens();
         } else {
           await fetchCanteens();
         }
