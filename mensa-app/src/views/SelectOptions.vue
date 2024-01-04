@@ -1,7 +1,6 @@
 <template>
 
   <p>Bitte Kantine auswählen:</p>
-  <p>ToDo: Kantine für mich mit GPS finden - auch fehlermeldung machen</p>
   <div>
     <select v-model="selectedCanteen">
       <option v-for="canteen in canteens" :value="canteen.id" :key="canteen.id">

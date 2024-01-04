@@ -3,161 +3,163 @@
   <div id="app" @touchstart="handleTouchStart" @touchend="handleTouchEnd">
 
 
-<div class="content">
-  <div class="date-picker">
-    <span class="arrow" @click="decrementDate()">&#9664;</span>
-    <input type="date" v-model="startDate" @change="fetchMenu" />
-    <span class="arrow" @click="incrementDate()">&#9654;</span>
-  </div>
+    <div class="content">
+      <div class="date-picker">
+        <span class="arrow" @click="decrementDate()">&#9664;</span>
+        <input type="date" v-model="startDate" @change="fetchMenu" />
+        <span class="arrow" @click="incrementDate()">&#9654;</span>
+      </div>
 
 
-  <button class="htw-btn-active" @click="navigateToProfile">
-    Einstellungen ändern
-  </button>
-  <div v-if="mensaSucks && !isWeekend">
-    Tja... da musst du dich an deine Uni wenden. Wir haben keine Daten von deiner Mensa erhalten :(
-  </div>
+      <button class="htw-btn-active" @click="navigateToProfile">
+        Einstellungen ändern
+      </button>
+      <div v-if="mensaSucks && !isWeekend">
+        Tja... da musst du dich an deine Uni wenden. Wir haben keine Daten von deiner Mensa erhalten :(
+      </div>
 
-  <div v-else>
-    <div v-if="isWeekend">
-      Am Wochenende hat die Mensa zu - Geh nach Hause, kleiner Streber!
-    </div>
+      <div v-else>
+        <div v-if="isWeekend">
+          Am Wochenende hat die Mensa zu - Geh nach Hause, kleiner Streber!
+        </div>
 
-    <div v-else-if="Object.keys(meals).length === 0 && !isWeekend">
-      <p>
-        Hm....da finden wir irgendwie nichts zu essen. Vielleicht bist du zu zeitig oder zu spät?
-        Vielleicht will dir dein Handy auch sagen, dass du abnehmen sollst?
-      </p>
-    </div>
+        <div v-else-if="Object.keys(meals).length === 0 && !isWeekend">
+          <p>
+            Hm....da finden wir irgendwie nichts zu essen. Vielleicht bist du zu zeitig oder zu spät?
+            Vielleicht will dir dein Handy auch sagen, dass du abnehmen sollst?
+          </p>
+        </div>
 
-    <div v-else>
-      <div v-for="(categories, date) in filteredMeals" :key="date">
-        <h3>{{ date }}</h3>
-        <div v-for="(categoryMeals, category) in categories" :key="category">
-          <h4>{{ category }}</h4>
-          <div>
-            <div v-for="meal in categoryMeals" :key="meal.id">
-              <img
-                  v-if="category === 'Essen' || category === 'Desserts'"
-                  :src="isFavorite(meal) ? fullStar : emptyStar"
-                  alt="Star"
-                  class="icon-inline"
-                  @click="toggleFavorite(meal); openFavPopup(meal, $event)"
-              >
+        <div v-else>
+          <div v-for="(categories, date) in filteredMeals" :key="date">
+            <h3>{{ date }}</h3>
+            <div v-for="(categoryMeals, category) in categories" :key="category">
+              <h4>{{ category }}</h4>
+              <div>
+                <div v-for="meal in categoryMeals" :key="meal.id">
+                  <img
+                      v-if="category === 'Essen' || category === 'Desserts'"
+                      :src="isFavorite(meal) ? fullStar : emptyStar"
+                      alt="Star"
+                      class="icon-inline"
+                      @click="toggleFavorite(meal); openFavPopup(meal, $event)"
+                  >
 
-              <div
-                  v-if="showMessage"
-                  :style="{ top: popupPosition.y + 'px', left: popupPosition.x + 'px' }"
-                  class="favorite-popup"
-              >
-                {{ message }}
-              </div>
-
-
-              <div @click="openPopup(meal)">
-                <img
-                    v-if="meal.additives.length > 0"
-                    :src="addOns"
-                    class="icon-inline"
-                    @click.stop="openAdditivesPopup(meal, $event)"
-                    @touchstart.stop="openAdditivesPopup(meal, $event)"
-                >
-
-
-                <div
-                    v-if="showAdditivesPopup"
-                    class="popup"
-                >
-                  <div class="popup-content">
-                    <h3>Zusatzstoffe</h3>
-                    <ul>
-                      <li v-for="additive in additivesList" :key="additive">
-                        {{ additive }}
-                      </li>
-                    </ul>
-                    <button @click="showAdditivesPopup = false" class="htw-btn-active">
-                      Schließen
-                    </button>
-                  </div>
-                </div>
-
-                {{ meal.name || 'Unbekanntes Gericht' }} - Preis: {{ getPrice(meal) }}
-
-
-
-                <button @click="prepareReview(meal)" class="htw-btn-active">Bewertung abgeben</button>
-
-                <div v-if="showReviewPopup" class="review-popup">
-                  <div class="popup-content">
-                    <h3>Bewertung abgeben</h3>
-
-                    <div class="star-rating" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
-                      <button @click="updateRating(-0.5)" class="rating-change-button">-</button>
-                      <span v-for="item in 5" :key="item" ref="stars" @click="handleClick($event, item)">
-                          <img :src="getChickenImage(item)" alt="rating symbol" class="small-image" />
-                      </span>
-                      <button @click="updateRating(0.5)" class="rating-change-button">+</button>
-                    </div>
-
-
-                    <textarea
-                        v-model="reviewComment"
-                        placeholder="Kommentar"
-                    ></textarea>
-
-                    <button @click="() =>submitReview(meal)" class="htw-btn-active">
-                      Senden
-                    </button>
-
-                    <button @click="showReviewPopup = false" class="htw-btn-active">
-                      Abbrechen
-                    </button>
-
+                  <div
+                      v-if="showMessage"
+                      :style="{ top: popupPosition.y + 'px', left: popupPosition.x + 'px' }"
+                      class="favorite-popup"
+                  >
+                    {{ message }}
                   </div>
 
-                </div>
-                <div class="badge-container" v-if="meal.badges.length > 0">
-                  <div v-for="badge in meal.badges" :key="badge.id">
+
+                  <div @click="openPopup(meal)">
                     <img
-                        :src="getBadgeSymbol(badge.name)"
+                        v-if="meal.additives.length > 0"
+                        :src="addOns"
                         class="icon-inline"
-                        @click.stop="openBadgePopup(meal.id, badge, $event)"
-                        @touchstart.stop="openBadgePopup(meal.id, badge, $event)"
-
+                        @click.stop="openAdditivesPopup(meal, $event)"
+                        @touchstart.stop="openAdditivesPopup(meal, $event)"
                     >
 
+
                     <div
-                        v-if="showBadgePopup === meal.id"
+                        v-if="showAdditivesPopup"
                         class="popup"
                     >
                       <div class="popup-content">
-                        <h4>{{ currentBadge.name }}</h4>
-                        <p>{{ currentBadge.description }}</p>
-                        <button @click="closeBadgePopup" class="htw-btn-active">
+                        <h3>Zusatzstoffe</h3>
+                        <ul>
+                          <li v-for="additive in additivesList" :key="additive">
+                            {{ additive }}
+                          </li>
+                        </ul>
+                        <button @click="showAdditivesPopup = false" class="htw-btn-active">
                           Schließen
                         </button>
                       </div>
                     </div>
-                  </div>
+
+                    {{ meal.name || 'Unbekanntes Gericht' }} - Preis: {{ getPrice(meal) }}
 
 
-                  <img
-                      v-if="!isBadgePresent(meal.badges, 'Vegetarisch') && !isBadgePresent(meal.badges, 'Vegan')"
-                      :src="chickenIcon"
-                      alt="Fleischgericht"
-                      class="icon-inline"
-                      @click="openMeatPopup"
-                  >
+
+                    <button @click="prepareReview(meal)" class="htw-btn-active">Bewertung abgeben</button>
+
+                    <div v-if="showReviewPopup" class="review-popup">
+                      <div class="popup-content">
+                        <h3>Bewertung abgeben</h3>
+
+                        <div class="star-rating" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
+                          <button @click="updateRating(-0.5)" class="rating-change-button">-</button>
+                          <span v-for="item in 5" :key="item" ref="stars" @click="handleClick($event, item)">
+                          <img :src="getChickenImage(item)" alt="rating symbol" class="small-image" />
+                      </span>
+                          <button @click="updateRating(0.5)" class="rating-change-button">+</button>
+                        </div>
 
 
-                  <div v-if="showMeatPopup" class="meat-popup">
-                    <div class="popup-content">
-                      <h3>GERICHT ENTHÄLT FLEISCH</h3>
-                      <img :src="noice" alt="" />
-                      <button @click="showMeatPopup = false" class="htw-btn-active">Schließen</button>
+                        <textarea
+                            v-model="reviewComment"
+                            placeholder="Kommentar"
+                        ></textarea>
+
+                        <button @click="() =>submitReview(meal)" class="htw-btn-active">
+                          Senden
+                        </button>
+
+                        <button @click="showReviewPopup = false" class="htw-btn-active">
+                          Abbrechen
+                        </button>
+
+                      </div>
+
+                    </div>
+                    <div class="badge-container" v-if="meal.badges.length > 0">
+                      <div v-for="badge in meal.badges" :key="badge.id">
+                        <img
+                            :src="getBadgeSymbol(badge.name)"
+                            class="icon-inline"
+                            @click.stop="openBadgePopup(meal.id, badge, $event)"
+                            @touchstart.stop="openBadgePopup(meal.id, badge, $event)"
+
+                        >
+
+                        <div
+                            v-if="showBadgePopup === meal.id"
+                            class="popup"
+                        >
+                          <div class="popup-content">
+                            <h4>{{ currentBadge.name }}</h4>
+                            <p>{{ currentBadge.description }}</p>
+                            <button @click="closeBadgePopup" class="htw-btn-active">
+                              Schließen
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+
+                      <img
+                          v-if="!isBadgePresent(meal.badges, 'Vegetarisch') && !isBadgePresent(meal.badges, 'Vegan')"
+                          :src="chickenIcon"
+                          alt="Fleischgericht"
+                          class="icon-inline"
+                          @click="openMeatPopup"
+                      >
+
+
+                      <div v-if="showMeatPopup" class="meat-popup">
+                        <div class="popup-content">
+                          <h3>GERICHT ENTHÄLT FLEISCH</h3>
+                          <img :src="noice" alt="" />
+                          <button @click="showMeatPopup = false" class="htw-btn-active">Schließen</button>
+                        </div>
+                      </div>
+
                     </div>
                   </div>
-
                 </div>
               </div>
             </div>
@@ -165,8 +167,6 @@
         </div>
       </div>
     </div>
-  </div>
-</div>
 
 
   </div>
