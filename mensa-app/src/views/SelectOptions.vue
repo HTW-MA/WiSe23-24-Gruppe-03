@@ -15,24 +15,28 @@
       <label>Ich bin ein:</label>
       <p></p>
       <select v-model="selectedRole">
-        <option value="Studierende" > Studierende </option>
-        <option value="Angestellte" > Angestellte </option>
-        <option value="Gäste" > Gäste </option>
+        <option value="Studierende" > Student </option>
+        <option value="Angestellte" > Angestellt </option>
+        <option value="Gäste" > Gast </option>
       </select>
     </div>
+
+    <p></p>
 
     <div>
       <label>Ich ernähre mich:</label>
       <p></p>
       <select v-model="selectedDiet">
-        <option value="Allesfresser" > Allesfresser </option>
-        <option value="Vegetarier" > Vegetarier </option>
-        <option value="Veganer" > Veganer </option>
+        <option value="Allesfresser" > ohne Einschränkung </option>
+        <option value="Vegetarier" > vegetarisch </option>
+        <option value="Veganer" > vegan </option>
       </select>
     </div>
 
+    <p></p>
+
     <div>
-      <label>Sollen wir dir helfen? Wir müssen den Nachtisch nicht anzeigen...</label>
+      <label>Desserts anzeigen?</label>
       <p></p>
       <select v-model="loseWeight">
         <option value="tooFat" > Ja </option>
@@ -270,48 +274,69 @@ export default {
   background-color: #d5d5d5;
   cursor: not-allowed;
 }
-.container {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-}
 
-.meal-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 1em;
-}
+@media (max-width: 600px) {
+  .select-options {
+    padding: 10px;
+  }
 
-.meal-name {
-  margin-bottom: 0.5em;
-}
+  select, label {
+    width: 100%;
+    margin-bottom: 15px;
+  }
 
-.rating-symbols {
-  display: flex;
-  align-items: center;
-  flex-wrap: nowrap;
-}
+  button {
+    width: 100%;
+  }
 
-.rating-symbol {
-  margin-right: 0.3em;
-  width: 1em;
-  height: auto;
-}
+  .container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+  }
 
-.delete-button {
-  color: red;
-  border: none;
-  background: none;
-  cursor: pointer;
-  font-size: 1.2em;
-}
+  .meal-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1em;
+  }
 
-.meal-info {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  .meal-name {
+    margin-bottom: 0.5em;
+  }
+
+  .rating-symbols {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+
+  .rating-symbol {
+    margin-right: 0.3em;
+    width: 1em;
+    height: auto;
+  }
+
+  .delete-button {
+    color: red;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 1.2em;
+  }
+
+  .meal-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .dropdown {
+    width: 100%;
+  }
+
 }
 
 </style>
