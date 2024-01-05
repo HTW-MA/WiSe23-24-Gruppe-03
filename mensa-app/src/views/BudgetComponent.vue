@@ -111,16 +111,19 @@ export default {
 </script>
 
 <template>
-  <h1>
-    Klicken Sie auf das {{target}} um ihr Budget zu scannen.
-  </h1>
+
+  <div class="budget-container">
+
+    <p class="budget-text">Klicken Sie auf das Icon um ihr Budget zu scannen.</p>
   <br>
   <!-- Click on img triggers modal -->
   <div v-if="!budgetGescannt">
-    <img class="center fit" v-on:click="readCard" src="../assets/NFC.png" alt="NFC" data-bs-toggle="modal" data-bs-target="#exampleModal" style="cursor: pointer">
+    <img  v-on:click="readCard" src="../assets/NFC.png" alt="NFC" class="budget-icon" data-bs-toggle="modal" data-bs-target="#exampleModal" style="cursor: pointer">
   </div>
   <div v-if="budgetGescannt" v-on:click="readCard" data-bs-toggle="modal" data-bs-target="#exampleModal" style="font-size: 40px">
     {{betrag}}€
+  </div>
+
   </div>
 
   <!-- Modal -->
