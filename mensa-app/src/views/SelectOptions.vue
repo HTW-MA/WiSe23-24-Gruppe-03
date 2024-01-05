@@ -1,15 +1,16 @@
 <template>
 
 
-  <p>Bitte Kantine auswählen:</p>
+
   <div>
+    <Label>Bitte Kantine auswählen:</Label>
     <select v-model="selectedCanteen">
       <option v-for="canteen in canteens" :value="canteen.id" :key="canteen.id">
         {{ canteen.name }} - {{ canteen.address.street }}
       </option>
     </select>
     <p></p>
-    <p>Für genauere Preisinformationen. Aber Achtung: Diese Informationen sind unverbindlich:</p>
+    <Label>Für genauere Preisinformationen. Aber Achtung: Diese Informationen sind unverbindlich:</Label>
 
     <div>
       <label>Ich bin ein:</label>
