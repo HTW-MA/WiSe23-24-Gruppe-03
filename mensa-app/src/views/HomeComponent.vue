@@ -1,12 +1,14 @@
 <template>
 
+ <menu-display
 
-  <menu-display
       :selectedCanteen="selectedCanteen"
       :selectedRole="selectedRole"
       :selected-diet="selectedDiet"
       :lose-weight="loseWeight">
+
   </menu-display>
+
 </template>
 
 <script lang="ts">
@@ -99,3 +101,5 @@ export default defineComponent({
   }
 });
 </script>
+
+

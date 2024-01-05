@@ -1,5 +1,6 @@
 <template>
 
+
   <p>Bitte Kantine auswählen:</p>
   <div>
     <select v-model="selectedCanteen">
@@ -9,39 +10,34 @@
     </select>
     <p></p>
     <p>Für genauere Preisinformationen. Aber Achtung: Diese Informationen sind unverbindlich:</p>
+
     <div>
-      <label>
-        <input type="radio" value="Studierende" v-model="selectedRole"> Studierende
-      </label>
-      <label>
-        <input type="radio" value="Angestellte" v-model="selectedRole"> Angestellte
-      </label>
-      <label>
-        <input type="radio" value="Gäste" v-model="selectedRole"> Gäste
-      </label>
-    </div>
-    <p></p>
-    <p>Was kommt bei dir auf den Teller? Achtung: Veganer bekommen keine vegetarischen Gerichte angezeigt!</p>
-    <div>
-      <label>
-        <input type="radio" value="Allesfresser" v-model="selectedDiet"> Allesfresser
-      </label>
-      <label>
-        <input type="radio" value="Vegetarier" v-model="selectedDiet"> Vegetarier
-      </label>
-      <label>
-        <input type="radio" value="Veganer" v-model="selectedDiet"> Veganer
-      </label>
+      <label>Ich bin ein:</label>
       <p></p>
-      <p>Sollen wir dir helfen? Wir müssen den Nachtisch nicht anzeigen...</p>
-      <div>
-        <label>
-          <input type="radio" value="tooFat" v-model="loseWeight"> Ja
-        </label>
-        <label>
-          <input type="radio" value="skinnyAF" v-model="loseWeight"> Nein
-        </label>
-      </div>
+      <select v-model="selectedRole">
+        <option value="Studierende" > Studierende </option>
+        <option value="Angestellte" > Angestellte </option>
+        <option value="Gäste" > Gäste </option>
+      </select>
+    </div>
+
+    <div>
+      <label>Ich ernähre mich:</label>
+      <p></p>
+      <select v-model="selectedDiet">
+        <option value="Allesfresser" > Allesfresser </option>
+        <option value="Vegetarier" > Vegetarier </option>
+        <option value="Veganer" > Veganer </option>
+      </select>
+    </div>
+
+    <div>
+      <label>Sollen wir dir helfen? Wir müssen den Nachtisch nicht anzeigen...</label>
+      <p></p>
+      <select v-model="loseWeight">
+        <option value="tooFat" > Ja </option>
+        <option value="skinnyAF" > Nein </option>
+      </select>
     </div>
 
 
