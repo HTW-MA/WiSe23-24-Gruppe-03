@@ -155,10 +155,11 @@ export default {
     align-items: center;
     justify-content: center;
     height: calc(100vh - 60px); /* 100% der Viewport-Höhe abzüglich der Höhe der Navbar */
+    padding-top: 30px;
   }
 
   .budget-icon {
-    width: 80%; /* Prozentsatz der Breite des Elternelements, anpassbar */
+    width: 25%; /* Prozentsatz der Breite des Elternelements, anpassbar */
   }
 
   .budget-text {
