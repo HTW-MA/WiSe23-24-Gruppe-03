@@ -1,9 +1,10 @@
 <template>
 
-
+  <p></p>
 
   <div>
     <Label>Bitte Kantine auswählen:</Label>
+    <p></p>
     <select v-model="selectedCanteen">
       <option v-for="canteen in canteens" :value="canteen.id" :key="canteen.id">
         {{ canteen.name }} - {{ canteen.address.street }}
@@ -281,13 +282,21 @@ export default {
     padding: 10px;
   }
 
-  select, label {
-    width: 100%;
-    margin-bottom: 15px;
+  select {
+    width: 100%; /* Stellt sicher, dass das Dropdown-Menü nicht breiter als der Container ist */
+    max-width: 300px; /* Setzt eine maximale Breite für das Dropdown-Menü */
+    margin-bottom: 15px; /* Fügt Abstand nach unten hinzu */
+    font-size: 14px; /* Verkleinert die Schriftgröße für mobile Geräte */
+  }
+
+  label {
+    display: block; /* Labels nehmen ihre eigene Zeile ein */
+    margin-bottom: 5px; /* Fügt Abstand unter dem Label hinzu */
   }
 
   button {
     width: 100%;
+    max-width: 300px; /* Setzt eine maximale Breite für den Button */
   }
 
   .container {
