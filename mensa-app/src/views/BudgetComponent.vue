@@ -128,16 +128,38 @@ export default {
 </template>
 
 <style scoped>
-  * {
-    padding: 0;
-    margin: 0;
+/* Allgemeine Stile, die nicht bildschirmgrößenspezifisch sind */
+.budget-container {
+  text-align: center;
+  padding-top: 60px; /* Angenommen Ihre Navbar ist 60px hoch */
+}
+
+.budget-icon {
+  width: 50%; /* Standardbreite für größere Bildschirme */
+  margin-bottom: 20px;
+}
+
+.budget-text {
+  font-size: 18px; /* Standard Schriftgröße */
+  margin: 0 20px;
+}
+
+/* Stile speziell für mobile Ansichten */
+@media (max-width: 600px) {
+  .budget-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 60px); /* 100% der Viewport-Höhe abzüglich der Höhe der Navbar */
   }
-  .fit { /* set relative picture size */
-    max-width: 30%;
-    max-height: 30%;
+
+  .budget-icon {
+    width: 80%; /* Prozentsatz der Breite des Elternelements, anpassbar */
   }
-  .center {
-    display: block;
-    margin: auto;
+
+  .budget-text {
+    font-size: 16px; /* Angepasste Schriftgröße für mobile Geräte */
   }
+}
 </style>

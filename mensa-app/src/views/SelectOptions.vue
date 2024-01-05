@@ -20,7 +20,7 @@
       <p></p>
       <select v-model="selectedRole">
         <option value="Studierende" > Student </option>
-        <option value="Angestellte" > Angestellt </option>
+        <option value="Angestellte" > Angestellter </option>
         <option value="Gäste" > Gast </option>
       </select>
     </div>
