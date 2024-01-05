@@ -253,7 +253,7 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
 .btn-active, .btn-inactive {
   padding: 0px 20px;
   border: none;
