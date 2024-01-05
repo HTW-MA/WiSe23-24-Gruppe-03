@@ -13,6 +13,8 @@
     <p></p>
     <Label>Für genauere Preisinformationen. Aber Achtung: Diese Informationen sind unverbindlich:</Label>
 
+    <p></p>
+
     <div>
       <label>Ich bin ein:</label>
       <p></p>
@@ -277,6 +279,8 @@ export default {
   cursor: not-allowed;
 }
 
+
+
 @media (max-width: 600px) {
   .select-options {
     padding: 10px;
@@ -287,6 +291,8 @@ export default {
     max-width: 300px; /* Setzt eine maximale Breite für das Dropdown-Menü */
     margin-bottom: 15px; /* Fügt Abstand nach unten hinzu */
     font-size: 14px; /* Verkleinert die Schriftgröße für mobile Geräte */
+    text-align-last: center; /* Zentriert den ausgewählten Text im Dropdown */
+    -moz-text-align-last: center; /* Für Firefox */
   }
 
   label {
