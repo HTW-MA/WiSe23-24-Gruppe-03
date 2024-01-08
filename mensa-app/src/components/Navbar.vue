@@ -13,9 +13,6 @@
       <a class="navbar-brand" href="/favorites">
         <img src="../assets/FavoritenIcon.png" alt="Favoriten" width="30" height="30">
       </a>
-      <a class="navbar-brand" href="/GeoLoc">
-        <img src="../assets/GeoLocationIcon.webp" alt="GeoLoc" width="30" height="30">
-      </a>
     </div>
   </nav>
 </template>

@@ -36,11 +36,6 @@ const routes = [
     {
         path: '/Meal',
         component: MealComponent
-    },
-
-    {
-        path: '/GeoLoc',
-        component: GeoLocationTestComponent
     }
 
 ];
