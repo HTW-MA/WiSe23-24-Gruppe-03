@@ -7,11 +7,11 @@ precacheAndRoute(self.__WB_MANIFEST);
 var responseContent = "<html>" +
     "<body>" +
     "<style>" +
-    "body {text-align: center; background-color: #333; color: #eee;}" +
+    "body {text-align: center; background-color: #eee; color: #000;}" +
     "</style>" +
-    "<h1>Gotham Imperial Hotel</h1>" +
-    "<p>There seems to be a problem with your connection.</p>" +
-    "<p>Come visit us at 1 Imperial Plaza, Gotham City for free WiFi.</p>" +
+    "<h1>Sie k&ouml;nnen uns leider nicht erreichen</h1>" +
+    "<p>Es scheint, dass es ein Problem mit Ihrer Internetverbindung gibt.</p>" +
+    "<p>Bitte versuchen Sie es erneut, sobald Sie eine stabile Internetverbindung haben.</p>" +
     "</body>" +
     "</html>";
 
