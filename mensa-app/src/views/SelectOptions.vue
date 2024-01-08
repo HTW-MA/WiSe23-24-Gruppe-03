@@ -43,8 +43,8 @@
       <label>Desserts anzeigen?</label>
       <p></p>
       <select v-model="loseWeight">
-        <option value="tooFat" > Ja </option>
-        <option value="skinnyAF" > Nein </option>
+        <option value="skinnyAF" > Ja </option>
+        <option value="tooFat" > Nein </option>
       </select>
     </div>
 
