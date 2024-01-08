@@ -102,9 +102,24 @@ export default {
     }
 
     function sortCanteens() {
-      canteens.value.sort(function (a, b) {
-        return Math.sqrt((länge - a.address.geoLocation.longitude) ** 2 + (breite - a.address.geoLocation.latitude) ** 2) - Math.sqrt((länge - b.address.geoLocation.longitude) ** 2 + (breite - b.address.geoLocation.latitude) ** 2)
-      });
+      console.log("Location activated: " + locationActivated)
+      if (locationActivated) {
+        canteens.value.sort(function (a, b) {
+          return Math.sqrt((länge - a.address.geoLocation.longitude) ** 2 + (breite - a.address.geoLocation.latitude) ** 2) - Math.sqrt((länge - b.address.geoLocation.longitude) ** 2 + (breite - b.address.geoLocation.latitude) ** 2)
+        });
+      } else {
+        Notification.requestPermission().then(function(permission) {
+          if (permission === "granted") {
+            navigator.serviceWorker.ready.then(function(registration) {
+              registration.showNotification("Sie haben Ihren Standort nicht aktiviert. " +
+                  "Daher wird die Liste der Mensen alphabetisch sortiert.");
+            });
+          }
+        });
+        canteens.value.sort(function (a, b) {
+          return a.name.localeCompare(b.name);
+        });
+      }
     }
 
 
@@ -119,6 +134,7 @@ export default {
     const loseWeight = ref (localStorage.getItem('loseWeight')|| '');
     let breite = 0;
     let länge = 0;
+    let locationActivated = false;
 
     const getUserID = () => {
       let userID = localStorage.getItem('userID');
@@ -177,14 +193,23 @@ export default {
 
     onMounted(async () => {
       if ("geolocation" in navigator) {
+        console.log("Geolocation wird unterstützt!")
         navigator.geolocation.getCurrentPosition((position) => {
           breite = position.coords.latitude;
           länge = position.coords.longitude;
-          console.log("Breite: " + breite);
-          console.log("Länge: " + länge)
+          locationActivated = true;
+
         })
       } else {
-        console.log("Geht nicht")
+        Notification.requestPermission().then(function(permission) {
+          if (permission === "granted") {
+            navigator.serviceWorker.ready.then(function(registration) {
+              registration.showNotification("Geolokation wird von Ihrem Gerät leider unterstützt. " +
+                  "Daher wird die Liste der Mensen alphabetisch sortiert."
+              );
+            });
+          }
+        });
       }
       try{
         const storedCanteens = await db.canteens.toArray();
