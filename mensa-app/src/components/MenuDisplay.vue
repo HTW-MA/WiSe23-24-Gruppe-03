@@ -111,6 +111,8 @@
                     <div class="badge-container" v-if="meal.badges.length > 0">
                       <div class="break-row"></div>
                       <div v-for="badge in meal.badges" :key="badge.id" class="badge-container">
+
+
                         <img
                             :src="getBadgeSymbol(badge.name)"
                             class="icon-inline"
@@ -118,13 +120,7 @@
                             @touchstart.stop="openBadgePopup(meal.id, badge, $event)"
 
                         >
-                        <img
-                            v-if="!isBadgePresent(meal.badges, 'Vegetarisch') && !isBadgePresent(meal.badges, 'Vegan')"
-                            :src="chickenIcon"
-                            alt="Fleischgericht"
-                            class="icon-inline"
-                            @click="openMeatPopup"
-                        >
+
 
                         <div
                             v-if="showBadgePopup === meal.id"
@@ -132,7 +128,7 @@
                         >
                           <div class="popup-content">
                             <h4>{{ currentBadge.name }}</h4>
-                            <p>{{ currentBadge.description }}</p>
+                            <p class="current-badge">{{ currentBadge.description }}</p>
                             <button @click="closeBadgePopup" class="htw-btn-active">
                               Schließen
                             </button>
@@ -236,7 +232,9 @@ export default {
 
 
 
-
+    showChickenIcon(badges) {
+      return !badges.some(badge => badge.name === 'Vegetarisch' || badge.name === 'Vegan');
+    },
 
 
 
@@ -255,14 +253,11 @@ export default {
 
   },
   computed: {
-    store() {
+
+      store() {
       return store
     },
 
-    shouldShowChickenIcon() {
-      return !this.isBadgePresent(this.meal.badges, 'Vegetarisch') &&
-          !this.isBadgePresent(this.meal.badges, 'Vegan');
-    },
 
 
 
@@ -522,7 +517,7 @@ export default {
 
       setTimeout(() => {
         showMessage.value = false;
-      }, 1000);
+      }, 900);
     }
 
     const openAdditivesPopup = (meal,event) => {
@@ -555,7 +550,7 @@ export default {
           showBadgePopup.value = null;
 
         }
-      }, 300);
+      }, 200);
 
     };
 
@@ -618,12 +613,14 @@ export default {
       });
     };
 
-
     const handleGesture = () => {
       const deltaX = touchEndX - touchStartX;
       const deltaY = touchEndY - touchStartY;
 
-      if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      //diesen Wert ggf. erhöhen, falls swipe immer noch zu sensibel
+      const threshold = window.innerWidth / 2;
+
+      if (Math.abs(deltaX) > threshold && Math.abs(deltaX) > Math.abs(deltaY)) {
         if (deltaX < 0) incrementDate();
         else decrementDate();
       }
@@ -739,7 +736,7 @@ export default {
     const currentBadge = ref({});
     const showMeatPopup = ref(false)
 
-    const openMeatPopup =()=>{
+    const openMeatPopup =(event)=>{
       event.stopPropagation();
 
       let x, y;
@@ -944,10 +941,6 @@ export default {
       starRating,
       updateRating
 
-
-
-
-
     };
   }
 };
@@ -1136,6 +1129,7 @@ export default {
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
+  font-size: 16px;
 }
 
 
@@ -1160,13 +1154,11 @@ export default {
   text-align: right;
   white-space: nowrap;
 }
-.meal-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 10px;
-}
+
 .break-row {
   width: 100%;
+}
+.current-badge{
+  font-size: 16px;
 }
 </style>
