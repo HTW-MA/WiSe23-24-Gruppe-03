@@ -213,6 +213,7 @@ import fav_db from "@/fav_db";
 import {changeColorScheme} from "@/utils";
 import store from "@/store";
 import badges_db from "@/badges_db";
+import review_db from "@/review_db";
 
 
 
@@ -393,6 +394,32 @@ export default {
       currentMealForReview.value = null;
     }
 
+    async function makePut(mealID, userID,category, rating, comment){
+      try {
+        // Query the database to find the record with the matching mealId
+        const record = await review_db.reviews.where({ mealId: mealID }).first();
+
+        if (record) {
+          // Construct the PUT request body
+          const putReview = {
+            id: record.apiResponseId,
+            mealId: mealID,
+            userId: userID,
+            detailRatings: [{ rating: rating, name: category }],
+            comment: comment
+          };
+          // Make the PUT request
+          const response = await axios.put('https://mensa.gregorflachs.de/api/v1/mealreview/', putReview, /* config */);
+
+          // Handle the response
+        } else {
+          // Handle case where no matching record is found in Dexie
+        }
+      } catch (e) {
+        // Handle errors that might occur during database query or PUT request
+      }
+    }
+
     async function postMealReview(mealID, rating, comment, category) {
 
       const userID = localStorage.getItem('userID')
@@ -416,17 +443,37 @@ export default {
         comment: comment
       };
 
+      const putReview = {
+        mealId: mealID,
+        userId:userID,
+        detailRatings: [
+          {
+            rating: rating,
+            name: category
+          }
+        ],
+        comment: comment
+
+      }
+
       try {
         console.log('you are here')
         console.log(review)
         const response = await axios.post('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
+        if (response && response.data) {
+          await review_db.reviews.add({
+            mealId: response.data.mealId,
+            userId: response.data.userId,
+            apiResponseId: response.data.id
+          });
+        }
         console.log('but not here')
         console.log(response.data);
 
       }catch (error) {
         if (error.response.status === 409){
           try{
-            const response = await axios.put('https://mensa.gregorflachs.de/api/v1/mealreview/', review, config);
+            const response = await axios.put('https://mensa.gregorflachs.de/api/v1/mealreview/', putReview, config);
             console.log(response.data)
             console.log('put')
           }
@@ -1033,14 +1080,7 @@ export default {
   margin-left: 10px;
 }
 
-.badge-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-  align-items: center;
 
-}
 
 
 
@@ -1126,11 +1166,22 @@ export default {
 
 .badge-container {
   display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.badge-container {
+  display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
   font-size: 16px;
 }
+
+
 
 
 .meal-container {

@@ -2,13 +2,14 @@
   <div v-if="favorites.length > 0" class="container">
     <h2>Lieblingsessen</h2>
     <div v-for="meal in favorites" :key="meal.id" class="meal-item">
-      <p class="meal-name">{{ meal.name }}<button @click="deleteMeal(meal.id)" class="delete-button">X</button></p>
+      <p class="meal-name">{{ meal.name }}</p>
       <div class="rating-symbols">
         <img v-for="symbol in getRatingSymbols(meal.mealReviews.averageRating)" :src="symbol" :key="symbol" alt="Rating Symbol" class="rating-symbol">
       </div>
-
+      <div class="button-container">
+      <button @click="deleteMeal(meal.id)" class="delete-button">X</button>
       <button @click="prepareReview(meal)" class="htw-btn-active">Bewertung abgeben</button>
-
+      </div>
       <div v-if="showReviewPopup" class="review-popup">
         <div class="popup-content">
           <h3>Bewertung abgeben</h3>
@@ -45,6 +46,7 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import fav_db from "@/fav_db";
+import review_db from "@/review_db";
 
 export default {
   name: 'FavoritesView',
@@ -236,6 +238,14 @@ export default {
       try {
         const response = await axios.post('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
         console.log(response.data);
+        if (response && response.data) {
+          await review_db.reviews.add({
+            mealId: response.data.mealId,
+            userId: response.data.userId,
+            apiResponseId: response.data.id
+          });
+        }
+
       } catch (error) {
         console.error('Fehler beim Posten:', error);
       }
@@ -286,10 +296,14 @@ export default {
 }
 
 .meal-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 1em;
+
+    background-color: #f5f5f5;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align:  left;
+
 }
 
 .meal-name {
@@ -306,7 +320,7 @@ export default {
 
 .rating-symbol {
   margin-right: 0.3em;
-  width: 2.2em;
+  width: 2.4em;
   height: auto;
 
 }
@@ -316,7 +330,8 @@ export default {
   border: none;
   background: none;
   cursor: pointer;
-  font-size: 1.2em;
+  font-size: 1.8em;
+  font-weight: bold;
 }
 
 .meal-info {
@@ -324,6 +339,28 @@ export default {
   align-items: center;
   justify-content: space-between;
 }
+.category-section {
+  background-color: #f5f5f5;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align:  left;
+}
+
+.button-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-start;
+  align-items: center;
+
+}
 
 
+.htw-btn-active {
+  background-color: #76B900;
+  color: white;
+  margin-left: 10px;
+}
 </style>
