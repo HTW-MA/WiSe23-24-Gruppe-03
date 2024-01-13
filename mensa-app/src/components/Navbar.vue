@@ -30,6 +30,18 @@ export default {
 
     onMounted(() => {
       changeColorScheme(store.state.selectedCanteen, 'backgroundColor', '.navbar');
+
+      let canteens = ['655ff175136d3b580c970f7b', '655ff175136d3b580c970f7d', '655ff175136d3b580c970f7e', '655ff175136d3b580c970f7f', '655ff175136d3b580c970f86', '655ff175136d3b580c970f87', '655ff176136d3b580c970fa0', '655ff176136d3b580c970f9d', '655ff176136d3b580c970f9e', '655ff176136d3b580c970f9f', '655ff176136d3b580c970f9c', '655ff176136d3b580c970fa1', '655ff175136d3b580c970f93', '655ff175136d3b580c970f94', '655ff175136d3b580c970f91']
+
+      if(canteens.includes(store.state.selectedCanteen)) {
+        document.querySelectorAll('a > img').forEach(elem => {
+          elem.style.filter = "invert(100%)"
+        })
+      } else {
+        document.querySelectorAll('a > img').forEach(elem => {
+          elem.style.filter = "invert(0%)"
+        })
+      }
     });
 
 
@@ -37,6 +49,18 @@ export default {
 
     watch(() => store.state.selectedCanteen, (newCanteen) => {
       changeColorScheme(newCanteen, 'backgroundColor', '.navbar');
+
+      let canteens = ['655ff175136d3b580c970f7b', '655ff175136d3b580c970f7d', '655ff175136d3b580c970f7e', '655ff175136d3b580c970f7f', '655ff175136d3b580c970f86', '655ff175136d3b580c970f87', '655ff176136d3b580c970fa0', '655ff176136d3b580c970f9d', '655ff176136d3b580c970f9e', '655ff176136d3b580c970f9f', '655ff176136d3b580c970f9c', '655ff176136d3b580c970fa1', '655ff175136d3b580c970f93', '655ff175136d3b580c970f94', '655ff175136d3b580c970f91']
+
+      if(canteens.includes(newCanteen)) {
+        document.querySelectorAll('a > img').forEach(elem => {
+          elem.style.filter = "invert(100%)"
+        })
+      } else {
+        document.querySelectorAll('a > img').forEach(elem => {
+          elem.style.filter = "invert(0%)"
+        })
+      }
     });
 
 
@@ -51,6 +75,11 @@ export default {
 
 :root {
   --navbar-bg-color: #f57373;
+  --navbar-img-inversion: 0%
+}
+
+img {
+  filter: invert(var(--navbar-img-inversion));
 }
 
 .nav-item {
