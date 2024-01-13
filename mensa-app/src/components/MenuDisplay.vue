@@ -118,6 +118,13 @@
                             @touchstart.stop="openBadgePopup(meal.id, badge, $event)"
 
                         >
+                        <img
+                            v-if="!isBadgePresent(meal.badges, 'Vegetarisch') && !isBadgePresent(meal.badges, 'Vegan')"
+                            :src="chickenIcon"
+                            alt="Fleischgericht"
+                            class="icon-inline"
+                            @click="openMeatPopup"
+                        >
 
                         <div
                             v-if="showBadgePopup === meal.id"
@@ -156,13 +163,7 @@
 
                     </div>
 
-                      <img
-                          v-if="!isBadgePresent(meal.badges, 'Vegetarisch') && !isBadgePresent(meal.badges, 'Vegan')"
-                          :src="chickenIcon"
-                          alt="Fleischgericht"
-                          class="icon-inline"
-                          @click="openMeatPopup"
-                      >
+
 
 
                       <div v-if="showMeatPopup" class="meat-popup">
