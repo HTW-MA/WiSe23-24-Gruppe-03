@@ -14,7 +14,8 @@ export default {
     return {
       breite: null,
       länge: null,
-      canteens: []
+      canteens: [],
+      locationActivated: false
     }
   },
   methods: {
@@ -73,9 +74,15 @@ export default {
       let breite = this.breite;
       let länge = this.länge;
 
-      this.canteens.sort(function (a, b) {
-        return Math.sqrt((länge - a.address.geoLocation.longitude) ** 2 + (breite - a.address.geoLocation.latitude) ** 2) - Math.sqrt((länge - b.address.geoLocation.longitude) ** 2 + (breite - b.address.geoLocation.latitude) ** 2)
-      });
+      if (this.locationActivated) {
+        this.canteens.sort(function (a, b) {
+          return Math.sqrt((länge - a.address.geoLocation.longitude) ** 2 + (breite - a.address.geoLocation.latitude) ** 2) - Math.sqrt((länge - b.address.geoLocation.longitude) ** 2 + (breite - b.address.geoLocation.latitude) ** 2)
+        });
+      } else {
+        this.canteens.sort(function (a, b) {
+          return a.name.localeCompare(b.name);
+        });
+      }
     },
 
     sortCanteensOnMount() {
@@ -98,9 +105,26 @@ export default {
       navigator.geolocation.getCurrentPosition((position) => {
         this.breite = position.coords.latitude;
         this.länge = position.coords.longitude;
+        this.locationActivated = true;
+        let test_breite = this.breite;
+        let test_länge = this.länge;
+        Notification.requestPermission().then(function(permission) {
+          if (permission === "granted") {
+            navigator.serviceWorker.ready.then(function(registration) {
+              registration.showNotification("Breite: " + test_breite + "\n" +
+                  "Länge: " + test_länge);
+            });
+          }
+        });
       })
     } else {
-      console.log("Geht nicht")
+      Notification.requestPermission().then(function(permission) {
+        if (permission === "granted") {
+          navigator.serviceWorker.ready.then(function(registration) {
+            registration.showNotification("Die Geolocation funktioniert auf diesem Gerät leider nicht.");
+          });
+        }
+      });
     }
 
     this.getCanteens();
