@@ -16,7 +16,7 @@
           <div class="star-rating" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
             <button @click="updateRating(-0.5)" class="rating-change-button">-</button>
             <span v-for="item in 5" :key="item" ref="stars" @click="handleClick($event, item)">
-                          <img :src="getChickenImage(item)" alt="rating symbol" class="small-image" />
+                          <img :src="getChickenImage(item)" alt="rating symbol" class="rating-symbol" />
                       </span>
             <button @click="updateRating(0.5)" class="rating-change-button">+</button>
           </div>
@@ -276,13 +276,7 @@ export default {
 </script>
 <style>
 
-.container .meal-item .rating-symbols img.rating-symbol {
-  max-width: 24px;
-  height: auto;
-  vertical-align: middle;
 
-
-}
 
 .container {
   display: flex;
@@ -307,12 +301,14 @@ export default {
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
+
 }
 
 .rating-symbol {
   margin-right: 0.3em;
-  width: 1em;
+  width: 2.2em;
   height: auto;
+
 }
 
 .delete-button {
