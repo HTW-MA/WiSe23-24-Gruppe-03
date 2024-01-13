@@ -1,6 +1,4 @@
 <script lang="js">
-import PopUp from "@/components/PopUp.vue";
-
 //Nutzen falls es mit dem NDEFReader nicht klappen sollte
 //import NFC from '@ionic-native/nfc';
 
@@ -9,16 +7,18 @@ import PopUp from "@/components/PopUp.vue";
 //import NDEFMessage from '@types/w3c-web-nfc';
 
 
+// import {Modal} from "bootstrap";
+
 export default {
   name: 'BudgetComponent',
-  components: {PopUp},
   data () {
     return {
       budgetGescannt: false,
       popUpShown: true,
       betrag: localStorage.getItem("Betrag") || -1,
       betragDate: localStorage.getItem("Timestamp") || null,
-      target: "Icon"
+      target: "Icon",
+      scanErfolgreich: "noch nicht"
     }
   },
   methods: {
@@ -49,6 +49,7 @@ export default {
 
     readCard() {
       console.log("Read Card aufgerufen")
+      this.scanErfolgreich = 'noch nicht'
       //let mockMessage = new NDEFMessage()
 
       if ('NDEFReader' in window) {
@@ -61,6 +62,7 @@ export default {
             console.log("Cannot read data from the NFC tag. Try another one?");
           };
           ndef.onreading = (event) => {
+            this.scanErfolgreich = 'ja'
             this.budgetGescannt = true;
             const decoder = new TextDecoder();
             const ndefMessage = event.message;
@@ -90,10 +92,18 @@ export default {
           };
         }).catch(error => {
           console.log(`Error! Scan failed to start: ${error}.`);
+          this.scanErfolgreich = 'nein'
         });
       } else {
         console.log("NDEFReader nicht erkannt")
+        this.scanErfolgreich = 'nein'
       }
+      // setTimeout(() => {
+      //   console.log("Vor dem Hide")
+      //   const test = new Modal(document.getElementById("exampleModal"))
+      //   test.dispose()
+      //   console.log("Nach dem Hide")
+      // }, 5000)
     }
   },
 
@@ -127,7 +137,33 @@ export default {
   </div>
 
   <!-- Modal -->
-  <PopUp ref="My-Modal"/>
+<!--  <PopUp ref="My-Modal"/>-->
+  <div ref="PopUp" class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div v-if="scanErfolgreich !== 'nein'"><h1 class="modal-title fs-5" id="exampleModalLabel">Bitte scannen Sie ihre Karte</h1></div>
+          <div v-if="scanErfolgreich === 'nein'"><h1 class="modal-title fs-5" id="exampleModalLabel">Es scheint ein Fehler auf getreten zu sein.</h1></div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div v-if="scanErfolgreich === 'noch nicht'">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+          <div v-if="scanErfolgreich === 'ja'">
+            <img src="../assets/Häckchen.png" width="100" height="100">
+          </div>
+          <div v-if="scanErfolgreich === 'nein'">
+            <h5>Prüfen Sie ob Ihr Gerät NFC unterstützt.</h5>
+<!--            <img src="../assets/Kreuz.png" width="100" height="100">-->
+          </div>
+          <!--          An dieser stelle vielleicht an Häckchen oder einen Bestätigungstext generieren abhängig von budgetGescannt-->
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
