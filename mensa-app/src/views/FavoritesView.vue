@@ -276,5 +276,58 @@ export default {
 </script>
 <style>
 
+.container .meal-item .rating-symbols img.rating-symbol {
+  max-width: 24px;
+  height: auto;
+  vertical-align: middle;
+
+
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.meal-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1em;
+}
+
+.meal-name {
+  margin-bottom: 0.5em;
+  font-size: 16px;
+}
+
+.rating-symbols {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.rating-symbol {
+  margin-right: 0.3em;
+  width: 1em;
+  height: auto;
+}
+
+.delete-button {
+  color: red;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 1.2em;
+}
+
+.meal-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 
 </style>
