@@ -32,18 +32,13 @@
 
         <div v-else>
           <div v-for="(categories, date) in filteredMeals" :key="date">
-            <h3>{{ date }}</h3>
-            <div v-for="(categoryMeals, category) in categories" :key="category">
+            <h3></h3>
+
+            <div v-for="(categoryMeals, category) in categories" :key="category"  class="category-section">
               <h4>{{ category }}</h4>
               <div>
-                <div v-for="meal in categoryMeals" :key="meal.id">
-                  <img
-                      v-if="category === 'Essen' || category === 'Desserts'"
-                      :src="isFavorite(meal) ? fullStar : emptyStar"
-                      alt="Star"
-                      class="icon-inline"
-                      @click="toggleFavorite(meal); openFavPopup(meal, $event)"
-                  >
+                <div v-for="meal in categoryMeals" :key="meal.id" class="meal-container">
+
 
                   <div
                       v-if="showMessage"
@@ -55,13 +50,7 @@
 
 
                   <div @click="openPopup(meal)">
-                    <img
-                        v-if="meal.additives.length > 0"
-                        :src="addOns"
-                        class="icon-inline"
-                        @click.stop="openAdditivesPopup(meal, $event)"
-                        @touchstart.stop="openAdditivesPopup(meal, $event)"
-                    >
+
 
 
                     <div
@@ -81,11 +70,13 @@
                       </div>
                     </div>
 
-                    {{ meal.name || 'Unbekanntes Gericht' }} - Preis: {{ getPrice(meal) }}
+
+                    {{ meal.name || 'Unbekanntes Gericht' }}
+                    <span class="meal-price">{{ getPrice(meal) }} €</span>
 
 
 
-                    <button @click="prepareReview(meal)" class="htw-btn-active">Bewertung abgeben</button>
+
 
                     <div v-if="showReviewPopup" class="review-popup">
                       <div class="popup-content">
@@ -116,8 +107,9 @@
                       </div>
 
                     </div>
+                    <div class="flex-container">
                     <div class="badge-container" v-if="meal.badges.length > 0">
-                      <div v-for="badge in meal.badges" :key="badge.id">
+                      <div v-for="badge in meal.badges" :key="badge.id" class="badge-container">
                         <img
                             :src="getBadgeSymbol(badge.name)"
                             class="icon-inline"
@@ -140,6 +132,28 @@
                         </div>
                       </div>
 
+                      <img
+                          v-if="meal.additives.length > 0"
+                          :src="addOns"
+                          class="icon-inline"
+                          @click.stop="openAdditivesPopup(meal, $event)"
+                          @touchstart.stop="openAdditivesPopup(meal, $event)"
+                      >
+
+
+
+                      <img
+                          v-if="category === 'Essen' || category === 'Desserts'"
+                          :src="isFavorite(meal) ? fullStar : emptyStar"
+                          alt="Star"
+                          class="icon-inline"
+                          @click="toggleFavorite(meal); openFavPopup(meal, $event)"
+                      >
+                      <div class="break-row"></div>
+                      <button @click="prepareReview(meal)" class="htw-btn-active">Bewerten</button>
+
+
+                    </div>
 
                       <img
                           v-if="!isBadgePresent(meal.badges, 'Vegetarisch') && !isBadgePresent(meal.badges, 'Vegan')"
@@ -866,7 +880,7 @@ export default {
         const priceObj = meal.prices.find(price => price.priceType === props.selectedRole);
         return priceObj ? priceObj.price : 'Der Betreiber hat leider keinen Preis angegeben :(';
       } else {
-        return 'Preisinformation nicht verfügbar';
+        return '?';
       }
     };
 
@@ -1093,5 +1107,65 @@ export default {
   display: inline-block;
 }
 
+.category-section {
+  background-color: #f5f5f5;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align:  left;
+}
 
+.category-section h4 {
+  margin-top: 0;
+  text-align: left;
+  font-weight: bold;
+}
+
+.flex-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.badge-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.icon-inline {
+  margin-right: 10px;
+}
+.meal-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 15px;
+}
+
+
+
+.meal-container:last-child {
+  padding-bottom: 40px;
+}
+
+.meal-price {
+  flex-shrink: 0;
+  font-weight: bold;
+  text-align: right;
+  white-space: nowrap;
+}
+.meal-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+}
+.break-row {
+  width: 100%;
+}
 </style>
