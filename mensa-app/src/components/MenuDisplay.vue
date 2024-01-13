@@ -109,6 +109,7 @@
                     </div>
                     <div class="flex-container">
                     <div class="badge-container" v-if="meal.badges.length > 0">
+                      <div class="break-row"></div>
                       <div v-for="badge in meal.badges" :key="badge.id" class="badge-container">
                         <img
                             :src="getBadgeSymbol(badge.name)"
@@ -140,7 +141,7 @@
                           @touchstart.stop="openAdditivesPopup(meal, $event)"
                       >
 
-
+                      <div class="break-row"></div>
 
                       <img
                           v-if="category === 'Essen' || category === 'Desserts'"
@@ -149,7 +150,7 @@
                           class="icon-inline"
                           @click="toggleFavorite(meal); openFavPopup(meal, $event)"
                       >
-                      <div class="break-row"></div>
+
                       <button @click="prepareReview(meal)" class="htw-btn-active">Bewerten</button>
 
 
@@ -970,8 +971,9 @@ export default {
 
 }
 .icon-inline {
-  height: 1em;
+  height: 1.7em;
   vertical-align: middle;
+  margin-right: 10px;
 }
 
 .popup {
@@ -1135,9 +1137,7 @@ export default {
   justify-content: flex-start;
 }
 
-.icon-inline {
-  margin-right: 10px;
-}
+
 .meal-container {
   display: flex;
   justify-content: space-between;
