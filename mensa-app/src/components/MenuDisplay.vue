@@ -557,6 +557,7 @@ export default {
     const openAdditivesPopup = (meal,event) => {
       showMessage.value = false;
       showFavoritePopup.value = false;
+      showBadgePopup.value = false;
       event.stopPropagation();
       let x,y;
       if (event.type.startsWith('touch')){
