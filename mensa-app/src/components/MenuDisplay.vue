@@ -72,6 +72,7 @@
 
 
                     {{ meal.name || 'Unbekanntes Gericht' }}
+                    {{meal.id}}
                     <span class="meal-price">{{ getPrice(meal) }} €</span>
 
 
@@ -371,18 +372,12 @@ export default {
 
     function submitReview() {
       const meal = currentMealForReview.value;
-
+      if (!meal) {
+        console.error("No meal selected for review");
+        return;
+      }
       if (starRating.value&& reviewComment.value) {
 
-
-        const reviewBody = {
-          mealId: meal.id,
-          rating: starRating.value,
-          comment: reviewComment.value,
-          category: meal.category
-        };
-
-        console.log('1', reviewBody);
 
         postMealReview(meal.id, starRating.value, reviewComment.value, meal.category);
         showReviewPopup.value = false;
@@ -394,34 +389,56 @@ export default {
       currentMealForReview.value = null;
     }
 
-    /* eslint-disable */
-    async function makeReview(mealID,  rating,category, comment){
+
+
+    async function postMealReview(mealID, rating, comment, category) {
+      const userID = localStorage.getItem('userID');
+
+      const config = {
+        headers: {
+          'X-API-KEY': process.env.VUE_APP_API_KEY
+        }
+      };
+
+
+
       try {
-        // Query the database to find the record with the matching mealId
         const record = await review_db.reviews.where({ mealId: mealID }).first();
-        const userID = localStorage.getItem('userID')
-        const config = {
-          headers: {
-            'X-API-KEY': process.env.VUE_APP_API_KEY
-          }
-        };
-
-        if (record) {
-          // Construct the PUT request body
-          const putReview = {
-            id: record.apiResponseId,
-            mealId: mealID,
-            userId: userID,
-            detailRatings: [{ rating: rating, name: category }],
-            comment: comment
-          };
-          // Make the PUT request
-          const response = await axios.put('https://mensa.gregorflachs.de/api/v1/mealreview/', putReview,  config );
-
-          // Handle the response
-        } else {
+        if (record !== undefined){
           const review = {
+            id: record.apiResponseId,
+            mealId: record.apiResponseId,
+            userId:userID,
+            detailRatings: [
+              {
+                rating: rating,
+                name: category
+              }
+            ],
+            comment: comment
 
+          }
+
+          try{
+            const response =await axios.put('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
+            console.log(response.data)
+            console.log(mealID)
+            if (response && response.data) {
+              await review_db.reviews.put({
+                mealId: mealID,
+                userId: response.data.userId,
+                apiResponseId: response.data.id,
+                rating:rating
+              });
+
+            }
+          }
+          catch (error){
+            console.log('Fehler :', error)
+          }
+        }
+        else {
+          const review = {
             mealId: mealID,
             userId: userID,
             detailRatings: [
@@ -433,73 +450,27 @@ export default {
             comment: comment
           };
           try {
-
             const response = await axios.post('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
             console.log(response.data);
+            if (response && response.data) {
+              await review_db.reviews.add({
+                mealId: mealID,
+                userId: response.data.userId,
+                apiResponseId: response.data.id,
+                rating: rating
+              });
+            }
 
-          }catch (error) {
-
-
-            console.error('Fehler beim Posten:', error);
-
+          } catch (error) {
+            console.log('Fehler :', error)
           }
 
         }
       } catch (error) {
-        console.error('Fehler beim Posten: ', error)
+        console.error('Fehler beim Posten:', error)
       }
     }
 
-    async function postMealReview(mealID, rating, comment, category) {
-
-      const userID = localStorage.getItem('userID')
-
-      const config = {
-        headers: {
-          'X-API-KEY': process.env.VUE_APP_API_KEY
-        }
-      };
-
-      const review = {
-
-        mealId: mealID,
-        userId: userID,
-        detailRatings: [
-          {
-            rating: rating,
-            name: category
-          }
-        ],
-        comment: comment
-      };
-
-      const putReview = {
-        mealId: mealID,
-        userId:userID,
-        detailRatings: [
-          {
-            rating: rating,
-            name: category
-          }
-        ],
-        comment: comment
-
-      }
-
-      try {
-
-        const response = await axios.post('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
-        console.log(response.data);
-
-      }catch (error) {
-
-
-        console.error('Fehler beim Posten:', error);
-
-      }
-
-
-    }
 
 
     function generateTimestampedHex(len) {

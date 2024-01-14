@@ -90,7 +90,9 @@ export default {
     async function getMyRating(meal) {
       if (!mealRatings[meal.id]) { // Check if rating is not already fetched
         const record = await review_db.reviews.where({ mealId: meal.id }).first();
-        mealRatings[meal.id] = record ? record.rating : 0; // Update the mealRatings object
+        mealRatings[meal.id] = record ? record.rating : 0;
+        console.log('record' + record.rating)// Update the mealRatings object
+        console.log(meal.id)
       }
     }
 
@@ -165,6 +167,7 @@ export default {
           });
           meal.mealReviews.averageRating = response.data[0]?.mealReviews[0]?.averageRating;
           await getMyRating(meal)
+          console.log('laod' + meal.id)
         } catch (error) {
           console.error('Error fetching meal details:', error);
         }
@@ -217,9 +220,6 @@ export default {
         console.error("No meal selected for review");
         return;
       }
-
-      console.log("Submitting review for meal:", meal.id);
-      console.log('he' +meal.id)
       if (starRating.value && reviewComment.value) {
 
 
@@ -267,8 +267,6 @@ export default {
             const response =await axios.put('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
             console.log(response.data)
             if (response && response.data) {
-              console.log('ich'+mealID)
-              console.log(response.data.id)
               await review_db.reviews.put({
                 mealId: mealID,
                 userId: response.data.userId,
@@ -282,7 +280,7 @@ export default {
             console.log('Fehler :', error)
           }
         }
-        else{
+        else {
           const review = {
             mealId: mealID,
             userId: userID,
@@ -294,36 +292,26 @@ export default {
             ],
             comment: comment
           };
-          try{
+          try {
             const response = await axios.post('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
             console.log(response.data);
             if (response && response.data) {
-              console.log('ich'+mealID)
-              console.log(response.data.id)
               await review_db.reviews.add({
                 mealId: mealID,
                 userId: response.data.userId,
                 apiResponseId: response.data.id,
-                rating:rating
+                rating: rating
               });
             }
 
-          }
-          catch (error){
+          } catch (error) {
             console.log('Fehler :', error)
           }
 
         }
-
-
-
       } catch (error) {
         console.error('Fehler beim Posten:', error)
-
       }
-
-
-
     }
 
 

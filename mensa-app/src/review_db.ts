@@ -1,10 +1,11 @@
 import Dexie from 'dexie';
 
 
-const review_db = new Dexie('MyDatabase');
+const review_db = new Dexie('Reviews');
 
 
 review_db.version(1).stores({
-    reviews: ' ++id, mealId, userId, apiResponseId, rating'
+    reviews: '[mealId+userId], apiResponseId, rating'
 });
+
 export default review_db;
