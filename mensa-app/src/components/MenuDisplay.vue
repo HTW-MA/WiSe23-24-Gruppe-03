@@ -533,6 +533,8 @@ export default {
     const additivesList = ref([]);
 
     const openFavPopup=(meal, event) =>{
+      showAdditivesPopup.value = false;
+      showBadgePopup.value = false;
       event.stopPropagation();
       let x,y;
       if (event.type.startsWith('touch')){
@@ -553,6 +555,8 @@ export default {
     }
 
     const openAdditivesPopup = (meal,event) => {
+      showMessage.value = false;
+      showFavoritePopup.value = false;
       event.stopPropagation();
       let x,y;
       if (event.type.startsWith('touch')){
@@ -784,6 +788,8 @@ export default {
       showMeatPopup.value=true
     }
     const openBadgePopup = (mealId, badge,event) => {
+      showMessage.value = false;
+      showAdditivesPopup.value = false;
       event.stopPropagation();
       let x,y;
       if (event.type.startsWith('touch')){
