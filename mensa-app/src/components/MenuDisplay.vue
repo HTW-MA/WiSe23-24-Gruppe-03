@@ -394,7 +394,8 @@ export default {
       currentMealForReview.value = null;
     }
 
-    async function makePut(mealID, userID,category, rating, comment){
+
+    async function makePut(mealID, userID,category, rating, comment){ //eslint-disable-line
       try {
         // Query the database to find the record with the matching mealId
         const record = await review_db.reviews.where({ mealId: mealID }).first();
@@ -409,7 +410,7 @@ export default {
             comment: comment
           };
           // Make the PUT request
-          const response = await axios.put('https://mensa.gregorflachs.de/api/v1/mealreview/', putReview, /* config */);
+          const response = await axios.put('https://mensa.gregorflachs.de/api/v1/mealreview/', putReview, /* config */); //eslint-disable-line
 
           // Handle the response
         } else {
