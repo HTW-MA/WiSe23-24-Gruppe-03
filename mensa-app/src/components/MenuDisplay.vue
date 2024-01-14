@@ -72,7 +72,7 @@
 
 
                     {{ meal.name || 'Unbekanntes Gericht' }}
-                    {{meal.id}}
+
                     <span class="meal-price">{{ getPrice(meal) }} €</span>
 
 
@@ -97,7 +97,7 @@
                             placeholder="Kommentar"
                         ></textarea>
 
-                        <button @click="() =>submitReview(meal)" class="htw-btn-active">
+                        <button @click="() =>submitReview()" class="htw-btn-active">
                           Senden
                         </button>
 
@@ -421,8 +421,6 @@ export default {
 
           try{
             const response =await axios.put('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
-            console.log(response.data)
-            console.log(mealID)
             if (response && response.data) {
               await review_db.reviews.put({
                 mealId: mealID,
@@ -451,7 +449,6 @@ export default {
           };
           try {
             const response = await axios.post('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
-            console.log(response.data);
             if (response && response.data) {
               await review_db.reviews.add({
                 mealId: mealID,
