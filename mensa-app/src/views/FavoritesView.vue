@@ -4,11 +4,13 @@
     <div v-for="meal in favorites" :key="meal.id" class="meal-item">
       <p class="meal-name">{{ meal.name }}</p>
       <div class="rating-symbols">
-        <img v-for="symbol in getRatingSymbols(meal.mealReviews.averageRating)" :src="symbol" :key="symbol" alt="Rating Symbol" class="rating-symbol">
+        <p>{{ mealRatings[meal.id] }}</p>
+        <p>{{meal.id}}</p>
+        <img v-for="symbol in getRatingSymbols(mealRatings[meal.id])" :src="symbol" :key="symbol" alt="Rating Symbol" class="rating-symbol">
       </div>
       <div class="button-container">
-      <button @click="deleteMeal(meal.id)" class="delete-button">X</button>
-      <button @click="prepareReview(meal)" class="htw-btn-active">Bewertung abgeben</button>
+        <button @click="deleteMeal(meal.id)" class="delete-button">X</button>
+        <button @click="prepareReview(meal)" class="htw-btn-active">Bewertung abgeben</button>
       </div>
       <div v-if="showReviewPopup" class="review-popup">
         <div class="popup-content">
@@ -28,7 +30,7 @@
               placeholder="Kommentar"
           ></textarea>
 
-          <button @click="() =>submitReview(meal)" class="htw-btn-active">
+          <button @click="() =>submitReview()" class="htw-btn-active">
             Senden
           </button>
 
@@ -43,7 +45,7 @@
   </div>
 </template>
 <script>
-import { ref, onMounted } from 'vue';
+import {ref, onMounted, reactive} from 'vue';
 import axios from 'axios';
 import fav_db from "@/fav_db";
 import review_db from "@/review_db";
@@ -51,8 +53,13 @@ import review_db from "@/review_db";
 export default {
   name: 'FavoritesView',
 
+
+
+
   setup() {
+
     const favorites = ref([]);
+    const mealRatings=reactive({})
 
     const deleteMeal = async (mealId) => {
       try {
@@ -62,6 +69,8 @@ export default {
         console.error('Error deleting meal:', error);
       }
     };
+
+
 
     const selectedDiet = ref(localStorage.getItem('selectedDiet') || '');
     let filledSymbol;
@@ -76,6 +85,13 @@ export default {
       filledSymbol = require('@/assets/leafFull.png');
       emptySymbol = require('@/assets/leafEmpty.png');
       halfSymbol = require('@/assets/leafHalf.png');
+    }
+
+    async function getMyRating(meal) {
+      if (!mealRatings[meal.id]) { // Check if rating is not already fetched
+        const record = await review_db.reviews.where({ mealId: meal.id }).first();
+        mealRatings[meal.id] = record ? record.rating : 0; // Update the mealRatings object
+      }
     }
 
     const getRatingSymbols = (rating) => {
@@ -139,6 +155,7 @@ export default {
           meal.mealReviews = { averageRating: 0, comment: '' };
           return meal;
         });
+        console.log(meals)
       }
 
       for (const meal of favorites.value) {
@@ -147,6 +164,7 @@ export default {
             headers: { 'X-API-KEY': process.env.VUE_APP_API_KEY }
           });
           meal.mealReviews.averageRating = response.data[0]?.mealReviews[0]?.averageRating;
+          await getMyRating(meal)
         } catch (error) {
           console.error('Error fetching meal details:', error);
         }
@@ -156,6 +174,7 @@ export default {
 
     const currentMealForReview = ref(null);
     const prepareReview = (meal) => {
+      console.log('prepare'+meal.id)
       currentMealForReview.value = meal;
       showReviewPopup.value = true;
     };
@@ -192,16 +211,17 @@ export default {
     const reviewComment = ref('');
     const reviewRating = ref(0);
 
-    const submitReview = (meal) => {
-      if (starRating.value && reviewComment.value) {
-        const reviewBody = {
-          mealId: meal.id,
-          rating: starRating.value,
-          comment: reviewComment.value,
-          category: meal.category
-        };
+    const submitReview = () => {
+      const meal = currentMealForReview.value;
+      if (!meal) {
+        console.error("No meal selected for review");
+        return;
+      }
 
-        console.log('1', reviewBody);
+      console.log("Submitting review for meal:", meal.id);
+      console.log('he' +meal.id)
+      if (starRating.value && reviewComment.value) {
+
 
         postMealReview(meal.id, starRating.value, reviewComment.value, meal.category);
         showReviewPopup.value = false;
@@ -223,33 +243,89 @@ export default {
         }
       };
 
-      const review = {
-        mealId: mealID,
-        userId: userID,
-        detailRatings: [
-          {
-            rating: rating,
-            name: category
-          }
-        ],
-        comment: comment
-      };
+
 
       try {
-        const response = await axios.post('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
-        console.log(response.data);
-        if (response && response.data) {
-          await review_db.reviews.add({
-            mealId: response.data.mealId,
-            userId: response.data.userId,
-            apiResponseId: response.data.id
-          });
+        const record = await review_db.reviews.where({ mealId: mealID }).first();
+        if (record !== undefined){
+          const review = {
+            id: record.apiResponseId,
+            mealId: record.apiResponseId,
+            userId:userID,
+            detailRatings: [
+              {
+                rating: rating,
+                name: category
+              }
+            ],
+            comment: comment
+
+          }
+
+          console.log('rating' +rating)
+          try{
+            const response =await axios.put('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
+            console.log(response.data)
+            if (response && response.data) {
+              console.log('ich'+mealID)
+              console.log(response.data.id)
+              await review_db.reviews.put({
+                mealId: mealID,
+                userId: response.data.userId,
+                apiResponseId: response.data.id,
+                rating:rating
+              });
+              mealRatings[mealID] = rating;
+            }
+          }
+          catch (error){
+            console.log('Fehler :', error)
+          }
+        }
+        else{
+          const review = {
+            mealId: mealID,
+            userId: userID,
+            detailRatings: [
+              {
+                rating: rating,
+                name: category
+              }
+            ],
+            comment: comment
+          };
+          try{
+            const response = await axios.post('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
+            console.log(response.data);
+            if (response && response.data) {
+              console.log('ich'+mealID)
+              console.log(response.data.id)
+              await review_db.reviews.add({
+                mealId: mealID,
+                userId: response.data.userId,
+                apiResponseId: response.data.id,
+                rating:rating
+              });
+            }
+
+          }
+          catch (error){
+            console.log('Fehler :', error)
+          }
+
         }
 
+
+
       } catch (error) {
-        console.error('Fehler beim Posten:', error);
+        console.error('Fehler beim Posten:', error)
+
       }
+
+
+
     }
+
 
     const updateRating = (change) => {
       starRating.value = Math.max(0, Math.min(5, starRating.value + change));
@@ -279,7 +355,9 @@ export default {
       touchStartX,
       touchStartY,
       reviewComment,
-      stars
+      stars,
+      getMyRating,
+      mealRatings
     };
   }
 };
@@ -297,12 +375,13 @@ export default {
 
 .meal-item {
 
-    background-color: #f5f5f5;
-    padding: 10px;
-    margin-bottom: 15px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align:  left;
+  background-color: #f5f5f5;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align:  left;
+  width:85vw;
 
 }
 

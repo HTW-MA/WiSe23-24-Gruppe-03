@@ -108,56 +108,56 @@
 
                     </div>
                     <div class="flex-container">
-                    <div class="badge-container" v-if="meal.badges.length > 0">
-                      <div class="break-row"></div>
-                      <div v-for="badge in meal.badges" :key="badge.id" class="badge-container">
+                      <div class="badge-container" v-if="meal.badges.length > 0">
+                        <div class="break-row"></div>
+                        <div v-for="badge in meal.badges" :key="badge.id" class="badge-container">
 
 
-                        <img
-                            :src="getBadgeSymbol(badge.name)"
-                            class="icon-inline"
-                            @click.stop="openBadgePopup(meal.id, badge, $event)"
-                            @touchstart.stop="openBadgePopup(meal.id, badge, $event)"
+                          <img
+                              :src="getBadgeSymbol(badge.name)"
+                              class="icon-inline"
+                              @click.stop="openBadgePopup(meal.id, badge, $event)"
+                              @touchstart.stop="openBadgePopup(meal.id, badge, $event)"
 
-                        >
+                          >
 
 
-                        <div
-                            v-if="showBadgePopup === meal.id"
-                            class="popup"
-                        >
-                          <div class="popup-content">
-                            <h4>{{ currentBadge.name }}</h4>
-                            <p class="current-badge">{{ currentBadge.description }}</p>
-                            <button @click="closeBadgePopup" class="htw-btn-active">
-                              Schließen
-                            </button>
+                          <div
+                              v-if="showBadgePopup === meal.id"
+                              class="popup"
+                          >
+                            <div class="popup-content">
+                              <h4>{{ currentBadge.name }}</h4>
+                              <p class="current-badge">{{ currentBadge.description }}</p>
+                              <button @click="closeBadgePopup" class="htw-btn-active">
+                                Schließen
+                              </button>
+                            </div>
                           </div>
                         </div>
+
+                        <img
+                            v-if="meal.additives.length > 0"
+                            :src="addOns"
+                            class="icon-inline"
+                            @click.stop="openAdditivesPopup(meal, $event)"
+                            @touchstart.stop="openAdditivesPopup(meal, $event)"
+                        >
+
+                        <div class="break-row"></div>
+
+                        <img
+                            v-if="category === 'Essen' || category === 'Desserts'"
+                            :src="isFavorite(meal) ? fullStar : emptyStar"
+                            alt="Star"
+                            class="icon-inline"
+                            @click="toggleFavorite(meal); openFavPopup(meal, $event)"
+                        >
+
+                        <button @click="prepareReview(meal)" class="htw-btn-active">Bewerten</button>
+
+
                       </div>
-
-                      <img
-                          v-if="meal.additives.length > 0"
-                          :src="addOns"
-                          class="icon-inline"
-                          @click.stop="openAdditivesPopup(meal, $event)"
-                          @touchstart.stop="openAdditivesPopup(meal, $event)"
-                      >
-
-                      <div class="break-row"></div>
-
-                      <img
-                          v-if="category === 'Essen' || category === 'Desserts'"
-                          :src="isFavorite(meal) ? fullStar : emptyStar"
-                          alt="Star"
-                          class="icon-inline"
-                          @click="toggleFavorite(meal); openFavPopup(meal, $event)"
-                      >
-
-                      <button @click="prepareReview(meal)" class="htw-btn-active">Bewerten</button>
-
-
-                    </div>
 
 
 
@@ -255,7 +255,7 @@ export default {
   },
   computed: {
 
-      store() {
+    store() {
       return store
     },
 
@@ -394,11 +394,17 @@ export default {
       currentMealForReview.value = null;
     }
 
-
-    async function makePut(mealID, userID,category, rating, comment){ //eslint-disable-line
+    /* eslint-disable */
+    async function makeReview(mealID,  rating,category, comment){
       try {
         // Query the database to find the record with the matching mealId
         const record = await review_db.reviews.where({ mealId: mealID }).first();
+        const userID = localStorage.getItem('userID')
+        const config = {
+          headers: {
+            'X-API-KEY': process.env.VUE_APP_API_KEY
+          }
+        };
 
         if (record) {
           // Construct the PUT request body
@@ -410,14 +416,37 @@ export default {
             comment: comment
           };
           // Make the PUT request
-          const response = await axios.put('https://mensa.gregorflachs.de/api/v1/mealreview/', putReview, /* config */); //eslint-disable-line
+          const response = await axios.put('https://mensa.gregorflachs.de/api/v1/mealreview/', putReview,  config );
 
           // Handle the response
         } else {
-          // Handle case where no matching record is found in Dexie
+          const review = {
+
+            mealId: mealID,
+            userId: userID,
+            detailRatings: [
+              {
+                rating: rating,
+                name: category
+              }
+            ],
+            comment: comment
+          };
+          try {
+
+            const response = await axios.post('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
+            console.log(response.data);
+
+          }catch (error) {
+
+
+            console.error('Fehler beim Posten:', error);
+
+          }
+
         }
-      } catch (e) {
-        // Handle errors that might occur during database query or PUT request
+      } catch (error) {
+        console.error('Fehler beim Posten: ', error)
       }
     }
 
@@ -458,34 +487,20 @@ export default {
       }
 
       try {
-        console.log('you are here')
-        console.log(review)
+
         const response = await axios.post('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
-        if (response && response.data) {
-          await review_db.reviews.add({
-            mealId: response.data.mealId,
-            userId: response.data.userId,
-            apiResponseId: response.data.id
-          });
-        }
-        console.log('but not here')
         console.log(response.data);
 
       }catch (error) {
-        if (error.response.status === 409){
-          try{
-            const response = await axios.put('https://mensa.gregorflachs.de/api/v1/mealreview/', putReview, config);
-            console.log(response.data)
-            console.log('put')
-          }
-          catch (error){
-            console.error('Fehler beim Posten:', error);
-          }
-        }
+
+
         console.error('Fehler beim Posten:', error);
 
       }
+
+
     }
+
 
     function generateTimestampedHex(len) {
       const timestampHex = Date.now().toString(16);
@@ -517,7 +532,8 @@ export default {
           mealReviews: {
             averageRating: meal.mealReviews?.averageRating,
             comment: meal.mealReviews?.comment
-          }
+          },
+          category: meal.category
         });
         favoriteStatuses.value[meal.id] = true;
         message.value = 'zu Favoriten hinzugefügt';
@@ -1151,6 +1167,7 @@ export default {
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   text-align:  left;
+
 }
 
 .category-section h4 {
@@ -1214,3 +1231,4 @@ export default {
   font-size: 16px;
 }
 </style>
+
