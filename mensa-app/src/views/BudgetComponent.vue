@@ -5,8 +5,6 @@
 //import NDEFReader from '@types/w3c-web-nfc';
 //import NDEFRecord from '@types/w3c-web-nfc';
 //import NDEFMessage from '@types/w3c-web-nfc';
-
-
 // import {Modal} from "bootstrap";
 
 export default {
@@ -108,6 +106,8 @@ export default {
   },
 
   mounted() {
+
+
     this.budgetGescannt = this.betrag !== -1;
 
     if (this.betrag === -1) {
@@ -115,6 +115,8 @@ export default {
     } else {
       this.target = "Budget";
     }
+
+    console.log('Firebase cloud messaging object', this.messaging)
   }
 }
 

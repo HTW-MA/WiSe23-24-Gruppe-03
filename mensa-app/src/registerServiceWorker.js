@@ -27,6 +27,30 @@ if (process.env.NODE_ENV === 'production') {
         error (error) {
             console.error('Error during service worker registration:', error)
         }
+    });
+
+    register('../public/firebase-messaging-sw.js', {
+        ready () {
+            console.log(
+                'Push notifications are being served by a service worker.\n' +
+                'For more details, visit https://goo.gl/AFskqB'
+            )
+        },
+        registered () {
+            console.log('firebase-messaging-sw has been registered.')
+        },
+        updatefound () {
+            console.log('New content is downloading.')
+        },
+        updated () {
+            console.log('New content is available; please refresh.')
+        },
+        offline () {
+            console.log('No internet connection found. App is running in offline mode.')
+        },
+        error (error) {
+            console.error('Error during service worker registration:', error)
+        }
     })
 }
 
