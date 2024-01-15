@@ -578,18 +578,19 @@ export default {
 
     let debounceTimer;
     const closePopupOnOverlayClick = (event) => {
-      if (event.target.classList.contains('badge-icon')) {
-        return;
+      if (!isPopupOpenAllowed.value){
+        return
       }
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
-        if ( (!event.target.closest('.popup-content') && showBadgePopup.value) || (!event.target.closest('.popup-content') && showAdditivesPopup.value) ) {
+        if (!event.target.closest('.popup-content') && showBadgePopup.value) {
           showMeatPopup.value = false;
           showAdditivesPopup.value = false;
           showBadgePopup.value = null;
         }
-      }, 20);
+      }, 200);
     };
+
 
 
 
@@ -772,7 +773,7 @@ export default {
     const showBadgePopup=ref(false);
     const currentBadge = ref({});
     const showMeatPopup = ref(false)
-
+    const isPopupOpenAllowed = ref(false);
     const openMeatPopup =(event)=>{
       event.stopPropagation();
 
@@ -805,10 +806,15 @@ export default {
       currentBadge.value = badge;
       showBadgePopup.value = mealId;
       popupPosition.value = {x,y};
+      setTimeout(() => {
+        showBadgePopup.value = mealId;
+        isPopupOpenAllowed.value = true;
+      }, 100);
     };
 
     const closeBadgePopup = () => {
       showBadgePopup.value = null;
+      isPopupOpenAllowed.value = false;
     };
 
     onUnmounted(() => {
