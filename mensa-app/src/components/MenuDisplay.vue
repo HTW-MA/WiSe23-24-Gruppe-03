@@ -790,6 +790,7 @@ export default {
       showMeatPopup.value=true
     }
     const openBadgePopup = (mealId, badge,event) => {
+      isPopupOpenAllowed.value = false;
       showMessage.value = false;
       showAdditivesPopup.value = false;
       event.stopPropagation();
