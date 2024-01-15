@@ -6,6 +6,7 @@
 //import NDEFRecord from '@types/w3c-web-nfc';
 //import NDEFMessage from '@types/w3c-web-nfc';
 // import {Modal} from "bootstrap";
+import {getMessaging} from "firebase/messaging";
 
 export default {
   name: 'BudgetComponent',
@@ -73,7 +74,7 @@ export default {
                   for (const record of event.message.records) {
                     console.log("Record type:  " + record.recordType);
                     console.log("MIME type:    " + record.mediaType);
-                    console.log("=== data ===\n" + decoder.decode(record.data));
+                    console.log("=== data ===/n" + decoder.decode(record.data));
                     this.betrag = decoder.decode(record.data);
                     localStorage.setItem("Betrag", this.betrag);
                     localStorage.setItem("Timestamp", new Date())
@@ -102,6 +103,63 @@ export default {
       //   test.dispose()
       //   console.log("Nach dem Hide")
       // }, 5000)
+    },
+    sendNotification() {
+      /*
+      //Mit Admin
+      //var admin = require("firebase-admin"); Bereits importiert
+
+      var serviceAccount = require("../../../mensa-app-messaging-firebase-adminsdk-rzx4r-938c33982d.json");
+
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount)
+      });
+
+      // This registration token comes from the client FCM SDKs.
+      const registrationToken = localStorage.getItem("User-Token");
+
+      const message = {
+        notification: {
+          title: "Test",
+          body: "Test"
+        },
+        token: registrationToken
+      };
+
+// Send a message to the device corresponding to the provided
+// registration token.
+      admin.messaging().send(message)
+          .then((response) => {
+            // Response is a message ID string.
+            console.log('Successfully sent message:', response);
+          })
+          .catch((error) => {
+            console.log('Error sending message:', error);
+          });
+      */
+
+
+      //Ohne Admin
+      const registrationToken = localStorage.getItem("User-Token");
+
+      const message = {
+        notification: {
+          title: "Test",
+          body: "Test"
+        },
+        token: registrationToken
+      };
+
+      // Send a message to the device corresponding to the provided
+      // registration token.
+      getMessaging().send(message)
+        .then((response) => {
+          // Response is a message ID string.
+          console.log('Successfully sent message:', response);
+        })
+        .catch((error) => {
+          console.log('Error sending message:', error);
+        });
     }
   },
 
@@ -123,6 +181,9 @@ export default {
 </script>
 
 <template>
+  <div class="test">
+    <button v-on:click="sendNotification">send Message - funktioniert nicht</button>
+  </div>
 
   <div class="budget-container">
 

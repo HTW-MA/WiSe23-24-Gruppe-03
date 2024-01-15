@@ -34,6 +34,7 @@ onMessage(messaging, (payload) => {
 getToken(messaging, { vapidKey: 'BLaAKtfevr-_XQcO_zN9u18aEuh-KRL9qQ-0z_k8qmk5HSvaNaiFFJZ2QdDRGuADS4cVq6O2RnFZXffWYnjeseA' }).then((currentToken) => {
   if (currentToken) {
     console.log("Token is:", currentToken)
+    localStorage.setItem("User-Token", currentToken)
   } else {
     // Show permission request UI
     console.log('No registration token available. Request permission to generate one.');
