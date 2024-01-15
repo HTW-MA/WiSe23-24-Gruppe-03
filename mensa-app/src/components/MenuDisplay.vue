@@ -576,21 +576,11 @@ export default {
       showAdditivesPopup.value = true;
     };
 
-    let debounceTimer;
+
     const closePopupOnOverlayClick = (event) => {
-      if (!isPopupOpenAllowed.value){
-        return
+      if (isPopupOpenAllowed.value && !event.target.closest('.popup-content') && showBadgePopup.value) {
+        closeBadgePopup();
       }
-      clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => {
-        if (!event.target.closest('.popup-content') && showBadgePopup.value) {
-          showMeatPopup.value = false;
-          showAdditivesPopup.value = false;
-          showBadgePopup.value = null;
-        }
-      }, 200);
-      isPopupOpenAllowed.value = false;
-      clearTimeout(popupTimeout);
     };
 
 
