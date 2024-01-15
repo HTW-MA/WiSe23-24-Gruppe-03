@@ -1,7 +1,7 @@
 <template>
 
   <div id="app" @touchstart="handleTouchStart" @touchend="handleTouchEnd">
-    <div :class="{ 'dark-background': isDarkBackground }">
+
 
 
     <div class="content">
@@ -36,7 +36,7 @@
           <div v-for="(categories, date) in filteredMeals" :key="date">
             <h3></h3>
 
-            <div v-for="(categoryMeals, category) in categories" :key="category"  class="category-section">
+            <div v-for="(categoryMeals, category) in categories" :key="category"  class="category-section" :class="{ 'dark-background': isDarkBackground }" >
               <h4>{{ category }}</h4>
               <div>
                 <div v-for="meal in categoryMeals" :key="meal.id" class="meal-container">
@@ -185,7 +185,7 @@
 
 
   </div>
-  </div>
+
 </template>
 
 
