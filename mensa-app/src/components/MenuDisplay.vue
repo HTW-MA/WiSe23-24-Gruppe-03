@@ -182,7 +182,7 @@
         </div>
       </div>
     </div>
-
+    <p> </p>
 
   </div>
 
@@ -212,6 +212,8 @@ import emptyStar from '../assets/emptyStar.png'
 import left from '../assets/leftArrow.png'
 import right from '../assets/rightArrow.png'
 import noice from '../assets/noice.webp'
+import swipeLeft from '../assets/lefffft.webp'
+import swipeRight from '../assets/swipe rigth.webp'
 
 import fav_db from "@/fav_db";
 import {changeColorScheme} from "@/utils";
@@ -987,7 +989,9 @@ export default {
       updateRating,
       isHighlighted,
       overlay,
-      isDarkBackground
+      isDarkBackground,
+      swipeLeft,
+      swipeRight
 
     };
   }
