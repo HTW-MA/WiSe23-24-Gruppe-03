@@ -774,6 +774,7 @@ export default {
     const currentBadge = ref({});
     const showMeatPopup = ref(false)
     const isPopupOpenAllowed = ref(false);
+    let popupTimeout = null;
     const openMeatPopup =(event)=>{
       event.stopPropagation();
 
@@ -790,6 +791,7 @@ export default {
       showMeatPopup.value=true
     }
     const openBadgePopup = (mealId, badge,event) => {
+      clearTimeout(popupTimeout);
       isPopupOpenAllowed.value = false;
       showMessage.value = false;
       showAdditivesPopup.value = false;
@@ -807,7 +809,7 @@ export default {
       currentBadge.value = badge;
       showBadgePopup.value = mealId;
       popupPosition.value = {x,y};
-      setTimeout(() => {
+      popupTimeout = setTimeout(() => {
         showBadgePopup.value = mealId;
         isPopupOpenAllowed.value = true;
       }, 1000);
@@ -816,6 +818,7 @@ export default {
     const closeBadgePopup = () => {
       showBadgePopup.value = null;
       isPopupOpenAllowed.value = false;
+      clearTimeout(popupTimeout);
     };
 
     onUnmounted(() => {
