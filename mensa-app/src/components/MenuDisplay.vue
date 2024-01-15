@@ -188,7 +188,7 @@
 
 
 <script>
-import {ref, watch, computed, onMounted, reactive, onUnmounted} from 'vue';
+import {ref, watch, computed, onMounted, reactive, onUnmounted, nextTick} from 'vue';
 import {useRouter} from "vue-router";
 import axios from 'axios';
 import veganIcon from '../assets/leafFull.png';
@@ -782,6 +782,8 @@ export default {
       popupPosition.value = { x, y };
       showMeatPopup.value=true
     }
+
+    const popupContent = ref(null)
     const openBadgePopup = (mealId, badge,event) => {
       clearTimeout(popupTimeout);
       isPopupOpenAllowed.value = false;
@@ -805,9 +807,9 @@ export default {
         showBadgePopup.value = mealId;
         isPopupOpenAllowed.value = true;
       }, 500);
-      this.$nextTick(() => {
-        if (this.$refs.popupContent) {
-          this.$refs.popupContent.scrollTop = 0;
+      nextTick(() => {
+        if (popupContent.value) {
+          popupContent.value.scrollTop = 0;
         }
       });
     };
