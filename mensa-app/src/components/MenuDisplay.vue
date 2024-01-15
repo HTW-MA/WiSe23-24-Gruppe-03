@@ -1,19 +1,21 @@
 <template>
 
   <div id="app" @touchstart="handleTouchStart" @touchend="handleTouchEnd">
+    <div :class="{ 'dark-background': isDarkBackground }">
 
 
     <div class="content">
       <div class="date-picker">
         <span class="arrow" @click="decrementDate()">&#9664;</span>
-        <input type="date" v-model="startDate" @change="fetchMenu" />
+        <input type="date" v-model="startDate" @change="fetchMenu" :class="{ 'highlighted': isHighlighted }" />
         <span class="arrow" @click="incrementDate()">&#9654;</span>
       </div>
 
 
-      <button class="htw-btn-active" @click="navigateToProfile">
+      <button class="htw-btn-active"  @click="navigateToProfile">
         Einstellungen ändern
       </button>
+
       <div v-if="mensaSucks && !isWeekend">
         Tja... da musst du dich an deine Uni wenden. Wir haben keine Daten von deiner Mensa erhalten :(
       </div>
@@ -183,6 +185,7 @@
 
 
   </div>
+  </div>
 </template>
 
 
@@ -322,6 +325,9 @@ export default {
     const showReviewPopup = ref(false);
     const reviewComment = ref('');
     const reviewRating = ref(0);
+    const isHighlighted = ref(false);
+    const overlay = ref ( false)
+    const isDarkBackground = ref(false)
 
     const popupPosition  =ref({x:0,y:0});
 
@@ -655,6 +661,20 @@ export default {
       let date = new Date(startDate.value);
       date.setDate(date.getDate() + 1);
       startDate.value = date.toISOString().slice(0, 10);
+      isHighlighted.value = true;
+      overlay.value = true;
+      isDarkBackground.value = true;
+      document.body.classList.add('dark-background');
+
+      // Reset highlight and dark background after 500 milliseconds (half a second)
+      setTimeout(() => {
+        isHighlighted.value = false;
+        overlay.value = false;
+        isDarkBackground.value = false;
+        document.body.classList.remove('dark-background');
+      }, 500);
+
+
       fetchMenu();
       navigator.vibrate(200);
     };
@@ -966,7 +986,10 @@ export default {
       openMeatPopup,
       noice,
       starRating,
-      updateRating
+      updateRating,
+      isHighlighted,
+      overlay,
+      isDarkBackground
 
     };
   }
@@ -1194,5 +1217,26 @@ export default {
 .current-badge{
 
   font-size: 16px;
+}
+
+.highlighted {
+  background-color: yellow;
+}
+
+.dark-background {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  pointer-events: none;
+  display: none;
 }
 </style>
