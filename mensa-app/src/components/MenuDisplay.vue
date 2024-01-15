@@ -36,7 +36,7 @@
           <div v-for="(categories, date) in filteredMeals" :key="date">
             <h3></h3>
 
-            <div v-for="(categoryMeals, category) in categories" :key="category"  class="category-section" :class="{ 'dark-background': isDarkBackground }" >
+            <div v-for="(categoryMeals, category) in categories" :key="category"  class="category-section"  :class="{ 'overlay': overlay }">
               <h4>{{ category }}</h4>
               <div>
                 <div v-for="meal in categoryMeals" :key="meal.id" class="meal-container">
@@ -665,8 +665,6 @@ export default {
       overlay.value = true;
       isDarkBackground.value = true;
       document.body.classList.add('dark-background');
-
-      // Reset highlight and dark background after 500 milliseconds (half a second)
       setTimeout(() => {
         isHighlighted.value = false;
         overlay.value = false;
@@ -1234,9 +1232,14 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.8);
   z-index: 1000;
   pointer-events: none;
   display: none;
+}
+
+
+.visible {
+  display: block;
 }
 </style>
