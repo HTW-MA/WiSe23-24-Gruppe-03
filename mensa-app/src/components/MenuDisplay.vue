@@ -809,7 +809,7 @@ export default {
       setTimeout(() => {
         showBadgePopup.value = mealId;
         isPopupOpenAllowed.value = true;
-      }, 200);
+      }, 1000);
     };
 
     const closeBadgePopup = () => {
