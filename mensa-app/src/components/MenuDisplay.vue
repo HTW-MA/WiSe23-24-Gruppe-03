@@ -812,7 +812,7 @@ export default {
       popupTimeout = setTimeout(() => {
         showBadgePopup.value = mealId;
         isPopupOpenAllowed.value = true;
-      }, 1000);
+      }, 500);
     };
 
     const closeBadgePopup = () => {
