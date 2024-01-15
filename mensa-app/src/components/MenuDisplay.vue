@@ -127,7 +127,7 @@
                               v-if="showBadgePopup === meal.id"
                               class="popup"
                           >
-                            <div class="popup-content">
+                            <div class="popup-content" ref="popupContent">
                               <h4>{{ currentBadge.name }}</h4>
                               <p class="current-badge">{{ currentBadge.description }}</p>
                               <button @click="closeBadgePopup" class="htw-btn-active">
@@ -589,6 +589,8 @@ export default {
           showBadgePopup.value = null;
         }
       }, 200);
+      isPopupOpenAllowed.value = false;
+      clearTimeout(popupTimeout);
     };
 
 
@@ -813,6 +815,11 @@ export default {
         showBadgePopup.value = mealId;
         isPopupOpenAllowed.value = true;
       }, 500);
+      this.$nextTick(() => {
+        if (this.$refs.popupContent) {
+          this.$refs.popupContent.scrollTop = 0;
+        }
+      });
     };
 
     const closeBadgePopup = () => {
