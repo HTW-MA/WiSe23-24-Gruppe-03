@@ -578,17 +578,14 @@ export default {
 
     let debounceTimer;
     const closePopupOnOverlayClick = (event) => {
-
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
-        if (!event.target.closest('.popup-content')) {
+        if (!event.target.closest('.popup-content') && showBadgePopup.value) {
           showMeatPopup.value = false;
           showAdditivesPopup.value = false;
           showBadgePopup.value = null;
-
         }
-      }, 200);
-
+      }, 20);
     };
 
 
