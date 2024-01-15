@@ -127,7 +127,7 @@
                               v-if="showBadgePopup === meal.id"
                               class="popup"
                           >
-                            <div class="popup-content" ref="popupContent">
+                            <div class="popup-content" ref="popupContentRef">
                               <h4>{{ currentBadge.name }}</h4>
                               <p class="current-badge">{{ currentBadge.description }}</p>
                               <button @click="closeBadgePopup" class="htw-btn-active">
@@ -188,7 +188,7 @@
 
 
 <script>
-import {ref, watch, computed, onMounted, reactive, onUnmounted, nextTick} from 'vue';
+import {ref, watch, computed, onMounted, reactive} from 'vue';
 import {useRouter} from "vue-router";
 import axios from 'axios';
 import veganIcon from '../assets/leafFull.png';
@@ -327,6 +327,7 @@ export default {
 
     const showMessage = ref(false);
     const message = ref('');
+    const popupContentRef = ref(null)
 
     const showFavoritePopup = ref(false);
     const starRating = ref(0);
@@ -577,12 +578,6 @@ export default {
     };
 
 
-    const closePopupOnOverlayClick = (event) => {
-      if (isPopupOpenAllowed.value && !event.target.closest('.popup-content') && showBadgePopup.value) {
-        closeBadgePopup();
-      }
-    };
-
 
 
 
@@ -765,8 +760,7 @@ export default {
     const showBadgePopup=ref(false);
     const currentBadge = ref({});
     const showMeatPopup = ref(false)
-    const isPopupOpenAllowed = ref(false);
-    let popupTimeout = null;
+
     const openMeatPopup =(event)=>{
       event.stopPropagation();
 
@@ -782,11 +776,7 @@ export default {
       popupPosition.value = { x, y };
       showMeatPopup.value=true
     }
-
-    const popupContent = ref(null)
     const openBadgePopup = (mealId, badge,event) => {
-      clearTimeout(popupTimeout);
-      isPopupOpenAllowed.value = false;
       showMessage.value = false;
       showAdditivesPopup.value = false;
       event.stopPropagation();
@@ -800,30 +790,21 @@ export default {
         x=event.clientX;
         y=event.clientY;
       }
+
       currentBadge.value = badge;
       showBadgePopup.value = mealId;
       popupPosition.value = {x,y};
-      popupTimeout = setTimeout(() => {
-        showBadgePopup.value = mealId;
-        isPopupOpenAllowed.value = true;
-      }, 500);
-      nextTick(() => {
-        if (popupContent.value) {
-          popupContent.value.scrollTop = 0;
-        }
-      });
+
+      if (popupContentRef.value) {
+        popupContentRef.value.scrollTop =-20;
+      }
     };
 
     const closeBadgePopup = () => {
       showBadgePopup.value = null;
-      isPopupOpenAllowed.value = false;
-      clearTimeout(popupTimeout);
     };
 
-    onUnmounted(() => {
-      document.removeEventListener('click', closePopupOnOverlayClick);
-      document.addEventListener('touchstart', closePopupOnOverlayClick);
-    });
+
 
     onMounted(
 
@@ -848,8 +829,6 @@ export default {
             console.log(exception)
 
           }
-          document.addEventListener('click', closePopupOnOverlayClick);
-          document.addEventListener('touchstart', closePopupOnOverlayClick);
 
         },
 
@@ -949,7 +928,7 @@ export default {
       showAdditivesPopup,
       additivesList,
       openAdditivesPopup,
-      closePopupOnOverlayClick,
+      popupContentRef,
       klima,
       getBadgeSymbol,
       openBadgePopup,
@@ -1024,7 +1003,7 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   z-index: 100;
 
@@ -1072,6 +1051,7 @@ export default {
   width: 100%;
   height: 100%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.18);
+  overflow-y: scroll;
 }
 
 
@@ -1126,7 +1106,7 @@ export default {
 }
 
 .meat-popup {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0), 0 4px 8px rgba(0, 0, 0, 0);
   position: fixed;
   top: 50%;
   left: 50%;
@@ -1212,6 +1192,7 @@ export default {
   width: 100%;
 }
 .current-badge{
+
   font-size: 16px;
 }
 </style>
