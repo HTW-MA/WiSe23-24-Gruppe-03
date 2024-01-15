@@ -7,7 +7,7 @@
     <div class="content">
       <div class="date-picker">
         <span class="arrow" @click="decrementDate()">&#9664;</span>
-        <input type="date" v-model="startDate" @change="fetchMenu" :class="{ 'highlighted': isHighlighted }" />
+        <input type="date" v-model="startDate" @change="fetchMenu(startDate)" :class="{ 'highlighted': isHighlighted }" />
         <span class="arrow" @click="incrementDate()">&#9654;</span>
       </div>
 
@@ -675,7 +675,7 @@ export default {
       }, 500);
 
 
-      fetchMenu();
+      fetchMenu(date);
       navigator.vibrate(200);
     };
 
@@ -683,7 +683,7 @@ export default {
       let date = new Date(startDate.value);
       date.setDate(date.getDate() - 1);
       startDate.value = date.toISOString().slice(0, 10);
-      fetchMenu();
+      fetchMenu(date);
       navigator.vibrate(200);
     };
 
@@ -713,10 +713,10 @@ export default {
       router.push('/Profile');
     };
 
-    const fetchMenu = async () => {
+    const fetchMenu = async (date) => {
       try {
 
-        const response = await axios.get(`https://mensa.gregorflachs.de/api/v1/menue?loadingtype=complete&canteenId=${props.selectedCanteen}&startdate=${startDate.value}&enddate=${startDate.value}`, {
+        const response = await axios.get(`https://mensa.gregorflachs.de/api/v1/menue?loadingtype=complete&canteenId=${props.selectedCanteen}&startdate=${date}&enddate=${date}`, {
           headers: {  'X-API-KEY':  process.env.VUE_APP_API_KEY
           }
         });
@@ -733,11 +733,21 @@ export default {
           return acc;
         }, {});
         meals.value = mealsByDateAndCategory;
-        sessionStorage.setItem('meals', JSON.stringify(meals.value))
+        //sessionStorage.setItem('meals', JSON.stringify(meals.value))
 
       } catch (error) {
         console.error(error);
       }
+    };
+
+    const fetchAndStoreTodaysMenu = async () => {
+      const today = new Date().toISOString().split('T')[0];
+
+      await fetchMenu(today);
+
+      // Store today's menu and date in sessionStorage
+      sessionStorage.setItem('meals', JSON.stringify(meals.value));
+      sessionStorage.setItem('selectedDate', today);
     };
 
 
@@ -828,12 +838,12 @@ export default {
 
     onMounted(
 
-
+        fetchAndStoreTodaysMenu(),
 
         async () => {
 
           try{
-            await fetchMenu();
+            await fetchMenu(startDate);
             checkAndCompareMeals();
             updateButtonColor();
 
@@ -904,8 +914,7 @@ export default {
 
     watch(() => props.selectedCanteen, fetchMenu);
     watch(startDate, (newValue) => {
-      fetchMenu();
-      sessionStorage.setItem('selectedDate', newValue);
+      fetchMenu(newValue);
     });
 
 
