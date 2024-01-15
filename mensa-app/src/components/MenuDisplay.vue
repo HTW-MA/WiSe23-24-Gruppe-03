@@ -838,11 +838,12 @@ export default {
 
     onMounted(
 
-        fetchAndStoreTodaysMenu(),
+
 
         async () => {
 
           try{
+            await fetchAndStoreTodaysMenu();
             await fetchMenu(startDate);
             checkAndCompareMeals();
             updateButtonColor();
