@@ -578,9 +578,12 @@ export default {
 
     let debounceTimer;
     const closePopupOnOverlayClick = (event) => {
+      if (event.target.classList.contains('badge-icon')) {
+        return;
+      }
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
-        if (!event.target.closest('.popup-content') && showBadgePopup.value) {
+        if ( (!event.target.closest('.popup-content') && showBadgePopup.value) || (!event.target.closest('.popup-content') && showAdditivesPopup.value) ) {
           showMeatPopup.value = false;
           showAdditivesPopup.value = false;
           showBadgePopup.value = null;
@@ -1017,7 +1020,7 @@ export default {
   z-index: 100;
 
   border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0), 0 4px 8px rgba(0, 0, 0, 0);
   word-wrap: break-word;
   font-size: 18px;
   padding: 20px;
@@ -1203,4 +1206,3 @@ export default {
   font-size: 16px;
 }
 </style>
-
