@@ -11,11 +11,6 @@
         <span class="arrow" @click="incrementDate()">&#9654;</span>
       </div>
 
-
-      <button class="htw-btn-active"  @click="navigateToProfile">
-        Einstellungen ändern
-      </button>
-
       <div v-if="mensaSucks && !isWeekend">
         Tja... da musst du dich an deine Uni wenden. Wir haben keine Daten von deiner Mensa erhalten :(
       </div>
@@ -194,19 +189,23 @@
 import {ref, watch, computed, onMounted, reactive} from 'vue';
 import {useRouter} from "vue-router";
 import axios from 'axios';
-import veganIcon from '../assets/leafFull.png';
+import veganIcon from '../assets/vegan-siegel.png';
 import veggieIcon from '../assets/veggie.png'
 import chickenIcon from '../assets/fullChicken.png'
 import addOns from '../assets/zusatzstoffe.png'
-import gruen from '../assets/grueneAmpel.jpg'
+import gruen from '../assets/gruenerAmpelPunkt.png'
 import aggro from '../assets/aggriculture.png'
-import co2 from '../assets/co2.jpg'
+import co2_gruen from '../assets/co2_grün.png'
+import co2_gelb from '../assets/co2_gelb.png'
+import co2_rot from '../assets/co2_rot.png'
 import fairtrade from '../assets/fairtrade.png'
 import fish from '../assets/fish.png'
-import gelb from '../assets/gelbeAMpel.png'
-import rot from '../assets/roteAmpel.png'
-import water from '../assets/water.png'
-import klima from '../assets/klima.jpg'
+import gelb from '../assets/gelberAmpeltPunkt.png'
+import rot from '../assets/roterAmpelPunkt.png'
+import water_green from '../assets/water_green.png'
+import water_yellow from '../assets/water_yellow.png'
+import water_red from '../assets/water_red.png'
+import klima from '../assets/klima.png'
 import fullStar from '../assets/fullStar.png'
 import emptyStar from '../assets/emptyStar.png'
 import left from '../assets/leftArrow.png'
@@ -762,12 +761,12 @@ export default {
         "Vegetarisch": veggieIcon,
         "Nachhaltige Landwirtschaft": aggro,
         "Nachhaltige Fischerei": fish,
-        "CO2_bewertung_A": co2,
-        "CO2_bewertung_B": co2,
-        "CO2_bewertung_C": co2,
-        "H2O_bewertung_A": water,
-        "H2O_bewertung_B": water,
-        "H2O_bewertung_C": water,
+        "CO2_bewertung_A": co2_gruen,
+        "CO2_bewertung_B": co2_gelb,
+        "CO2_bewertung_C": co2_rot,
+        "H2O_bewertung_A": water_green,
+        "H2O_bewertung_B": water_yellow,
+        "H2O_bewertung_C": water_red,
       };
       return badgeSymbols[badgeName] || "path/to/default-icon.png";
     };
@@ -1021,7 +1020,9 @@ export default {
   padding-top: 10vh;
 }
 
-
+img {
+  mix-blend-mode: multiply;
+}
 .content {
   width: 80%;
 
