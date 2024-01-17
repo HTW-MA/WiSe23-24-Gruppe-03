@@ -1,4 +1,5 @@
 <template>
+  <Header/>
   <router-view/>
   <navbar/>
 </template>
@@ -7,6 +8,7 @@
 import { Options, Vue } from 'vue-class-component';
 import Home from './views/HomeComponent.vue'
 import Navbar from "@/components/Navbar.vue";
+import Header from "@/components/Header.vue";
 import { initializeApp } from "firebase/app";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
@@ -48,7 +50,8 @@ getToken(messaging, { vapidKey: 'BLaAKtfevr-_XQcO_zN9u18aEuh-KRL9qQ-0z_k8qmk5HSv
 @Options({
   components: {
     Navbar,
-    Home
+    Home,
+    Header
   },
 })
 export default class App extends Vue {}
