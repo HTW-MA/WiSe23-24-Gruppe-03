@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../src/views/HomeComponent.vue'
 import Budget from '../src/views/BudgetComponent.vue'
 import SelectOptions from "@/views/SelectOptions.vue";
-import MealComponent from "@/views/MealComponent.vue";
 import GeoLocationTestComponent from "@/views/GeoLocationTestComponent.vue";
 import FavoritesView from "@/views/FavoritesView.vue";
 import NoInternet from "@/views/NoInternet.vue";
@@ -33,10 +32,7 @@ const routes = [
         component: SelectOptions
     },
 
-    {
-        path: '/Meal',
-        component: MealComponent
-    }
+
 
 ];
 

@@ -847,9 +847,9 @@ export default {
 
     onMounted(
 
-        nextTick(() => {
-          updateButtonColor();
-        }),
+        // nextTick(() => {
+        //   updateButtonColor();
+        // }),
         updateButtonColorPopup,
 
 
