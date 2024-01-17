@@ -182,23 +182,20 @@ export default {
 </script>
 
 <template>
-  <div class="test">
-    <button v-on:click="sendNotification">send Message - funktioniert nicht</button>
+<!--  <div class="test">-->
+<!--    <button v-on:click="sendNotification">send Message - funktioniert nicht</button>-->
+<!--  </div>-->
+  <div id="Hinweistext">
+    <p class="budget-text">Klicken Sie auf das Icon um ihr Budget zu scannen.</p>
   </div>
-  <br>
-  <p class="budget-text">Klicken Sie auf das Icon um ihr Budget zu scannen.</p>
-
   <div class="budget-container">
-
-
-  <!-- Click on img triggers modal -->
-  <div v-if="!budgetGescannt">
-    <img id="nfc" v-on:click="readCard" src="../assets/NFC.png" alt="NFC" class="budget-icon" data-bs-toggle="modal" data-bs-target="#exampleModal" style="cursor: pointer">
-  </div>
-  <div v-if="budgetGescannt" v-on:click="readCard" data-bs-toggle="modal" data-bs-target="#exampleModal" style="font-size: 40px">
-    {{betrag}}€
-  </div>
-
+    <!-- Click on img triggers modal -->
+    <div v-if="!budgetGescannt">
+      <img id="nfc" v-on:click="readCard" src="../assets/NFC.png" alt="NFC" class="budget-icon" data-bs-toggle="modal" data-bs-target="#exampleModal" style="cursor: pointer">
+    </div>
+    <div v-if="budgetGescannt" v-on:click="readCard" data-bs-toggle="modal" data-bs-target="#exampleModal" style="font-size: 40px">
+      {{betrag}}€
+    </div>
   </div>
 
   <!-- Modal -->
@@ -232,27 +229,22 @@ export default {
 </template>
 
 <style scoped>
-.test {
-  display: none;
-}
-
 /* Allgemeine Stile, die nicht bildschirmgrößenspezifisch sind */
 .budget-container {
   text-align: center;
   padding-top: 60px; /* Angenommen Ihre Navbar ist 60px hoch */
+  padding-bottom: 60px;
 }
 
 @media only screen and (orientation: landscape){
   .budget-icon {
-    width: 25%; /* Standardbreite für größere Bildschirme */
-    margin-bottom: 20px;
+    width: 25%;
   }
 }
 
 @media only screen and (orientation: portrait) {
   .budget-icon {
     width: 50%; /* Standardbreite für größere Bildschirme */
-    margin-bottom: 20px;
   }
 }
 
