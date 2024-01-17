@@ -194,7 +194,7 @@ export default {
       <img id="nfc" v-on:click="readCard" src="../assets/NFC.png" alt="NFC" class="budget-icon" data-bs-toggle="modal" data-bs-target="#exampleModal" style="cursor: pointer">
     </div>
     <div v-if="budgetGescannt" v-on:click="readCard" data-bs-toggle="modal" data-bs-target="#exampleModal" style="font-size: 40px">
-      {{betrag}}€
+      {{betrag}} €
     </div>
   </div>
 
