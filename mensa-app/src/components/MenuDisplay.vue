@@ -712,7 +712,7 @@ export default {
     };
 
     const fetchMenu = async (date) => {
-      try {
+        try {
 
         const response = await axios.get(`https://mensa.gregorflachs.de/api/v1/menue?loadingtype=complete&canteenId=${props.selectedCanteen}&startdate=${date}&enddate=${date}`, {
           headers: {  'X-API-KEY':  process.env.VUE_APP_API_KEY
@@ -822,7 +822,7 @@ export default {
       showBadgePopup.value = null;
     };
 
-    const store = { state: { selectedCanteen: props.selectedCanteen } }
+    //const store = { state: { selectedCanteen: props.selectedCanteen } }
 
     const updateButtonColor = () => {
       changeColorScheme(store.state.selectedCanteen, 'backgroundColor', '.htw-btn-active');
@@ -846,7 +846,12 @@ export default {
     });
 
     onMounted(
+
+        nextTick(() => {
+          updateButtonColor();
+        }),
         updateButtonColorPopup,
+
 
 
         async () => {
@@ -1117,7 +1122,7 @@ img {
 
 
 .htw-btn-active {
-  background-color: #76B900;
+
   color: white;
   margin-left: 10px;
 }
