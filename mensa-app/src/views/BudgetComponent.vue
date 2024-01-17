@@ -91,7 +91,7 @@ export default {
           };
         }).catch(error => {
           console.log(`Error! Scan failed to start: ${error}.`);
-          this.scanErfolgreich = 'nein'
+          this.scanErfolgreich = 'noch nicht'
         });
       } else {
         console.log("NDEFReader nicht erkannt")
