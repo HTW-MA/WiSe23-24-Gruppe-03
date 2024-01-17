@@ -23,7 +23,7 @@
           </div>
 
 
-          <textarea
+          <textarea class="comment-field"
               v-model="reviewComment"
               placeholder="Kommentar"
           ></textarea>
@@ -43,10 +43,12 @@
   </div>
 </template>
 <script>
-import {ref, onMounted, reactive} from 'vue';
+import {ref, onMounted, reactive, watch, nextTick} from 'vue';
 import axios from 'axios';
 import fav_db from "@/fav_db";
 import review_db from "@/review_db";
+import {changeColorScheme} from "@/utils";
+import store from "@/store";
 
 export default {
   name: 'FavoritesView',
@@ -58,6 +60,7 @@ export default {
 
     const favorites = ref([]);
     const mealRatings=reactive({})
+
 
     const deleteMeal = async (mealId) => {
       try {
@@ -211,6 +214,16 @@ export default {
     const reviewComment = ref('');
     const reviewRating = ref(0);
 
+    const updateButtonColor = () => {
+      changeColorScheme(store.state.selectedCanteen, 'backgroundColor', '.htw-btn-active');
+    };
+
+    watch(showReviewPopup, async (newVal) => {
+      if (newVal) {
+        await nextTick();
+        updateButtonColor();
+      }
+    });
     const submitReview = () => {
       const meal = currentMealForReview.value;
       if (!meal) {
@@ -316,7 +329,10 @@ export default {
       starRating.value = Math.max(0, Math.min(5, starRating.value + change));
     };
 
-    onMounted(loadFavorites);
+    onMounted(async () => {
+      await loadFavorites();
+      updateButtonColor();
+    });
 
     return {
       favorites,
@@ -342,7 +358,8 @@ export default {
       reviewComment,
       stars,
       getMyRating,
-      mealRatings
+      mealRatings,
+      updateButtonColor
     };
   }
 };
@@ -373,6 +390,13 @@ export default {
 .meal-name {
   margin-bottom: 0.5em;
   font-size: 16px;
+}
+
+.star-rating {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
 }
 
 .rating-symbols {
@@ -415,9 +439,15 @@ export default {
 .button-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 5px;
   justify-content: flex-start;
   align-items: center;
+
+}
+
+.comment-field {
+  width: 100%;
+  max-width: 100%;
 
 }
 
@@ -426,5 +456,26 @@ export default {
   background-color: #76B900;
   color: white;
   margin-left: 10px;
+}
+
+
+.review-popup {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.18);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  z-index: 1000;
+  overflow: auto;
+  word-wrap: break-word;
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  opacity: 1;
+  max-width: 80vw;
+  max-height: 80vh;
+  display: inline-block;
+
 }
 </style>

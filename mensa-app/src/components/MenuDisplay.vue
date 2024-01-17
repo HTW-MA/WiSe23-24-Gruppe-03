@@ -83,24 +83,26 @@
                         <div class="star-rating" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
                           <button @click="updateRating(-0.5)" class="rating-change-button">-</button>
                           <span v-for="item in 5" :key="item" ref="stars" @click="handleClick($event, item)">
-                          <img :src="getChickenImage(item)" alt="rating symbol" class="icon-inline" />
+                          <img :src="getChickenImage(item)" alt="rating symbol" class="rating-symbol" />
                       </span>
                           <button @click="updateRating(0.5)" class="rating-change-button">+</button>
                         </div>
 
 
-                        <textarea
+                        <textarea class="comment-field"
                             v-model="reviewComment"
                             placeholder="Kommentar"
                         ></textarea>
+
+                        <button @click="showReviewPopup = false" class="htw-btn-active">
+                          Abbrechen
+                        </button>
 
                         <button @click="() =>submitReview()" class="htw-btn-active">
                           Senden
                         </button>
 
-                        <button @click="showReviewPopup = false" class="htw-btn-active">
-                          Abbrechen
-                        </button>
+
 
                       </div>
 
@@ -224,16 +226,8 @@ export default {
 
   methods: {
 
-    properPrepare(meal) {
-      this.prepareReview(meal);
-      this.changeColorScheme(this.store.state.selectedCanteen, 'backgroundColor', '.htw-btn-active');
-    },
 
 
-
-    showChickenIcon(badges) {
-      return !badges.some(badge => badge.name === 'Vegetarisch' || badge.name === 'Vegan');
-    },
 
 
 
@@ -1075,7 +1069,7 @@ img {
   font-size: 18px;
   padding: 20px;
   line-height: 1.5;
-  max-width: 100vw;
+  max-width: 90vw;
   max-height: 80vh;
   overflow: auto;
 }
@@ -1095,12 +1089,18 @@ img {
   word-wrap: break-word;
   transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
   opacity: 1;
-  max-width: 100vw;
+  max-width: 80vw;
   max-height: 80vh;
   display: inline-block;
 
 }
 
+.rating-symbol {
+  margin-right: 0.3em;
+  width: 2.4em;
+  height: auto;
+
+}
 
 
 
@@ -1112,7 +1112,7 @@ img {
   word-wrap: break-word;
   width: 100%;
   height: 100%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0), 0 4px 8px rgba(0, 0, 0, 0);
   overflow-y: scroll;
 }
 
@@ -1125,8 +1125,12 @@ img {
 
 
 
-
-
+.star-rating {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
 
 
 .favorite-popup {
@@ -1167,23 +1171,10 @@ img {
   font-size: 20px;
 }
 
-.meat-popup {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0), 0 4px 8px rgba(0, 0, 0, 0);
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  z-index: 1000;
-  overflow: auto;
-  word-wrap: break-word;
-  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-  opacity: 1;
-  max-width: 80vw;
-  max-height: 80vh;
-  display: inline-block;
+.comment-field {
+  width: 100%;
+  max-width: 100%;
+
 }
 
 .category-section {
