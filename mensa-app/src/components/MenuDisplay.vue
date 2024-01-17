@@ -31,7 +31,7 @@
           <div v-for="(categories, date) in filteredMeals" :key="date">
             <h3></h3>
 
-            <div v-for="(categoryMeals, category) in categories" :key="category"  class="category-section"  :class="{ 'overlay': overlay }">
+            <div v-for="(categoryMeals, category) in categories" :key="category"  class="category-section"  >
               <h4>{{ category }}</h4>
               <div>
                 <div v-for="meal in categoryMeals" :key="meal.id" class="meal-container">
@@ -154,18 +154,6 @@
 
                         <button @click="prepareReview(meal)" class="htw-btn-active">Bewerten</button>
 
-
-                      </div>
-
-
-
-
-                      <div v-if="showMeatPopup" class="meat-popup">
-                        <div class="popup-content">
-                          <h3>GERICHT ENTHÄLT FLEISCH</h3>
-                          <img :src="noice" alt="" />
-                          <button @click="showMeatPopup = false" class="htw-btn-active">Schließen</button>
-                        </div>
                       </div>
 
                     </div>
@@ -186,7 +174,7 @@
 
 
 <script>
-import {ref, watch, computed, onMounted, reactive} from 'vue';
+import {ref, watch, computed, onMounted, reactive, nextTick} from 'vue';
 import {useRouter} from "vue-router";
 import axios from 'axios';
 import veganIcon from '../assets/vegan-siegel.png';
@@ -235,6 +223,11 @@ export default {
 
 
   methods: {
+
+    properPrepare(meal) {
+      this.prepareReview(meal);
+      this.changeColorScheme(this.store.state.selectedCanteen, 'backgroundColor', '.htw-btn-active');
+    },
 
 
 
@@ -320,6 +313,7 @@ export default {
     function prepareReview(meal) {
       currentMealForReview.value = meal;
       showReviewPopup.value = true;
+
     }
 
 
@@ -327,8 +321,7 @@ export default {
     const reviewComment = ref('');
     const reviewRating = ref(0);
     const isHighlighted = ref(false);
-    const overlay = ref ( false)
-    const isDarkBackground = ref(false)
+
 
     const popupPosition  =ref({x:0,y:0});
 
@@ -650,7 +643,7 @@ export default {
       const deltaY = touchEndY - touchStartY;
 
       //diesen Wert ggf. erhöhen, falls swipe immer noch zu sensibel
-      const threshold = window.innerWidth / 2;
+      const threshold = window.innerWidth / 3;
 
       if (Math.abs(deltaX) > threshold && Math.abs(deltaX) > Math.abs(deltaY)) {
         if (deltaX < 0) incrementDate();
@@ -659,30 +652,36 @@ export default {
     };
 
     const incrementDate = () => {
+      showReviewPopup.value = false;
+      showMessage.value = false;
+      showFavoritePopup.value =false;
+      showAdditivesPopup.value = false;
+      showBadgePopup.value = false;
       let date = new Date(startDate.value);
       date.setDate(date.getDate() + 1);
       startDate.value = date.toISOString().slice(0, 10);
       isHighlighted.value = true;
-      overlay.value = true;
-      isDarkBackground.value = true;
-      document.body.classList.add('dark-background');
       setTimeout(() => {
         isHighlighted.value = false;
-        overlay.value = false;
-        isDarkBackground.value = false;
-        document.body.classList.remove('dark-background');
       }, 500);
-
-
-      fetchMenu(date);
+      fetchMenu(startDate.value);
       navigator.vibrate(200);
     };
 
     const decrementDate = () => {
+      showReviewPopup.value = false;
+      showMessage.value = null;
+      showFavoritePopup.value =false;
+      showAdditivesPopup.value = false;
+      showBadgePopup.value = false;
       let date = new Date(startDate.value);
       date.setDate(date.getDate() - 1);
       startDate.value = date.toISOString().slice(0, 10);
-      fetchMenu(date);
+      isHighlighted.value = true;
+      setTimeout(() => {
+        isHighlighted.value = false;
+      }, 500);
+      fetchMenu(startDate.value);
       navigator.vibrate(200);
     };
 
@@ -735,7 +734,7 @@ export default {
         //sessionStorage.setItem('meals', JSON.stringify(meals.value))
 
       } catch (error) {
-        console.error(error);
+        console.log(error);
       }
     };
 
@@ -788,23 +787,9 @@ export default {
 
     const showBadgePopup=ref(false);
     const currentBadge = ref({});
-    const showMeatPopup = ref(false)
 
-    const openMeatPopup =(event)=>{
-      event.stopPropagation();
 
-      let x, y;
-      if (event.type.startsWith('touch')) {
-        const touch = event.touches[0] || event.changedTouches[0];
-        x = touch.clientX;
-        y = touch.clientY;
-      } else {
-        x = event.clientX;
-        y = event.clientY;
-      }
-      popupPosition.value = { x, y };
-      showMeatPopup.value=true
-    }
+
     const openBadgePopup = (mealId, badge,event) => {
       showMessage.value = false;
       showAdditivesPopup.value = false;
@@ -824,6 +809,10 @@ export default {
       showBadgePopup.value = mealId;
       popupPosition.value = {x,y};
 
+      nextTick(() => {
+        changeColorScheme(store.state.selectedCanteen, 'backgroundColor', '.htw-btn-active');
+      });
+
       if (popupContentRef.value) {
         popupContentRef.value.scrollTop =-20;
       }
@@ -833,17 +822,38 @@ export default {
       showBadgePopup.value = null;
     };
 
+    const store = { state: { selectedCanteen: props.selectedCanteen } }
 
+    const updateButtonColor = () => {
+      changeColorScheme(store.state.selectedCanteen, 'backgroundColor', '.htw-btn-active');
+    };
+    const updateButtonColorPopup = () => {
+      changeColorScheme(store.state.selectedCanteen, 'backgroundColor', '.htw-btn-active');
+    };
+
+    watch(showAdditivesPopup, async (newVal) => {
+      if (newVal) {
+        await nextTick();
+        updateButtonColor();
+      }
+    });
+
+    watch(showReviewPopup, async (newVal) => {
+      if (newVal) {
+        await nextTick();
+        updateButtonColor();
+      }
+    });
 
     onMounted(
-
+        updateButtonColorPopup,
 
 
         async () => {
 
           try{
             await fetchAndStoreTodaysMenu();
-            await fetchMenu(startDate);
+            await fetchMenu(startDate.value);
             checkAndCompareMeals();
             updateButtonColor();
 
@@ -905,12 +915,28 @@ export default {
 
     };
 
-    const updateButtonColor = () => {
-      changeColorScheme(store.state.selectedCanteen, 'backgroundColor', '.htw-btn-active');
-    };
+
     watch(() => store.state.selectedCanteen, updateButtonColor);
-
-
+    watch([() => store.state.selectedCanteen, () => showAdditivesPopup.value], (newValues, oldValues) => {
+        if (newValues[0] !== oldValues[0] || (newValues[1] && !oldValues[1])) {
+        updateButtonColorPopup();
+      }
+    });
+    watch([() => store.state.selectedCanteen, () => showReviewPopup.value], (newValues, oldValues) => {
+      if (newValues[0] !== oldValues[0] || (newValues[1] && !oldValues[1])) {
+        updateButtonColorPopup();
+      }
+    });
+    watch([() => store.state.selectedCanteen, () => showFavoritePopup.value], (newValues, oldValues) => {
+      if (newValues[0] !== oldValues[0] || (newValues[1] && !oldValues[1])) {
+        updateButtonColorPopup();
+      }
+    });
+    watch([() => store.state.selectedCanteen, () => showBadgePopup.value], (newValues, oldValues) => {
+      if (newValues[0] !== oldValues[0] || (newValues[1] && !oldValues[1])) {
+        updateButtonColorPopup();
+      }
+    });
 
     watch(() => props.selectedCanteen, fetchMenu);
     watch(startDate, (newValue) => {
@@ -991,16 +1017,15 @@ export default {
       handleTouchMove,
       stars,
       handleClick,
-      showMeatPopup,
-      openMeatPopup,
       noice,
       starRating,
       updateRating,
       isHighlighted,
-      overlay,
-      isDarkBackground,
       swipeLeft,
-      swipeRight
+      swipeRight,
+      fetchMenu,
+      changeColorScheme,
+      updateButtonColorPopup
 
     };
   }
@@ -1236,25 +1261,10 @@ img {
   background-color: yellow;
 }
 
-.dark-background {
-  background-color: rgba(0, 0, 0, 0.5);
-}
 
 
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
-  z-index: 1000;
-  pointer-events: none;
-  display: none;
-}
 
 
-.visible {
-  display: block;
-}
+
+
 </style>
