@@ -83,7 +83,7 @@
                         <div class="star-rating" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
                           <button @click="updateRating(-0.5)" class="rating-change-button">-</button>
                           <span v-for="item in 5" :key="item" ref="stars" @click="handleClick($event, item)">
-                          <img :src="getChickenImage(item)" alt="rating symbol" class="small-image" />
+                          <img :src="getChickenImage(item)" alt="rating symbol" class="icon-inline" />
                       </span>
                           <button @click="updateRating(0.5)" class="rating-change-button">+</button>
                         </div>
@@ -712,8 +712,9 @@ export default {
     };
 
     const fetchMenu = async (date) => {
+      console.log(date)
         try {
-
+        console.log(`https://mensa.gregorflachs.de/api/v1/menue?loadingtype=complete&canteenId=${props.selectedCanteen}&startdate=${date}&enddate=${date}`)
         const response = await axios.get(`https://mensa.gregorflachs.de/api/v1/menue?loadingtype=complete&canteenId=${props.selectedCanteen}&startdate=${date}&enddate=${date}`, {
           headers: {  'X-API-KEY':  process.env.VUE_APP_API_KEY
           }
@@ -731,7 +732,8 @@ export default {
           return acc;
         }, {});
         meals.value = mealsByDateAndCategory;
-        //sessionStorage.setItem('meals', JSON.stringify(meals.value))
+        console.log(meals.value)
+        updateButtonColor()
 
       } catch (error) {
         console.log(error);
@@ -740,7 +742,7 @@ export default {
 
     const fetchAndStoreTodaysMenu = async () => {
       const today = new Date().toISOString().split('T')[0];
-
+      console.log(today)
       await fetchMenu(today);
 
       // Store today's menu and date in sessionStorage
@@ -845,39 +847,33 @@ export default {
       }
     });
 
-    onMounted(
+    onMounted(async () => {
+      // You can call non-async functions here directly
+      nextTick(() => {
+        updateButtonColor();
+      });
+      updateButtonColorPopup();
 
-        nextTick(() => {
-          updateButtonColor();
-        }),
-        updateButtonColorPopup,
+      try {
+        // Now call your async functions
+        await fetchAndStoreTodaysMenu();
+        await fetchMenu(startDate.value);
+        checkAndCompareMeals();
+        updateButtonColor();
 
+        const storedBadges = await badges_db.badges.toArray();
+        if (storedBadges.length > 0) {
+          badges.value = storedBadges;
+        } else {
+          await fetchBadges();
+        }
+      } catch (exception) {
+        console.error(exception);
+      }
 
-
-        async () => {
-
-          try{
-            await fetchAndStoreTodaysMenu();
-            await fetchMenu(startDate.value);
-            checkAndCompareMeals();
-            updateButtonColor();
-
-            const storedBadges = await badges_db.badges.toArray();
-            if (storedBadges.length > 0) {
-              badges.value = storedBadges;
-            } else {
-              await fetchBadges();
-            }
-
-          }
-          catch (exception){
-            console.log(exception)
-
-          }
-
-        },
-
-    );
+      // Logging to see if this part is reached
+      console.log('2');
+    });
 
 
 
@@ -1079,7 +1075,7 @@ img {
   font-size: 18px;
   padding: 20px;
   line-height: 1.5;
-  max-width: 90vw;
+  max-width: 100vw;
   max-height: 80vh;
   overflow: auto;
 }
@@ -1099,7 +1095,7 @@ img {
   word-wrap: break-word;
   transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
   opacity: 1;
-  max-width: 80vw;
+  max-width: 100vw;
   max-height: 80vh;
   display: inline-block;
 
