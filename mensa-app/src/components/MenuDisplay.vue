@@ -83,24 +83,26 @@
                         <div class="star-rating" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
                           <button @click="updateRating(-0.5)" class="rating-change-button">-</button>
                           <span v-for="item in 5" :key="item" ref="stars" @click="handleClick($event, item)">
-                          <img :src="getChickenImage(item)" alt="rating symbol" class="small-image" />
+                          <img :src="getChickenImage(item)" alt="rating symbol" class="rating-symbol" />
                       </span>
                           <button @click="updateRating(0.5)" class="rating-change-button">+</button>
                         </div>
 
 
-                        <textarea
-                            v-model="reviewComment"
-                            placeholder="Kommentar"
+                        <textarea class="comment-field"
+                                  v-model="reviewComment"
+                                  placeholder="Kommentar"
                         ></textarea>
+
+                        <button @click="showReviewPopup = false" class="htw-btn-active">
+                          Abbrechen
+                        </button>
 
                         <button @click="() =>submitReview()" class="htw-btn-active">
                           Senden
                         </button>
 
-                        <button @click="showReviewPopup = false" class="htw-btn-active">
-                          Abbrechen
-                        </button>
+
 
                       </div>
 
@@ -224,16 +226,8 @@ export default {
 
   methods: {
 
-    properPrepare(meal) {
-      this.prepareReview(meal);
-      this.changeColorScheme(this.store.state.selectedCanteen, 'backgroundColor', '.htw-btn-active');
-    },
 
 
-
-    showChickenIcon(badges) {
-      return !badges.some(badge => badge.name === 'Vegetarisch' || badge.name === 'Vegan');
-    },
 
 
 
@@ -712,8 +706,9 @@ export default {
     };
 
     const fetchMenu = async (date) => {
-        try {
-
+      console.log(date)
+      try {
+        console.log(`https://mensa.gregorflachs.de/api/v1/menue?loadingtype=complete&canteenId=${props.selectedCanteen}&startdate=${date}&enddate=${date}`)
         const response = await axios.get(`https://mensa.gregorflachs.de/api/v1/menue?loadingtype=complete&canteenId=${props.selectedCanteen}&startdate=${date}&enddate=${date}`, {
           headers: {  'X-API-KEY':  process.env.VUE_APP_API_KEY
           }
@@ -731,7 +726,8 @@ export default {
           return acc;
         }, {});
         meals.value = mealsByDateAndCategory;
-        //sessionStorage.setItem('meals', JSON.stringify(meals.value))
+        console.log(meals.value)
+        updateButtonColor()
 
       } catch (error) {
         console.log(error);
@@ -740,7 +736,7 @@ export default {
 
     const fetchAndStoreTodaysMenu = async () => {
       const today = new Date().toISOString().split('T')[0];
-
+      console.log(today)
       await fetchMenu(today);
 
       // Store today's menu and date in sessionStorage
@@ -845,39 +841,33 @@ export default {
       }
     });
 
-    onMounted(
+    onMounted(async () => {
+      // You can call non-async functions here directly
+      nextTick(() => {
+        updateButtonColor();
+      });
+      updateButtonColorPopup();
 
-        // nextTick(() => {
-        //   updateButtonColor();
-        // }),
-        updateButtonColorPopup,
+      try {
+        // Now call your async functions
+        await fetchAndStoreTodaysMenu();
+        await fetchMenu(startDate.value);
+        checkAndCompareMeals();
+        updateButtonColor();
 
+        const storedBadges = await badges_db.badges.toArray();
+        if (storedBadges.length > 0) {
+          badges.value = storedBadges;
+        } else {
+          await fetchBadges();
+        }
+      } catch (exception) {
+        console.error(exception);
+      }
 
-
-        async () => {
-
-          try{
-            await fetchAndStoreTodaysMenu();
-            await fetchMenu(startDate.value);
-            checkAndCompareMeals();
-            updateButtonColor();
-
-            const storedBadges = await badges_db.badges.toArray();
-            if (storedBadges.length > 0) {
-              badges.value = storedBadges;
-            } else {
-              await fetchBadges();
-            }
-
-          }
-          catch (exception){
-            console.log(exception)
-
-          }
-
-        },
-
-    );
+      // Logging to see if this part is reached
+      console.log('2');
+    });
 
 
 
@@ -923,7 +913,7 @@ export default {
 
     watch(() => store.state.selectedCanteen, updateButtonColor);
     watch([() => store.state.selectedCanteen, () => showAdditivesPopup.value], (newValues, oldValues) => {
-        if (newValues[0] !== oldValues[0] || (newValues[1] && !oldValues[1])) {
+      if (newValues[0] !== oldValues[0] || (newValues[1] && !oldValues[1])) {
         updateButtonColorPopup();
       }
     });
@@ -1105,6 +1095,12 @@ img {
 
 }
 
+.rating-symbol {
+  margin-right: 0.3em;
+  width: 2.4em;
+  height: auto;
+
+}
 
 
 
@@ -1116,7 +1112,7 @@ img {
   word-wrap: break-word;
   width: 100%;
   height: 100%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0), 0 4px 8px rgba(0, 0, 0, 0);
   overflow-y: scroll;
 }
 
@@ -1129,8 +1125,12 @@ img {
 
 
 
-
-
+.star-rating {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
 
 
 .favorite-popup {
@@ -1171,23 +1171,10 @@ img {
   font-size: 20px;
 }
 
-.meat-popup {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0), 0 4px 8px rgba(0, 0, 0, 0);
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  z-index: 1000;
-  overflow: auto;
-  word-wrap: break-word;
-  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-  opacity: 1;
-  max-width: 80vw;
-  max-height: 80vh;
-  display: inline-block;
+.comment-field {
+  width: 100%;
+  max-width: 100%;
+
 }
 
 .category-section {
