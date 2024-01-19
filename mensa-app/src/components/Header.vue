@@ -28,7 +28,7 @@ export default {
   <nav class="navbar navbar-expand-lg fixed-top">
     <div class="container">
       <img src="../assets/logo.png" alt="Logo" width="30" height="30">
-      Campus Kantine
+      Forscher Futter
     </div>
   </nav>
 </template>
