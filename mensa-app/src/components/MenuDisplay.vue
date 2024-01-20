@@ -7,7 +7,7 @@
     <div class="content">
       <div class="date-picker">
         <span class="arrow" @click="decrementDate()">&#9664;</span>
-        <input type="date" v-model="startDate" @change="fetchMenu(startDate)" :class="{ 'highlighted': isHighlighted }" />
+        <input type="date" v-model="startDate" @change="fetchMenu(startDate)" :class="{ 'highlighted': isHighlighted }" class="daty" />
         <span class="arrow" @click="incrementDate()">&#9654;</span>
       </div>
 
@@ -81,11 +81,11 @@
                         <h3>Bewertung abgeben</h3>
 
                         <div class="star-rating" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
-                          <button @click="updateRating(-0.5)" class="rating-change-button">-</button>
+                          <button @click="updateRating(-0.5)" class="small-button">-</button>
                           <span v-for="item in 5" :key="item" ref="stars" @click="handleClick($event, item)">
                           <img :src="getChickenImage(item)" alt="rating symbol" class="rating-symbol" />
                       </span>
-                          <button @click="updateRating(0.5)" class="rating-change-button">+</button>
+                          <button @click="updateRating(0.5)" class="small-button">+</button>
                         </div>
 
 
@@ -93,14 +93,14 @@
                                   v-model="reviewComment"
                                   placeholder="Kommentar"
                         ></textarea>
-
-                        <button @click="showReviewPopup = false" class="htw-btn-active">
-                          Abbrechen
-                        </button>
-
                         <button @click="() =>submitReview()" class="htw-btn-active">
                           Senden
                         </button>
+                         <button @click="showReviewPopup = false" class="htw-btn-active">
+                          Abbrechen
+                        </button>
+
+
 
 
 
@@ -1129,7 +1129,7 @@ img {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 0;
 }
 
 
@@ -1163,6 +1163,16 @@ img {
   display: flex;
   align-items: center;
   justify-content: center;
+
+}
+
+.date-picker .arrow, .date-picker .daty {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1px;
+  padding: 1px;
 }
 
 .arrow {

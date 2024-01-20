@@ -121,10 +121,16 @@ export function changeColorScheme(selectedCanteen, property, selector) {
 
     function changeFontStyle(font) {
         document.body.style.fontFamily = `${font}, sans-serif`;
+        const dates = document.querySelectorAll('.daty')
+        dates.forEach(input=>{
+            input.style.font = `${font}, sans-serif`;
+        })
     }
     function changeButtonStyle(canteen) {
 
         const buttons = document.querySelectorAll('.htw-btn-active');
+        const smallButtons = document.querySelectorAll('.small-button');
+        const arrowButtons= document.querySelectorAll('.arrow');
         switch(canteen){
             case 'htw':
                 buttons.forEach(button => {
@@ -149,17 +155,44 @@ export function changeColorScheme(selectedCanteen, property, selector) {
                     button.style.paddingRight = '15px';
                     button.style.cursor = 'pointer';
                 });
+                smallButtons.forEach(button =>{
+                    button.style.backgroundColor = 'rgb(118,185,0)';
+                    button.style.background = 'linear-gradient(180deg, rgba(118,185,0,1) 0%, rgba(118,185,0,1) 20%, rgba(122,191,0,1) 50%, rgba(118,185,0,1) 80%, rgba(118,185,0,1) 100%)';
+                    button.style.color = 'black';
+                });
+                arrowButtons.forEach(button =>{
+                    button.style.backgroundColor = 'rgb(118,185,0)';
+                    button.style.color = 'black';
+                    button.style.paddingLeft = '2px'
+                    button.style.paddingRight = '2px'
+                })
                 break;
                 case 'hu':
                     buttons.forEach(button => {
                         button.style.border ='0';
-                        button.style.backgroundColor = 'rgb(0,51,102)';
+                        button.style.backgroundColor = 'rgb(91,117,171)';
                         button.style.lineHeight ='2';
-                        button.style.padding = '0.5rem 1.5rem';
+                        button.style.paddingTop = '15px';
+                        button.style.paddingBottom = '15px';
+                        button.style.textAlign = 'center';
+
                         button.style.color = 'white';
                         button.style.cursor = 'pointer';
                         button.style.fontWeight = 'bold';
                 });
+
+                    smallButtons.forEach(button =>{
+                        button.style.backgroundColor = 'rgb(91,117,171)';
+                        button.style.color = 'white';
+                    });
+
+                    arrowButtons.forEach(button =>{
+                        button.style.backgroundColor = 'rgb(91,117,171)';
+                        button.style.color = 'white';
+
+                    })
+                break;
+
 
         }
 

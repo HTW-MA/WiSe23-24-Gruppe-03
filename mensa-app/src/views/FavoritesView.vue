@@ -15,11 +15,11 @@
           <h3>Bewertung abgeben</h3>
 
           <div class="star-rating" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
-            <button @click="updateRating(-0.5)" class="rating-change-button">-</button>
+            <button @click="updateRating(-0.5)" class="small-button" >-</button>
             <span v-for="item in 5" :key="item" ref="stars" @click="handleClick($event, item)">
-                          <img :src="getChickenImage(item)" alt="rating symbol" class="rating-symbol" />
+                          <img :src="getChickenImage(item)" alt="small-image" class="rating-symbol" />
                       </span>
-            <button @click="updateRating(0.5)" class="rating-change-button">+</button>
+            <button @click="updateRating(0.5)" class="small-button">+</button>
           </div>
 
 
@@ -396,7 +396,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 0px;
 }
 
 .rating-symbols {
