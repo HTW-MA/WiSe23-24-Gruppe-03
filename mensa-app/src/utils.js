@@ -3,7 +3,7 @@ export function changeColorScheme(selectedCanteen, property, selector) {
 
     let navbarColor;
     let font;
-    //ash
+    let backgroundColor;
     switch (selectedCanteen) {
 
         case '655ff175136d3b580c970f7b':
@@ -69,6 +69,7 @@ export function changeColorScheme(selectedCanteen, property, selector) {
         case '655ff175136d3b580c970f81':
         case '655ff175136d3b580c970f92':
             navbarColor = '#76B900';
+            backgroundColor = '#EBEBEB';
             font="HTWBerlinOffice-Regular"
             changeFontStyle(font)
             changeButtonStyle('htw')
@@ -156,4 +157,5 @@ export function changeColorScheme(selectedCanteen, property, selector) {
     document.querySelectorAll(selector).forEach(element => {
         element.style[property] = navbarColor;
     });
+    document.body.style.backgroundColor = backgroundColor;
 }
