@@ -2,9 +2,10 @@
 export function changeColorScheme(selectedCanteen, property, selector) {
 
     let navbarColor;
-
+    let font;
+    //ash
     switch (selectedCanteen) {
-        //ash
+
         case '655ff175136d3b580c970f7b':
             navbarColor = '#d11518' //(209, 21, 24)
             //weiß benutzen
@@ -59,6 +60,8 @@ export function changeColorScheme(selectedCanteen, property, selector) {
         case '655ff176136d3b580c970f9c':
         case '655ff176136d3b580c970fa1':
             navbarColor = '#c50e1f';
+            font="Arial"
+            changeFontStyle(font)
             //weiß benutzen
             break;
         //htw
@@ -66,6 +69,9 @@ export function changeColorScheme(selectedCanteen, property, selector) {
         case '655ff175136d3b580c970f81':
         case '655ff175136d3b580c970f92':
             navbarColor = '#76B900';
+            font="HTWBerlinOffice-Regular"
+            changeFontStyle(font)
+            changeButtonStyle('htw')
             //schwarz benutzen
             break;
         //hwr
@@ -98,10 +104,53 @@ export function changeColorScheme(selectedCanteen, property, selector) {
             break;
 
 
+
         default:
             navbarColor = '#f57373';
+
             //schwarz benutzen
             break;
+
+
+
+    }
+
+    function changeFontStyle(font) {
+        document.body.style.fontFamily = `${font}, sans-serif`;
+    }
+    function changeButtonStyle(canteen) {
+
+        const buttons = document.querySelectorAll('.htw-btn-active');
+        switch(canteen){
+            case 'htw':
+                buttons.forEach(button => {
+                    button.style.background = 'rgb(118,185,0)';
+                    button.style.background = 'linear-gradient(180deg, rgba(118,185,0,1) 0%, rgba(118,185,0,1) 20%, rgba(122,191,0,1) 50%, rgba(118,185,0,1) 80%, rgba(118,185,0,1) 100%)';
+                    button.style.border= 'none';
+                    button.style.color= 'black';
+                    button.style.paddingTop = '15px';
+                    button.style.paddingBottom = '15px';
+                    button.style.textAlign = 'center';
+                    button.style.textDecoration = 'none';
+                    button.style.display = 'inline-block';
+                    button.style.margin = '4px 2px';
+                    button.style.cursor = 'pointer';
+                    button.style.boxShadow = '0 4px 2px -2px #7a7a7a';
+                    button.style.font = '100%/1.5 "HTWBerlin", Helvetica, sans-serif !important';
+                    button.style.borderRadius = '2px';
+                    button.style.flexGrow = '0';
+                    button.style.fontWeight = '600 !important';
+                    button.style.fontSize = '1em !important';
+                    button.style.paddingLeft= '15px';
+                    button.style.paddingRight= '15px';
+                });
+
+        }
+
+
+
+
+
     }
 
     document.querySelectorAll(selector).forEach(element => {

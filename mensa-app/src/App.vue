@@ -12,6 +12,7 @@ import Header from "@/components/Header.vue";
 import { initializeApp } from "firebase/app";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
+
 const firebaseConfig = {
   apiKey: "AIzaSyBnM08BvJ7HUc4sDMBzE6yLUrTXSEhUrMw",
   authDomain: "mensa-app-messaging.firebaseapp.com",
@@ -59,13 +60,39 @@ export default class App extends Vue {}
 
 <style>
 #app {
-  font-family: Arial, sans-serif;
+
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
   margin-top: 0px;
+}
+@font-face {
+  font-family: 'HTWBerlinOffice';
+  src: url('./assets/fonts/htw/HTWBerlinOffice-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'HTWBerlinOffice';
+  src: url('./assets/fonts/htw/HTWBerlinOffice-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'HTWBerlinOffice';
+  src: url('./assets/fonts/htw/HTWBerlinOffice-Italic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'HTWBerlinOffice';
+  src: url('./assets/fonts/htw/HTWBerlinOffice-BoldItalic.ttf') format('truetype');
+  font-weight: bold;
+  font-style: italic;
 }
 
 /*

@@ -818,7 +818,7 @@ export default {
       showBadgePopup.value = null;
     };
 
-    //const store = { state: { selectedCanteen: props.selectedCanteen } }
+
 
     const updateButtonColor = () => {
       changeColorScheme(store.state.selectedCanteen, 'backgroundColor', '.htw-btn-active');
