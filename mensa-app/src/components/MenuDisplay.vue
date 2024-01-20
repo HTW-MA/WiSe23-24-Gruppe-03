@@ -549,7 +549,11 @@ export default {
       }, 900);
     }
 
+    const isChangingDate = ref(true);
+
+
     const openAdditivesPopup = (meal,event) => {
+      isChangingDate.value = false;
       showMessage.value = false;
       showFavoritePopup.value = false;
       showBadgePopup.value = false;
@@ -633,6 +637,9 @@ export default {
     };
 
     const handleGesture = () => {
+      if(!isChangingDate.value){
+        isChangingDate.value=true;
+      }
       const deltaX = touchEndX - touchStartX;
       const deltaY = touchEndY - touchStartY;
 

@@ -50,10 +50,10 @@ export function changeColorScheme(selectedCanteen, property, selector) {
         case '655ff176136d3b580c970f99':
         case '655ff176136d3b580c970f97':
             navbarColor = '#5b89b0';
+            backgroundColor='#ccd6e0'
             font = "Verdana"
             changeFontStyle(font)
             changeButtonStyle("hu")
-            //schwarz benutzen
             break;
         //tu
         case '655ff176136d3b580c970fa0':
@@ -63,6 +63,7 @@ export function changeColorScheme(selectedCanteen, property, selector) {
         case '655ff176136d3b580c970f9c':
         case '655ff176136d3b580c970fa1':
             navbarColor = '#c50e1f';
+
             font="Arial"
             changeFontStyle(font)
             //weiß benutzen
@@ -76,7 +77,6 @@ export function changeColorScheme(selectedCanteen, property, selector) {
             font="HTWBerlinOffice-Regular"
             changeFontStyle(font)
             changeButtonStyle('htw')
-            //schwarz benutzen
             break;
         //hwr
         case '655ff175136d3b580c970f93':
