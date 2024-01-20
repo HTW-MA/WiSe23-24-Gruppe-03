@@ -50,6 +50,9 @@ export function changeColorScheme(selectedCanteen, property, selector) {
         case '655ff176136d3b580c970f99':
         case '655ff176136d3b580c970f97':
             navbarColor = '#5b89b0';
+            font = "Verdana"
+            changeFontStyle(font)
+            changeButtonStyle("hu")
             //schwarz benutzen
             break;
         //tu
@@ -127,8 +130,8 @@ export function changeColorScheme(selectedCanteen, property, selector) {
                 buttons.forEach(button => {
                     button.style.background = 'rgb(118,185,0)';
                     button.style.background = 'linear-gradient(180deg, rgba(118,185,0,1) 0%, rgba(118,185,0,1) 20%, rgba(122,191,0,1) 50%, rgba(118,185,0,1) 80%, rgba(118,185,0,1) 100%)';
-                    button.style.border= 'none';
-                    button.style.color= 'black';
+                    button.style.border = 'none';
+                    button.style.color = 'black';
                     button.style.paddingTop = '15px';
                     button.style.paddingBottom = '15px';
                     button.style.textAlign = 'center';
@@ -142,8 +145,20 @@ export function changeColorScheme(selectedCanteen, property, selector) {
                     button.style.flexGrow = '0';
                     button.style.fontWeight = '600 !important';
                     button.style.fontSize = '1em !important';
-                    button.style.paddingLeft= '15px';
-                    button.style.paddingRight= '15px';
+                    button.style.paddingLeft = '15px';
+                    button.style.paddingRight = '15px';
+                    button.style.cursor = 'pointer';
+                });
+                break;
+                case 'hu':
+                    buttons.forEach(button => {
+                        button.style.border ='0';
+                        button.style.backgroundColor = 'rgb(0,51,102)';
+                        button.style.lineHeight ='2';
+                        button.style.padding = '0.5rem 1.5rem';
+                        button.style.color = 'white';
+                        button.style.cursor = 'pointer';
+                        button.style.fontWeight = 'bold';
                 });
 
         }
