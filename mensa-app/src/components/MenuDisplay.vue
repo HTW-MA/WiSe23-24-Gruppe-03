@@ -713,9 +713,9 @@ export default {
     };
 
     const fetchMenu = async (date) => {
-      console.log(date)
+
       try {
-        console.log(`https://mensa.gregorflachs.de/api/v1/menue?loadingtype=complete&canteenId=${props.selectedCanteen}&startdate=${date}&enddate=${date}`)
+
         const response = await axios.get(`https://mensa.gregorflachs.de/api/v1/menue?loadingtype=complete&canteenId=${props.selectedCanteen}&startdate=${date}&enddate=${date}`, {
           headers: {  'X-API-KEY':  process.env.VUE_APP_API_KEY
           }
@@ -733,7 +733,7 @@ export default {
           return acc;
         }, {});
         meals.value = mealsByDateAndCategory;
-        console.log(meals.value)
+
         updateButtonColor()
 
       } catch (error) {
@@ -743,7 +743,7 @@ export default {
 
     const fetchAndStoreTodaysMenu = async () => {
       const today = new Date().toISOString().split('T')[0];
-      console.log(today)
+
       await fetchMenu(today);
 
       // Store today's menu and date in sessionStorage
@@ -872,8 +872,6 @@ export default {
         console.error(exception);
       }
 
-      // Logging to see if this part is reached
-      console.log('2');
     });
 
 

@@ -5,16 +5,23 @@ export function changeColorScheme(selectedCanteen, property, selector) {
     let font;
     let backgroundColor;
     switch (selectedCanteen) {
-
+        //ash
         case '655ff175136d3b580c970f7b':
-            navbarColor = '#d11518' //(209, 21, 24)
+            navbarColor = '#d11518';
+            backgroundColor = 'f7f7f7'
+            font='SourceSans3'
+            changeFontStyle(font)
+            changeButtonStyle('ash')
+
+
+            //(209, 21, 24)
             //weiß benutzen
             break;
         //bht
         case '655ff175136d3b580c970f7d':
         case '655ff175136d3b580c970f7e':
         case '655ff175136d3b580c970f7f':
-            navbarColor = '#555555'; //(85, 85, 85)
+            navbarColor = '#555555';//(85, 85, 85)
             //weiß benutzen
             break;
         //charite
@@ -74,7 +81,7 @@ export function changeColorScheme(selectedCanteen, property, selector) {
         case '655ff175136d3b580c970f92':
             navbarColor = '#76B900';
             backgroundColor = '#EBEBEB';
-            font="HTWBerlinOffice-Regular"
+            font="HTWBerlinOffice"
             changeFontStyle(font)
             changeButtonStyle('htw')
             break;
@@ -192,8 +199,29 @@ export function changeColorScheme(selectedCanteen, property, selector) {
 
                     })
                 break;
+            case 'ash':
+                buttons.forEach(button =>{
+                        button.style.display ='inline-block';
+                        button.fontWeight ='bold';
+                        button.textAlign='center';
+                        button.verticalAlign='middle';
+                        button.cursor='pointer';
+                        button.border='1px';
+                        button.style.color='white';
+                    button.style.background = 'rgb(209,21,21)';
+                })
+                smallButtons.forEach(button =>{
+                    button.style.backgroundColor = 'rgb(209,21,21)';
+                    button.style.color = 'white';
+                });
 
+                arrowButtons.forEach(button =>{
+                    button.style.backgroundColor = 'rgb(209,21,21)';
+                    button.style.color = 'white';
 
+                })
+
+                break;
         }
 
 

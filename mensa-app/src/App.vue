@@ -95,6 +95,19 @@ export default class App extends Vue {}
   font-style: italic;
 }
 
+@font-face {
+  font-family: 'SourceSans3';
+  src: url('./assets/fonts/ash/SourceSans3-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'SourceSans3';
+  src: url('./assets/fonts/ash/SourceSans3-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
 /*
 nav {
   padding: 2vw;
