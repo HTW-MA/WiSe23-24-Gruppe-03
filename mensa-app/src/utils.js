@@ -8,38 +8,38 @@ export function changeColorScheme(selectedCanteen, property, selector) {
         //ash
         case '655ff175136d3b580c970f7b':
             navbarColor = '#d11518';
-            backgroundColor = '#f7f7f7'
-            font='SourceSans3'
-            changeFontStyle(font)
-            changeButtonStyle('ash')
+            backgroundColor = '#f7f7f7';
+            font='SourceSans3';
+            changeFontStyle(font);
+            changeButtonStyle('ash');
             break;
         //bht
         case '655ff175136d3b580c970f7d':
         case '655ff175136d3b580c970f7e':
         case '655ff175136d3b580c970f7f':
             navbarColor = '#555555';
-            backgroundColor = '#e5e5e5'
-            font='CaseTextTrial'
-            changeFontStyle(font)
-            changeButtonStyle('bht')
+            backgroundColor = '#e5e5e5';
+            font='CaseTextTrial';
+            changeFontStyle(font);
+            changeButtonStyle('bht');
             break;
         //charite
         case '655ff175136d3b580c970f82':
         case '655ff175136d3b580c970f84':
             navbarColor = '#ad4371'; //(209, 21, 24)
-            backgroundColor = '#f6f3ed'
-            font='Roboto'
-            changeFontStyle(font)
-            changeButtonStyle('charite')
+            backgroundColor = '#f6f3ed';
+            font='Roboto';
+            changeFontStyle(font);
+            changeButtonStyle('charite');
             break;
         //ehb
         case '655ff175136d3b580c970f86':
         case '655ff175136d3b580c970f87':
             navbarColor = '#0078ae';
-            backgroundColor ='#e7eed6'
-            font = 'Monserrat'
-            changeFontStyle(font)
-            changeButtonStyle('ehb')
+            backgroundColor ='#e7eed6';
+            font = 'Monserrat';
+            changeFontStyle(font);
+            changeButtonStyle('ehb');
             break;
 
         //fu
@@ -52,11 +52,11 @@ export function changeColorScheme(selectedCanteen, property, selector) {
         case '655ff175136d3b580c970f8f':
         case '655ff175136d3b580c970f8e':
             navbarColor = '#99CC00';
-            font = 'Arial'
-            backgroundColor = '#EBEBEB'
+            font = 'Arial';
+            backgroundColor = '#EBEBEB';
             //die Font der FU ist für nicht mitglieder nicht verfügbar
-            changeFontStyle(font)
-            changeButtonStyle('fu')
+            changeFontStyle(font);
+            changeButtonStyle('fu');
 
             break;
         //hu
@@ -68,10 +68,10 @@ export function changeColorScheme(selectedCanteen, property, selector) {
         case '655ff176136d3b580c970f99':
         case '655ff176136d3b580c970f97':
             navbarColor = '#5b89b0';
-            backgroundColor='#ccd6e0'
-            font = "Verdana"
-            changeFontStyle(font)
-            changeButtonStyle("hu")
+            backgroundColor='#ccd6e0';
+            font = "Verdana";
+            changeFontStyle(font);
+            changeButtonStyle("hu");
             break;
         //tu
         case '655ff176136d3b580c970fa0':
@@ -81,11 +81,11 @@ export function changeColorScheme(selectedCanteen, property, selector) {
         case '655ff176136d3b580c970f9c':
         case '655ff176136d3b580c970fa1':
             navbarColor = '#c50e1f';
-            backgroundColor = '#EBEBEB'
+            backgroundColor = '#EBEBEB';
             //auch diese Font ist für Uni-Fremde nicht verfügbar
-            font="Arial"
-            changeFontStyle(font)
-            changeButtonStyle('tu')
+            font="Arial";
+            changeFontStyle(font);
+            changeButtonStyle('tu');
             //weiß benutzen
             break;
         //htw
@@ -94,36 +94,60 @@ export function changeColorScheme(selectedCanteen, property, selector) {
         case '655ff175136d3b580c970f92':
             navbarColor = '#76B900';
             backgroundColor = '#EBEBEB';
-            font="HTWBerlinOffice"
-            changeFontStyle(font)
-            changeButtonStyle('htw')
+            font="HTWBerlinOffice";
+            changeFontStyle(font);
+            changeButtonStyle('htw');
             break;
         //hwr
         case '655ff175136d3b580c970f93':
         case '655ff175136d3b580c970f94':
             navbarColor = '#d50c2f';
+            backgroundColor ='#f0f0f1';
+            font = "CrimsonText";
+            changeFontStyle(font);
+            changeButtonStyle('hwr')
             //weiß benutzen
             break;
         //hfm
         case '655ff175136d3b580c970f7c':
         case '655ff175136d3b580c970f85':
         case '655ff175136d3b580c970f90':
-            navbarColor ='#eee9e5';
+            navbarColor ='#7300ff';
+            backgroundColor ='#c1ada0';
+            font='SourceSans3';
+            changeFontStyle(font)
+            changeButtonStyle('hfm')
+
             //schwarz benutzen
             break;
         //hfs
         case '655ff175136d3b580c970f91':
             navbarColor = '#e1000f';
+            backgroundColor = '#EBEBEB';
+            //font nicht vefügbar, u.a. roboto als ersatz angegeben
+            font='Roboto'
+            changeFontStyle(font)
+            changeButtonStyle('hfs')
+
             //weiß benutzen
             break;
         //weißensee
         case '655ff176136d3b580c970fa2':
-            navbarColor = '#88ffb5';
+            navbarColor = '#2f8cc3';
+            backgroundColor = '#EBEBEB';
+            //font nicht verfügbar
+            font='Arial'
+            changeFontStyle('Arial')
+            changeButtonStyle('wss')
             //schwarz benutzen
             break;
         //khsb
         case '655ff176136d3b580c970f9a':
-            navbarColor = '#88ffb5';
+            navbarColor = '#1699a3';
+            backgroundColor = '#ecedee'
+            font = 'Signika'
+            changeFontStyle(font)
+            changeButtonStyle('khsb')
             //schwarz benutzen
             break;
 
@@ -213,16 +237,6 @@ export function changeColorScheme(selectedCanteen, property, selector) {
                     })
                 break;
             case 'ash':
-                // buttons.forEach(button =>{
-                //         button.style.display ='inline-block';
-                //         button.fontWeight ='bold';
-                //         button.textAlign='center';
-                //         button.verticalAlign='middle';
-                //         button.cursor='pointer';
-                //         button.border='1px';
-                //         button.style.color='white';
-                //     button.style.background = 'rgb(209,21,21)';
-                // })
                 buttons.forEach(button =>{
                     button.style.display ='inline-block';
                     button.fontWeight ='bold';
@@ -389,6 +403,155 @@ export function changeColorScheme(selectedCanteen, property, selector) {
 
                 arrowButtons.forEach(button =>{
                     button.style.backgroundColor = '#c50e1f';
+                    button.style.color = 'white';
+
+                })
+                break;
+            case 'hwr':
+                buttons.forEach(button => {
+                    button.style.webkitFlex = '0 1 auto';
+                    button.style.flex = '0 1 auto';
+                    button.style.minWidth = '0';
+                    button.style.overflow = 'hidden';
+                    button.style.textOverflow = 'ellipsis';
+                    button.style.whiteSpace = 'nowrap';
+                    button.style.lineHeight = '1 !important';
+                    button.style.paddingTop = 'calc(0.99rem - 0.2em)';
+                    button.style.paddingBottom = 'calc(0.99rem - 0.08em)';
+                    button.style.paddingRight = '0.6rem';
+                    button.style.paddingLeft = '0.6rem';
+                    button.style.textOverflow = 'ellipsis';
+                    button.style.borderRadius = '0.3rem';
+                    button.style.color='white'
+                });
+
+                smallButtons.forEach(button =>{
+                    button.style.backgroundColor = '#D50C2F';
+                    button.style.color = 'white';
+                });
+
+                arrowButtons.forEach(button =>{
+                    button.style.backgroundColor = '#D50C2F';
+                    button.style.color = 'white';
+
+                })
+                break;
+            case 'hfm':
+                buttons.forEach(button => {
+                    button.style.webkitAppearance = 'none';
+                    button.style.background = '0 0';
+                    button.style.border = '0';
+                    button.style.border = '1px solid #7300ff';
+                    button.style.borderRadius = '5px';
+                    button.style.color = 'white';
+                    button.style.backgroundColor ='#7300ff'
+                    button.style.cursor = 'pointer';
+                    button.style.display = 'inline-block';
+                    button.style.lineHeight = 'normal';
+                    button.style.marginBottom = '0.5rem';
+                    button.style.padding = '0.625rem 0.85rem';
+                    button.style.textAlign = 'center';
+                    button.style.textDecoration = 'none';
+                    button.style.textTransform = 'uppercase';
+                    button.style.webkitTransition = 'background-color .3s,border-color .3s,color .2s';
+                    button.style.transition = 'background-color .3s,border-color .3s,color .2s';
+                    button.style.webkitUserSelect = 'none';
+                    button.style.mozUserSelect = 'none';
+                    button.style.msUserSelect = 'none';
+                    button.style.userSelect = 'none';
+                });
+
+                smallButtons.forEach(button =>{
+                    button.style.backgroundColor = '#7300ff';
+                    button.style.color = 'white';
+                });
+
+                arrowButtons.forEach(button =>{
+                    button.style.backgroundColor = '#7300ff';
+                    button.style.color = 'white';
+
+                })
+                break;
+            case 'hfs':
+                buttons.forEach(button => {
+                    button.style.color = 'white';
+                    button.style.backgroundColor = '#0078ae';
+                    button.style.display = 'inline-flex';
+                    button.style.justifyContent = 'center';
+                    button.style.alignItems = 'center';
+                    button.style.textAlign = 'center';
+                    button.style.whiteSpace = 'nowrap';
+                    button.style.fontWeight = '700';
+                    button.style.cursor = 'pointer';
+                    button.style.boxShadow = 'none';
+                    button.style.WebkitAppearance = 'none';
+                    button.style.transition = 'all .2s ease-in-out';
+                    button.style.borderRadius = '0';
+                    button.style.border = '1px solid #0072a7';
+                });
+
+                smallButtons.forEach(button =>{
+                    button.style.backgroundColor = '#e1000f';
+                    button.style.color = 'white';
+                });
+
+                arrowButtons.forEach(button =>{
+                    button.style.backgroundColor = '#e1000f';
+                    button.style.color = 'white';
+
+                })
+                break;
+            case 'wss':
+                //buttonas nicht verfügbar, deswegen sehr basal
+
+                smallButtons.forEach(button =>{
+                    button.style.backgroundColor = '#2f8cc3';
+                    button.style.color = 'black';
+                });
+
+                arrowButtons.forEach(button =>{
+                    button.style.backgroundColor = '#2f8cc3';
+                    button.style.color = 'black';
+
+                })
+                break;
+            case 'khsb':
+                buttons.forEach(button => {
+                    button.style.margin = '0';
+
+
+                    button.style.webkitAppearance = 'button';
+                    button.style.cursor = 'pointer';
+                    button.style.overflow = 'visible';
+                    button.style.textTransform = 'none';
+                    button.style.appearance = 'auto';
+                    button.style.textRendering = 'auto';
+
+                    button.style.letterSpacing = 'normal';
+                    button.style.wordSpacing = 'normal';
+                    button.style.lineHeight = 'normal';
+                    button.style.textIndent = '0px';
+                    button.style.textShadow = 'none';
+                    button.style.display = 'inline-block';
+                    button.style.textAlign = 'center';
+                    button.style.alignItems = 'flex-start';
+                    button.style.boxSizing = 'border-box';
+                    button.style.backgroundColor = '#1699a3';
+                    button.style.color='white';
+                    button.style.paddingBlock = '1px';
+                    button.style.paddingInline = '6px';
+                    button.style.borderWidth = '2px';
+                    button.style.borderStyle = 'outset';
+
+                });
+
+                smallButtons.forEach(button =>{
+                    button.style.backgroundColor = '#1699a3';
+                    button.style.color = 'white';
+                });
+
+                arrowButtons.forEach(button =>{
+                    button.style.backgroundColor = '#1699a3';
                     button.style.color = 'white';
 
                 })

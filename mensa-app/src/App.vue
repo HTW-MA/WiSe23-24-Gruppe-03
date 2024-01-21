@@ -109,6 +109,21 @@ export default class App extends Vue {}
 }
 
 @font-face {
+  font-family: 'Signika';
+  src: url('./assets/fonts/khsb/Signika-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Signika';
+  src: url('./assets/fonts/khsb/Signika-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+
+
+@font-face {
   font-family: 'CaseTextTrial';
   src: url('./assets/fonts/bht/CaseTextTrial-RegularWeb.woff2') format('truetype');
   font-weight: normal;
@@ -184,6 +199,32 @@ export default class App extends Vue {}
 @font-face {
   font-family: 'Monserrat';
   src:  url('./assets/fonts/ehb/Montserrat-BoldItalic.ttf') format('truetype');
+  font-weight: bold;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'CrimsonText';
+  src: url('./assets/fonts/hwr/CrimsonText-Regular.ttf')format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'CrimsonText';
+  src: url('./assets/fonts/hwr/CrimsonText-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'CrimsonText';
+  src:  url('./assets/fonts/hwr/CrimsonText-Italic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'CrimsonText';
+  src:  url('./assets/fonts/hwr/CrimsonText-BoldItalic.ttf') format('truetype');
   font-weight: bold;
   font-style: italic;
 }
