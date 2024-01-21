@@ -54,6 +54,12 @@ import fav_db from "@/fav_db";
 import review_db from "@/review_db";
 import {changeColorScheme} from "@/utils";
 import store from "@/store";
+import chickenIcon from "@/assets/fullChicken.png";
+import emptyChicken from "@/assets/emptyChicken.png";
+import halfChicken from "@/assets/halfChicken.png";
+import leafIcon from "@/assets/leafFull.png";
+import emptyLeaf from "@/assets/leafEmpty.png";
+import halfLeaf from "@/assets/leafHalf.png";
 
 export default {
   name: 'FavoritesView',
@@ -84,14 +90,17 @@ export default {
     let halfSymbol;
 
     if (selectedDiet.value === "Allesfresser") {
-      filledSymbol = require('@/assets/fullChicken.png');
-      emptySymbol = require('@/assets/emptyChicken.png');
-      halfSymbol = require('@/assets/halfChicken.png');
+      filledSymbol = chickenIcon;
+      emptySymbol = emptyChicken;
+      halfSymbol = halfChicken;
     } else {
-      filledSymbol = require('@/assets/leafFull.png');
-      emptySymbol = require('@/assets/leafEmpty.png');
-      halfSymbol = require('@/assets/leafHalf.png');
+      filledSymbol = leafIcon;
+      emptySymbol = emptyLeaf;
+      halfSymbol = halfLeaf;
     }
+
+
+
 
     async function getMyRating(meal) {
       if (!mealRatings[meal.id]) {
@@ -379,7 +388,13 @@ export default {
       stars,
       getMyRating,
       mealRatings,
-      updateButtonColor
+      updateButtonColor,
+      halfLeaf,
+      halfChicken,
+      chickenIcon,
+      leafIcon,
+      emptyLeaf,
+      emptyChicken
     };
   }
 };
