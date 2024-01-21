@@ -7,9 +7,13 @@
 //import NDEFMessage from '@types/w3c-web-nfc';
 // import {Modal} from "bootstrap";
 import {getMessaging} from "firebase/messaging";
+import router from "../../router";
+import {onMounted} from "vue";
 
 export default {
   name: 'BudgetComponent',
+
+
   data () {
     return {
       budgetGescannt: false,
@@ -19,6 +23,17 @@ export default {
       target: "Icon",
       scanErfolgreich: "noch nicht"
     }
+  },
+  setup(){
+    const navigateToProfile = () => {
+      router.push('/Profile');
+    };
+    onMounted(() => {
+      if ( localStorage.getItem('selectedCanteen') === null) {
+        navigateToProfile(); // Or any other route
+      }
+    });
+
   },
   methods: {
     closeModal() {
@@ -152,6 +167,7 @@ export default {
             console.log('Error sending message:', error);
           });
       */
+
 
 
       //Ohne Admin

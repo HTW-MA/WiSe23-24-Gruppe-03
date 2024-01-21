@@ -7,6 +7,7 @@
 <script>
 import { ref, onMounted } from 'vue';
 import Hammer from 'hammerjs';
+import heat from '../assets/heat.png'
 
 export default {
   name: 'NoInternet',
@@ -48,7 +49,8 @@ export default {
 
     return {
       container,
-      image
+      image,
+      heat
     };
   }
 };

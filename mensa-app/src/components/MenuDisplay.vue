@@ -753,7 +753,6 @@ export default {
 
       await fetchMenu(today);
 
-      // Store today's menu and date in sessionStorage
       sessionStorage.setItem('meals', JSON.stringify(meals.value));
       sessionStorage.setItem('selectedDate', today);
     };

@@ -60,6 +60,7 @@ import halfChicken from "@/assets/halfChicken.png";
 import leafIcon from "@/assets/leafFull.png";
 import emptyLeaf from "@/assets/leafEmpty.png";
 import halfLeaf from "@/assets/leafHalf.png";
+import router from "../../router";
 
 export default {
   name: 'FavoritesView',
@@ -68,6 +69,15 @@ export default {
 
 
   setup() {
+
+    const navigateToProfile = () => {
+      router.push('/Profile');
+    };
+    onMounted(() => {
+      if ( localStorage.getItem('selectedCanteen') === null) {
+        navigateToProfile(); // Or any other route
+      }
+    });
 
     const favorites = ref([]);
     const mealRatings=reactive({})
