@@ -184,6 +184,11 @@ import axios from 'axios';
 import veganIcon from '../assets/vegan-siegel.png';
 import veggieIcon from '../assets/veggie.png'
 import chickenIcon from '../assets/fullChicken.png'
+import emptyChicken from '../assets/emptyChicken.png'
+import leafIcon from '../assets/leafFull.png'
+import halfLeaf from '../assets/leafHalf.png'
+import emptyLeaf from '../assets/leafEmpty.png'
+import halfChicken from '../assets/halfChicken.png'
 import addOns from '../assets/zusatzstoffe.png'
 import gruen from '../assets/gruenerAmpelPunkt.png'
 import aggro from '../assets/aggriculture.png'
@@ -334,13 +339,13 @@ export default {
 
 
     if (selectedDiet.value === "Allesfresser") {
-      filledSymbol = require('@/assets/fullChicken.png');
-      emptySymbol = require('@/assets/emptyChicken.png');
-      halfSymbol = require('@/assets/halfChicken.png')
+      filledSymbol = chickenIcon;
+      emptySymbol = emptyChicken;
+      halfSymbol = halfChicken;
     } else {
-      filledSymbol = require('@/assets/leafFull.png');
-      emptySymbol = require('@/assets/leafEmpty.png');
-      halfSymbol = require('@/assets/leafHalf.png');
+      filledSymbol = leafIcon;
+      emptySymbol = emptyLeaf;
+      halfSymbol = halfLeaf;
     }
 
     function handleClick(event, item) {
@@ -1026,7 +1031,11 @@ export default {
       swipeLeft,
       swipeRight,
       fetchMenu,
-      changeColorScheme,
+      halfChicken,
+      emptyChicken,
+      halfLeaf,
+      emptyLeaf,
+      leafIcon,
       updateButtonColorPopup
 
     };
