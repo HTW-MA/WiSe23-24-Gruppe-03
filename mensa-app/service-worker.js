@@ -1,5 +1,5 @@
 import { precacheAndRoute } from 'workbox-precaching';
-import heat from '/src/assets/heat.png';
+import heat from '/src/assets/dinoooo.png';
 
 precacheAndRoute(self.__WB_MANIFEST);
 
@@ -19,7 +19,7 @@ const responseContent = `
 <!--    <p>Bitte versuchen Sie es erneut, sobald Sie eine stabile Internetverbindung haben.</p>-->
 
 <!--  </body>-->
-  <head>
+   <head>
     <style>
       body, html {
         margin: 0;
@@ -31,8 +31,8 @@ const responseContent = `
         position: fixed; 
         top: 0;
         left: 0;
-        width: 80vw; 
-        height: 80vh; 
+        width: 100vw; 
+        height: 100vh; 
         object-fit: cover; 
       }
     </style>
