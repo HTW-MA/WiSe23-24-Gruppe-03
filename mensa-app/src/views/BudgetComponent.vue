@@ -180,7 +180,6 @@ export default {
 
   mounted() {
 
-
     this.budgetGescannt = this.betrag !== -1;
 
     if (this.betrag === -1) {
@@ -214,9 +213,6 @@ export default {
 <!--  <div class="test">-->
 <!--    <button v-on:click="sendNotification">send Message - funktioniert nicht</button>-->
 <!--  </div>-->
-  <div id="Test">
-    <button id="Test" v-on:click="testGeoLoc">Test</button>
-  </div>
 
   <div id="Hinweistext">
     <p class="budget-text">Klicken Sie auf das Icon um ihr Budget zu scannen.</p>

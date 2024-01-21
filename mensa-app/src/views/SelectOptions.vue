@@ -1,5 +1,4 @@
 <template>
-
   <p></p>
 
   <div>
@@ -10,6 +9,12 @@
         {{ canteen.name }} - {{ canteen.address.street }}
       </option>
     </select>
+      <input type="checkbox" id="coding" name="interest" value="coding" v-on:input="checkboxClicked" v-if="geoLocActive"/>
+      <label v-if="geoLocActive" for="coding">Nach Entfernung sortieren?</label>
+<!--    <label class="switch">-->
+<!--      <input type="checkbox"/>-->
+<!--      <span class="slider round"></span>-->
+<!--    </label>-->
     <p></p>
     <Label>Für genauere Preisinformationen. Aber Achtung: Diese Informationen sind unverbindlich:</Label>
 
@@ -101,25 +106,16 @@ export default {
       return timestampHex + randomHex;
     }
 
-    function sortCanteens() {
-      console.log("Location activated: " + locationActivated)
-      if (locationActivated) {
-        canteens.value.sort(function (a, b) {
-          return Math.sqrt((länge - a.address.geoLocation.longitude) ** 2 + (breite - a.address.geoLocation.latitude) ** 2) - Math.sqrt((länge - b.address.geoLocation.longitude) ** 2 + (breite - b.address.geoLocation.latitude) ** 2)
-        });
-      } else {
-        Notification.requestPermission().then(function(permission) {
-          if (permission === "granted") {
-            navigator.serviceWorker.ready.then(function(registration) {
-              registration.showNotification("Sie haben Ihren Standort nicht aktiviert. " +
-                  "Daher wird die Liste der Mensen alphabetisch sortiert.");
-            });
-          }
-        });
-        canteens.value.sort(function (a, b) {
-          return a.name.localeCompare(b.name);
-        });
-      }
+    function sortCanteensByDistance() {
+      canteens.value.sort(function (a, b) {
+        return Math.sqrt((länge - a.address.geoLocation.longitude) ** 2 + (breite - a.address.geoLocation.latitude) ** 2) - Math.sqrt((länge - b.address.geoLocation.longitude) ** 2 + (breite - b.address.geoLocation.latitude) ** 2)
+      });
+    }
+
+    function sortCanteensAlphabetically() {
+      canteens.value.sort(function (a, b) {
+        return a.name.localeCompare(b.name);
+      });
     }
 
 
@@ -134,7 +130,10 @@ export default {
     const loseWeight = ref (localStorage.getItem('loseWeight')|| '');
     let breite = 0;
     let länge = 0;
-    let locationActivated = false;
+    let notificationSent = false;
+    let isCheckboxClicked = false;
+    let sorted = 'alphabetically';
+    let geoLocActive = true;
 
     const getUserID = () => {
       let userID = localStorage.getItem('userID');
@@ -161,7 +160,7 @@ export default {
 
         await db.canteens.bulkPut(response.data);
         canteens.value = response.data;
-        sortCanteens();
+        sortCanteensAlphabetically();
         console.log(canteens.value)
       } catch (error) {
         console.log(error);
@@ -192,31 +191,14 @@ export default {
 
 
     onMounted(async () => {
-      if ("geolocation" in navigator) {
-        let geoLoc = navigator.geolocation
-        console.log("Geolocation wird unterstützt!")
-        geoLoc.getCurrentPosition((position) => {
-          breite = position.coords.latitude;
-          länge = position.coords.longitude;
-          locationActivated = true;
-        })
-      } else {
-        Notification.requestPermission().then(function(permission) {
-          if (permission === "granted") {
-            navigator.serviceWorker.ready.then(function(registration) {
-              registration.showNotification("Geolokation wird von Ihrem Gerät leider unterstützt. " +
-                  "Daher wird die Liste der Mensen alphabetisch sortiert."
-              );
-            });
-          }
-        });
+      if (!(navigator.geolocation)) {
+        geoLocActive = false
       }
       try{
         const storedCanteens = await db.canteens.toArray();
         if (storedCanteens.length > 0) {
           canteens.value = storedCanteens;
-          console.log("GeoLocation: " + canteens.value[0].address.geoLocation.longitude)
-          sortCanteens();
+          sortCanteensAlphabetically();
         } else {
           await fetchCanteens();
         }
@@ -257,6 +239,40 @@ export default {
 
     };
 
+    const checkboxClicked = () => {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          breite = position.coords.latitude;
+          länge = position.coords.longitude;
+        })
+      }
+
+      isCheckboxClicked = !isCheckboxClicked
+      if (navigator.geolocation && isCheckboxClicked && sorted === 'alphabetically') {
+        sortCanteensByDistance();
+        sorted = 'byDistance'
+      } else if (navigator.geolocation && !isCheckboxClicked && sorted !== 'alphabetically'){
+        sortCanteensAlphabetically()
+        sorted = 'alphabetically'
+      } else {
+        if (!notificationSent) {
+          Notification.requestPermission().then(function(permission) {
+            if (permission === "granted") {
+              navigator.serviceWorker.ready.then(function(registration) {
+                registration.showNotification("Sie haben Ihren Standort nicht aktiviert. " +
+                    "Daher wird die Liste der Mensen alphabetisch sortiert.");
+              });
+            }
+          });
+          notificationSent = true
+        }
+        if (sorted !== 'alphabetically') {
+          sortCanteensAlphabetically()
+          sorted = 'alphabetically'
+        }
+      }
+    }
+
 
 
     return {
@@ -271,7 +287,9 @@ export default {
       loseWeight,
       halfSymbol,
       filledSymbol,
-      emptySymbol
+      emptySymbol,
+      checkboxClicked,
+      geoLocActive
 
     };
 
@@ -282,6 +300,82 @@ export default {
 
 
 <style scoped>
+input {
+  margin-left: 20px;
+}
+
+label {
+  margin-left: 5px;
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: var(--toggle-bg-color);
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px var(--toggle-box-shadow);
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+:root {
+  --toggle-bg-color: '#2196F3';
+  --toggle-box-shadow: '#2196F3'
+}
+
 .btn-active, .btn-inactive {
   padding: 0px 20px;
   border: none;

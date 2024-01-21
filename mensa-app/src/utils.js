@@ -12,6 +12,7 @@ export function changeColorScheme(selectedCanteen, property, selector) {
             font='SourceSans3';
             changeFontStyle(font);
             changeButtonStyle('ash');
+            changeToggleStyle('ash');
             break;
         //bht
         case '655ff175136d3b580c970f7d':
@@ -22,6 +23,7 @@ export function changeColorScheme(selectedCanteen, property, selector) {
             font='CaseTextTrial';
             changeFontStyle(font);
             changeButtonStyle('bht');
+            changeToggleStyle('bht');
             break;
         //charite
         case '655ff175136d3b580c970f82':
@@ -31,6 +33,7 @@ export function changeColorScheme(selectedCanteen, property, selector) {
             font='Roboto';
             changeFontStyle(font);
             changeButtonStyle('charite');
+            changeToggleStyle('charite');
             break;
         //ehb
         case '655ff175136d3b580c970f86':
@@ -40,6 +43,7 @@ export function changeColorScheme(selectedCanteen, property, selector) {
             font = 'Monserrat';
             changeFontStyle(font);
             changeButtonStyle('ehb');
+            changeToggleStyle('ehb');
             break;
 
         //fu
@@ -57,6 +61,7 @@ export function changeColorScheme(selectedCanteen, property, selector) {
             //die Font der FU ist für nicht mitglieder nicht verfügbar
             changeFontStyle(font);
             changeButtonStyle('fu');
+            changeToggleStyle('fu');
 
             break;
         //hu
@@ -72,6 +77,7 @@ export function changeColorScheme(selectedCanteen, property, selector) {
             font = "Verdana";
             changeFontStyle(font);
             changeButtonStyle("hu");
+            changeToggleStyle('hu');
             break;
         //tu
         case '655ff176136d3b580c970fa0':
@@ -86,6 +92,7 @@ export function changeColorScheme(selectedCanteen, property, selector) {
             font="Arial";
             changeFontStyle(font);
             changeButtonStyle('tu');
+            changeToggleStyle('tu');
             //weiß benutzen
             break;
         //htw
@@ -97,6 +104,7 @@ export function changeColorScheme(selectedCanteen, property, selector) {
             font="HTWBerlinOffice";
             changeFontStyle(font);
             changeButtonStyle('htw');
+            changeToggleStyle('htw');
             break;
         //hwr
         case '655ff175136d3b580c970f93':
@@ -105,7 +113,8 @@ export function changeColorScheme(selectedCanteen, property, selector) {
             backgroundColor ='#f0f0f1';
             font = "CrimsonText";
             changeFontStyle(font);
-            changeButtonStyle('hwr')
+            changeButtonStyle('hwr');
+            changeToggleStyle('hwr');
             //weiß benutzen
             break;
         //hfm
@@ -116,7 +125,8 @@ export function changeColorScheme(selectedCanteen, property, selector) {
             backgroundColor ='#c1ada0';
             font='SourceSans3';
             changeFontStyle(font)
-            changeButtonStyle('hfm')
+            changeButtonStyle('hfm');
+            changeToggleStyle('hfm');
 
             //schwarz benutzen
             break;
@@ -127,7 +137,8 @@ export function changeColorScheme(selectedCanteen, property, selector) {
             //font nicht vefügbar, u.a. roboto als ersatz angegeben
             font='Roboto'
             changeFontStyle(font)
-            changeButtonStyle('hfs')
+            changeButtonStyle('hfs');
+            changeToggleStyle('hfs');
 
             //weiß benutzen
             break;
@@ -139,6 +150,7 @@ export function changeColorScheme(selectedCanteen, property, selector) {
             font='Arial'
             changeFontStyle('Arial')
             changeButtonStyle('wss')
+            changeToggleStyle('wss');
             //schwarz benutzen
             break;
         //khsb
@@ -148,6 +160,7 @@ export function changeColorScheme(selectedCanteen, property, selector) {
             font = 'Signika'
             changeFontStyle(font)
             changeButtonStyle('khsb')
+            changeToggleStyle('khsb');
             //schwarz benutzen
             break;
 
@@ -562,6 +575,226 @@ export function changeColorScheme(selectedCanteen, property, selector) {
 
 
 
+    }
+
+    function changeToggleStyle(canteen) {
+
+        const toggle = document.querySelectorAll('.slider-active');
+        switch(canteen){
+            case 'htw':
+                toggle.forEach(toggle => {
+                    toggle.style.backgroundColor = 'rgb(118,185,0)';
+                    toggle.style.boxShadow = 'rgb(118,185,0)';
+                });
+                break;
+            case 'hu':
+                toggle.forEach(button => {
+                    button.style.backgroundColor = '#5b89b0';
+                });
+                break;
+            case 'ash':
+                toggle.forEach(button =>{
+                    button.style.display ='inline-block';
+                    button.fontWeight ='bold';
+                    button.textAlign='center';
+                    button.verticalAlign='middle';
+                    button.cursor='pointer';
+                    button.border='1px';
+                    button.style.color='white';
+                    button.style.background = '#3c3c3b';
+                })
+
+                break;
+            case 'bht':
+                toggle.forEach(button =>{
+                    button.style.display ='inline-block';
+                    button.fontWeight ='400';
+                    button.textAlign='center';
+                    button.verticalAlign='middle';
+                    button.userSelect='none';
+                    button.cursor='pointer';
+                    button.border='1px';
+                    button.style.color='white';
+                    button.style.backgroundColor = '#333333';
+                    button.style.backgroundImage='none';
+                    button.style.backgroundPositionY='0px';
+                    button.style.backgroundPositionX='0px';
+                    button.style.backgroundSize='initial';
+                    button.style.backgroundRepeat='repeat';
+                    button.style.backgroundAttachment='scroll';
+                    button.style.backgroundOrigin ='initial';
+                    button.style.backgroundClip='initial';
+
+                })
+                break;
+            case 'charite':
+                toggle.forEach(button => {
+                    button.style.color = 'white';
+                    button.style.backgroundColor = '#ad4371';
+                    button.style.display ='inline-flex';
+                    button.style.padding = '10px 20px';
+                    button.fontWeight = 'bold';
+                    button.border = 'none';
+                    button.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.25)';
+                    button.style.textAlign = 'center';
+                    button.style.display = 'inline-block';
+                    button.cursor = 'pointer';
+                    button.style.userSelect = 'none';
+                });
+                break;
+            case 'ehb':
+                toggle.forEach(button => {
+                    button.style.color = 'white';
+
+                    button.style.backgroundColor = '#0078ae';
+
+                    button.style.display = 'inline-flex';
+                    button.style.justifyContent = 'center';
+                    button.style.alignItems = 'center';
+
+
+                    button.style.textAlign = 'center';
+                    button.style.whiteSpace = 'nowrap';
+                    button.style.fontWeight = '700';
+                    button.style.cursor = 'pointer';
+                    button.style.boxShadow = 'none';
+                    button.style.WebkitAppearance = 'none';
+                    button.style.transition = 'all .2s ease-in-out';
+                    button.style.borderRadius = '0';
+                    button.style.border = '1px solid #0072a7';
+                });
+                break;
+            case 'fu':
+                toggle.forEach(button => {
+                    button.style.border ='0';
+                    button.style.backgroundColor = '#99CC00';
+                    button.style.lineHeight ='2';
+                    button.style.paddingTop = '15px';
+                    button.style.paddingBottom = '15px';
+                    button.style.textAlign = 'center';
+
+                    button.style.color = 'white';
+                    button.style.cursor = 'pointer';
+                    button.style.fontWeight = 'bold';
+                });
+                break;
+            case 'tu':
+                toggle.forEach(button => {
+                    button.style.backgroundColor='#c50e1f'
+                    button.style.border = '0.0625rem solid #c40d1e';
+                    button.style.borderRadius = '1.0625rem';
+                    button.style.color = 'white';
+                    button.style.display = 'inline-block';
+                    button.style.fontFamily = 'Muli,sans-serif,Arial';
+                    button.style.fontSize = '1rem';
+                    button.style.fontWeight = '400';
+                    button.style.lineHeight = '1.125rem';
+                    button.style.margin = '0';
+                    button.style.minWidth = '10rem';
+                    button.style.padding = '0.375rem 1.5625rem 0.5rem';
+                    button.style.position = 'relative';
+                    button.style.textAlign = 'center';
+                    button.style.textDecoration = 'none';
+                    button.style.transition = 'background .25s,color .25s';
+                    button.style.zIndex = '0';
+
+                    button.style.cursor = 'pointer';
+                });
+                break;
+            case 'hwr':
+                toggle.forEach(button => {
+                    button.style.webkitFlex = '0 1 auto';
+                    button.style.flex = '0 1 auto';
+                    button.style.minWidth = '0';
+                    button.style.overflow = 'hidden';
+                    button.style.textOverflow = 'ellipsis';
+                    button.style.whiteSpace = 'nowrap';
+                    button.style.lineHeight = '1 !important';
+                    button.style.paddingTop = 'calc(0.99rem - 0.2em)';
+                    button.style.paddingBottom = 'calc(0.99rem - 0.08em)';
+                    button.style.paddingRight = '0.6rem';
+                    button.style.paddingLeft = '0.6rem';
+                    button.style.textOverflow = 'ellipsis';
+                    button.style.borderRadius = '0.3rem';
+                    button.style.color='white'
+                });
+                break;
+            case 'hfm':
+                toggle.forEach(button => {
+                    button.style.webkitAppearance = 'none';
+                    button.style.background = '0 0';
+                    button.style.border = '0';
+                    button.style.border = '1px solid #7300ff';
+                    button.style.borderRadius = '5px';
+                    button.style.color = 'white';
+                    button.style.backgroundColor ='#7300ff'
+                    button.style.cursor = 'pointer';
+                    button.style.display = 'inline-block';
+                    button.style.lineHeight = 'normal';
+                    button.style.marginBottom = '0.5rem';
+                    button.style.padding = '0.625rem 0.85rem';
+                    button.style.textAlign = 'center';
+                    button.style.textDecoration = 'none';
+                    button.style.textTransform = 'uppercase';
+                    button.style.webkitTransition = 'background-color .3s,border-color .3s,color .2s';
+                    button.style.transition = 'background-color .3s,border-color .3s,color .2s';
+                    button.style.webkitUserSelect = 'none';
+                    button.style.mozUserSelect = 'none';
+                    button.style.msUserSelect = 'none';
+                    button.style.userSelect = 'none';
+                });
+                break;
+            case 'hfs':
+                toggle.forEach(button => {
+                    button.style.color = 'white';
+                    button.style.backgroundColor = '#0078ae';
+                    button.style.display = 'inline-flex';
+                    button.style.justifyContent = 'center';
+                    button.style.alignItems = 'center';
+                    button.style.textAlign = 'center';
+                    button.style.whiteSpace = 'nowrap';
+                    button.style.fontWeight = '700';
+                    button.style.cursor = 'pointer';
+                    button.style.boxShadow = 'none';
+                    button.style.WebkitAppearance = 'none';
+                    button.style.transition = 'all .2s ease-in-out';
+                    button.style.borderRadius = '0';
+                    button.style.border = '1px solid #0072a7';
+                });
+                break;
+            case 'wss':
+                break;
+            case 'khsb':
+                toggle.forEach(button => {
+                    button.style.margin = '0';
+
+
+                    button.style.webkitAppearance = 'button';
+                    button.style.cursor = 'pointer';
+                    button.style.overflow = 'visible';
+                    button.style.textTransform = 'none';
+                    button.style.appearance = 'auto';
+                    button.style.textRendering = 'auto';
+
+                    button.style.letterSpacing = 'normal';
+                    button.style.wordSpacing = 'normal';
+                    button.style.lineHeight = 'normal';
+                    button.style.textIndent = '0px';
+                    button.style.textShadow = 'none';
+                    button.style.display = 'inline-block';
+                    button.style.textAlign = 'center';
+                    button.style.alignItems = 'flex-start';
+                    button.style.boxSizing = 'border-box';
+                    button.style.backgroundColor = '#1699a3';
+                    button.style.color='white';
+                    button.style.paddingBlock = '1px';
+                    button.style.paddingInline = '6px';
+                    button.style.borderWidth = '2px';
+                    button.style.borderStyle = 'outset';
+
+                });
+                break;
+        }
     }
 
     document.querySelectorAll(selector).forEach(element => {
