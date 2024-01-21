@@ -191,8 +191,16 @@ export default {
 
 
     onMounted(async () => {
-      if (!(navigator.geolocation)) {
+      if (!('geolocation' in navigator)) {
         geoLocActive = false
+      } else {
+        let longitude;
+        navigator.geolocation.getCurrentPosition(position => {
+          longitude = position.coords.longitude
+        })
+        if (longitude === null) {
+          geoLocActive = false
+        }
       }
       try{
         const storedCanteens = await db.canteens.toArray();

@@ -47,7 +47,7 @@ export default {
     },
 
     testGeoLoc() {
-      if (navigator.geolocation) {
+      if ('geoLocation' in navigator) {
         navigator.geolocation.getCurrentPosition(position => {
           console.log(position.coords.longitude)
           console.log(position.coords.latitude)
@@ -201,12 +201,6 @@ export default {
 <!--  <div class="test">-->
 <!--    <button v-on:click="sendNotification">send Message - funktioniert nicht</button>-->
 <!--  </div>-->
-  <div>
-    <button v-on:click="testGeoLoc">Test</button>
-    <input id="TestCheckBox" type="checkbox" v-on:input="testGeoLoc">
-    <label for="TestCheckBox">Test</label>
-  </div>
-
   <div id="Hinweistext">
     <p class="budget-text">Klicken Sie auf das Icon um ihr Budget zu scannen.</p>
   </div>
