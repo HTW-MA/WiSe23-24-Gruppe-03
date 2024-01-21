@@ -1088,7 +1088,7 @@ img {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: white;
+
   padding: 20px;
   border-radius: 10px;
   z-index: 1000;
@@ -1099,6 +1099,7 @@ img {
   max-width: 80vw;
   max-height: 80vh;
   display: inline-block;
+  background-color: #f5f5f5;
 
 }
 
