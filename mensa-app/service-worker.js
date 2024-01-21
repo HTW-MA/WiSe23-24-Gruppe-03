@@ -13,11 +13,32 @@ precacheAndRoute(precacheImages);
 
 const responseContent = `
 <html>
-  <body style="text-align: center; background-color: #eee; color: #000;">
+<!--  <body style="text-align: center; background-color: #eee; color: #000;">-->
 <!--    <h1>Sie können uns leider nicht erreichen</h1>-->
 <!--    <p>Es scheint, dass es ein Problem mit Ihrer Internetverbindung gibt.</p>-->
 <!--    <p>Bitte versuchen Sie es erneut, sobald Sie eine stabile Internetverbindung haben.</p>-->
-    <img src="${heat}" alt="Heat Image">
+
+<!--  </body>-->
+  <head>
+    <style>
+      body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+      }
+      img.fullscreen-img {
+        position: fixed; 
+        top: 0;
+        left: 0;
+        width: 100vw; 
+        height: 100vh; 
+        object-fit: cover; 
+      }
+    </style>
+  </head>
+  <body>
+    <img src="${heat}" alt="Heat Image" class="fullscreen-img">
   </body>
 </html>`;
 
