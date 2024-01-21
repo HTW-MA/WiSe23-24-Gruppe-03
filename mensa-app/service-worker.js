@@ -22,24 +22,27 @@ const responseContent = `
 <head>
     <style>
       body, html {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+      background-color: black;
+      
       }
-      img.fullscreen-img {
-        max-width: 100%;
-        max-height: 100%;
-        height: auto;
-        width: auto;
-      }
+      .image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.image-container img {
+  max-width: 100%;
+  max-height: 100%;
+  height: auto;
+  width: auto;
+}
     </style>
   </head>
   <body>
-    <div>
-      <img src="${heat}" alt="Heat Image" class="fullscreen-img">
+    <div class="image-container">
+      <img src="${heat}" alt="Heat Image" >
     </div>
   </body>
 </html>`;
