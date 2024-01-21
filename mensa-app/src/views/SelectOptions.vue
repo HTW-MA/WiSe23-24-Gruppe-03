@@ -2,15 +2,31 @@
   <p></p>
 
   <div>
-    <Label>Bitte Kantine auswählen:</Label>
-    <p></p>
-    <select v-model="selectedCanteen">
-      <option v-for="canteen in canteens" :value="canteen.id" :key="canteen.id">
-        {{ canteen.name }} - {{ canteen.address.street }}
-      </option>
-    </select>
+    <div v-if="screenWidth < screenHeight">
+      <Label>Bitte Kantine auswählen:</Label>
+      <p></p>
+      <select v-model="selectedCanteen">
+        <option v-for="canteen in canteens" :value="canteen.id" :key="canteen.id">
+          {{ canteen.name }} - {{ canteen.address.street }}
+        </option>
+      </select>
+      <div>
+        <input type="checkbox" id="coding" name="interest" value="coding" v-on:click="checkboxClicked" v-if="geoLocActive"/>
+        <label v-if="geoLocActive" for="coding">Nach Entfernung sortieren?</label>
+      </div>
+    </div>
+
+    <div v-if="screenWidth > screenHeight">
+      <Label>Bitte Kantine auswählen:</Label>
+      <p></p>
+      <select v-model="selectedCanteen">
+        <option v-for="canteen in canteens" :value="canteen.id" :key="canteen.id">
+          {{ canteen.name }} - {{ canteen.address.street }}
+        </option>
+      </select>
       <input type="checkbox" id="coding" name="interest" value="coding" v-on:click="checkboxClicked" v-if="geoLocActive"/>
       <label v-if="geoLocActive" for="coding">Nach Entfernung sortieren?</label>
+    </div>
 <!--    <label class="switch">-->
 <!--      <input type="checkbox"/>-->
 <!--      <span class="slider round"></span>-->
@@ -128,6 +144,8 @@ export default {
     const selectedCanteen = ref<string | null>(null);
     const canteens = ref<Canteen[]>([]);
     const loseWeight = ref (localStorage.getItem('loseWeight')|| '');
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
     let breite = 0;
     let länge = 0;
     let notificationSent = false;
@@ -297,8 +315,9 @@ export default {
       filledSymbol,
       emptySymbol,
       checkboxClicked,
-      geoLocActive
-
+      geoLocActive,
+      screenWidth,
+      screenHeight
     };
 
   }

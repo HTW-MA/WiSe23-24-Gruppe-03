@@ -201,11 +201,6 @@ export default {
 <!--  <div class="test">-->
 <!--    <button v-on:click="sendNotification">send Message - funktioniert nicht</button>-->
 <!--  </div>-->
-  <div>
-    <button v-on:click="testGeoLoc">Test</button>
-    <input id="Test" type="checkbox" v-on:input="testGeoLoc">
-    <label for="Test">Test</label>
-  </div>
   <div id="Hinweistext">
     <p class="budget-text">Klicken Sie auf das Icon um ihr Budget zu scannen.</p>
   </div>
