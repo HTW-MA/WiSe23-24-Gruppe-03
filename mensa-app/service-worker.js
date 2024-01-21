@@ -33,7 +33,7 @@ const responseContent = `
         left: 0;
         width: 80vw; 
         height: 80vh; 
-        object-fit: contain; 
+        object-fit: cover; 
       }
     </style>
   </head>
