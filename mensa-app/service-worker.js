@@ -19,26 +19,28 @@ const responseContent = `
 <!--    <p>Bitte versuchen Sie es erneut, sobald Sie eine stabile Internetverbindung haben.</p>-->
 
 <!--  </body>-->
-   <head>
+<head>
     <style>
       body, html {
         margin: 0;
         padding: 0;
         height: 100%;
-        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
       img.fullscreen-img {
-        position: fixed; 
-        top: 0;
-        left: 0;
-        width: 100vw; 
-        height: 100vh; 
-        object-fit: cover; 
+        max-width: 100%;
+        max-height: 100%;
+        height: auto;
+        width: auto;
       }
     </style>
   </head>
   <body>
-    <img src="${heat}" alt="Heat Image" class="fullscreen-img">
+    <div>
+      <img src="${heat}" alt="Heat Image" class="fullscreen-img">
+    </div>
   </body>
 </html>`;
 
