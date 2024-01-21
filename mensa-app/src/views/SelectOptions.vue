@@ -193,12 +193,12 @@ export default {
 
     onMounted(async () => {
       if ("geolocation" in navigator) {
+        let geoLoc = navigator.geolocation
         console.log("Geolocation wird unterstützt!")
-        navigator.geolocation.getCurrentPosition((position) => {
+        geoLoc.getCurrentPosition((position) => {
           breite = position.coords.latitude;
           länge = position.coords.longitude;
           locationActivated = true;
-
         })
       } else {
         Notification.requestPermission().then(function(permission) {
