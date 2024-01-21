@@ -9,7 +9,7 @@
         {{ canteen.name }} - {{ canteen.address.street }}
       </option>
     </select>
-      <input type="checkbox" id="coding" name="interest" value="coding" v-on:input="checkboxClicked" v-if="geoLocActive"/>
+      <input type="checkbox" id="coding" name="interest" value="coding" v-on:click="checkboxClicked" v-if="geoLocActive"/>
       <label v-if="geoLocActive" for="coding">Nach Entfernung sortieren?</label>
 <!--    <label class="switch">-->
 <!--      <input type="checkbox"/>-->
