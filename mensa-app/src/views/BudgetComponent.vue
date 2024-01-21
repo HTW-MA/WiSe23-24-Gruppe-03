@@ -190,6 +190,18 @@ export default {
     }
 
     console.log('Firebase cloud messaging object', this.messaging)
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(position => {
+            console.log(position.coords.longitude)
+            console.log(position.coords.latitude)
+          },
+          error => {
+            console.log(error)
+          })
+    } else {
+      console.log("Keine GeoLoc")
+    }
   }
 }
 
