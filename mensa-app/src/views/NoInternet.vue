@@ -1,55 +1,16 @@
 <template>
-  <div class="heat-image-container" ref="container">
-    <img src="@/assets/heat.png" alt="Heat Image" ref="image" />
+  <div class="image-container">
+    <img :src="heat" alt="Heat Image" />
   </div>
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
-import Hammer from 'hammerjs';
-import heat from '../assets/heat.png'
+import heat from '../assets/dinoooo.png';
 
 export default {
   name: 'NoInternet',
-
-  setup() {
-    const container = ref(null);
-    const image = ref(null);
-
-    onMounted(() => {
-      if (container.value && image.value) {
-        const mc = new Hammer.Manager(container.value);
-        mc.add(new Hammer.Pinch({ threshold: 0 }));
-
-        let lastScale = 1;
-        mc.on('pinchstart pinchmove', function (e) {
-          if (e.type === 'pinchstart') {
-            lastScale = e.scale;
-          }
-
-          const scale = lastScale * e.scale;
-          image.value.style.transform = `scale(${scale})`;
-
-          if (e.pointers.length > 1) {
-            e.preventDefault();
-          }
-        });
-
-        // Allow scrolling for single touch
-        mc.add(new Hammer.Pan({ direction: Hammer.DIRECTION_ALL, threshold: 0 }));
-        mc.get('pan').set({ enable: true });
-        mc.on('pan', function(e) {
-          if (e.pointers.length === 1) {
-            container.value.scrollLeft -= e.deltaX;
-            container.value.scrollTop -= e.deltaY;
-          }
-        });
-      }
-    });
-
+  data() {
     return {
-      container,
-      image,
       heat
     };
   }
@@ -57,17 +18,17 @@ export default {
 </script>
 
 <style>
-.heat-image-container {
-  position: relative;
-  width: 100%;
-  min-height: 100vh;
-  overflow: auto;
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-.heat-image-container img {
+.image-container img {
+  max-width: 100%;
+  max-height: 100%;
+  height: auto;
   width: auto;
-  height: 100vh;
-  display: block;
-  transform-origin: center;
 }
 </style>
