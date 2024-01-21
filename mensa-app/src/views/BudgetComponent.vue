@@ -46,6 +46,20 @@ export default {
       }, 5000)
     },
 
+    testGeoLoc() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+          console.log(position.coords.longitude)
+          console.log(position.coords.latitude)
+        },
+        error => {
+          console.log(error)
+        })
+      } else {
+        console.log("Keine GeoLoc")
+      }
+    },
+
     readCard() {
       console.log("Read Card aufgerufen")
       this.scanErfolgreich = 'noch nicht'
@@ -182,9 +196,16 @@ export default {
 </script>
 
 <template>
+  <br>
+  <br>
+  <br>
 <!--  <div class="test">-->
 <!--    <button v-on:click="sendNotification">send Message - funktioniert nicht</button>-->
 <!--  </div>-->
+  <div id="Test">
+    <button id="Test" v-on:click="testGeoLoc">Test</button>
+  </div>
+
   <div id="Hinweistext">
     <p class="budget-text">Klicken Sie auf das Icon um ihr Budget zu scannen.</p>
   </div>
