@@ -108,6 +108,88 @@ export default class App extends Vue {}
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'CaseTextTrial';
+  src: url('./assets/fonts/bht/CaseTextTrial-RegularWeb.woff2') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'CaseTextTrial';
+  src: url('./assets/fonts/bht/CaseTextTrial-BoldWeb.woff2') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'CaseTextTrial';
+  src: url('./assets/fonts/bht/CaseTextTrial-ItalicWeb.woff2') format('truetype');
+  font-weight: normal;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'CaseTextTrial';
+  src: url('./assets/fonts/bht/CaseTextTrial-BoldItalicWeb.woff2') format('truetype');
+  font-weight: bold;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Roboto';
+  src: url('./assets/fonts/charite/Roboto-Regular.ttf')format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Roboto';
+  src: url('./assets/fonts/charite/Roboto-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Roboto';
+  src:  url('./assets/fonts/charite/Roboto-Italic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'Roboto';
+  src:  url('./assets/fonts/charite/Roboto-BoldItalic.ttf') format('truetype');
+  font-weight: bold;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'Monserrat';
+  src: url('./assets/fonts/ehb/Montserrat-Regular.ttf')format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Monserrat';
+  src: url('./assets/fonts/ehb/Montserrat-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Monserrat';
+  src:  url('./assets/fonts/ehb/Montserrat-Italic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'Monserrat';
+  src:  url('./assets/fonts/ehb/Montserrat-BoldItalic.ttf') format('truetype');
+  font-weight: bold;
+  font-style: italic;
+}
+
+
+
 /*
 nav {
   padding: 2vw;

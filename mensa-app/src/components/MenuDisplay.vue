@@ -93,12 +93,14 @@
                                   v-model="reviewComment"
                                   placeholder="Kommentar"
                         ></textarea>
+                        <div class="button-container">
+                        <button @click="showReviewPopup = false" class="htw-btn-active">
+                          Abbrechen
+                        </button>
                         <button @click="() =>submitReview()" class="htw-btn-active">
                           Senden
                         </button>
-                         <button @click="showReviewPopup = false" class="htw-btn-active">
-                          Abbrechen
-                        </button>
+                        </div>
 
 
 
@@ -1124,10 +1126,14 @@ img {
 
 .htw-btn-active {
 
-  color: white;
-  margin-left: 10px;
+
 }
 
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
 
 
 .star-rating {
@@ -1268,8 +1274,19 @@ img {
   background-color: yellow;
 }
 
+.review-popup .button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+}
 
-
+.review-popup .button-container > .htw-btn-active {
+  flex: 0 0 auto;
+  width: 100%;
+  margin: 5px 0;
+  text-align: center;
+}
 
 
 

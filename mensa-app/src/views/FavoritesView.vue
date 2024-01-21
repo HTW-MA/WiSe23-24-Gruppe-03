@@ -1,7 +1,10 @@
 <template>
   <div v-if="favorites.length > 0" class="container">
+    <p></p>
+    <p></p>
+    <p></p>
     <h2>Lieblingsessen</h2>
-    <div v-for="meal in favorites" :key="meal.id" class="meal-item">
+    <div v-for="meal in favorites" :key="meal.id" class="meal-item"  >
       <p class="meal-name">{{ meal.name }}</p>
       <div class="rating-symbols">
         <img v-for="symbol in getRatingSymbols(mealRatings[meal.id])" :src="symbol" :key="symbol" alt="Rating Symbol" class="rating-symbol">
@@ -27,14 +30,16 @@
                     v-model="reviewComment"
                     placeholder="Kommentar"
           ></textarea>
+          <div class="button-container">
+          <button @click="showReviewPopup = false" class="htw-btn-active">
+            Abbrechen
+          </button>
 
           <button @click="() =>submitReview()" class="htw-btn-active">
             Senden
           </button>
+          </div>
 
-          <button @click="showReviewPopup = false" class="htw-btn-active">
-            Abbrechen
-          </button>
 
         </div>
 
@@ -218,10 +223,21 @@ export default {
       changeColorScheme(store.state.selectedCanteen, 'backgroundColor', '.htw-btn-active');
     };
 
+    const updateButtonColorPopup = () => {
+      changeColorScheme(store.state.selectedCanteen, 'backgroundColor', '.htw-btn-active');
+    };
+
+
+
     watch(showReviewPopup, async (newVal) => {
       if (newVal) {
         await nextTick();
         updateButtonColor();
+      }
+    });
+    watch([() => store.state.selectedCanteen, () => showReviewPopup.value], (newValues, oldValues) => {
+      if (newValues[0] !== oldValues[0] || (newValues[1] && !oldValues[1])) {
+        updateButtonColorPopup();
       }
     });
     const submitReview = () => {
@@ -331,7 +347,11 @@ export default {
 
     onMounted(async () => {
       await loadFavorites();
-      updateButtonColor();
+
+      nextTick(() => {
+        updateButtonColor();
+      });
+      updateButtonColorPopup();
     });
 
     return {
@@ -385,6 +405,7 @@ export default {
   text-align:  left;
   width:85vw;
 
+
 }
 
 .meal-name {
@@ -436,14 +457,7 @@ export default {
   text-align:  left;
 }
 
-.button-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  justify-content: flex-start;
-  align-items: center;
 
-}
 
 .comment-field {
   width: 100%;
@@ -453,9 +467,7 @@ export default {
 
 
 .htw-btn-active {
-  background-color: #76B900;
-  color: white;
-  margin-left: 10px;
+
 }
 
 
@@ -478,4 +490,23 @@ export default {
   display: inline-block;
 
 }
+
+
+.review-popup .button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+}
+
+.review-popup .button-container > .htw-btn-active {
+  flex: 0 0 auto;
+  width: 100%;
+  margin: 5px 0;
+  text-align: center;
+}
+.container > .meal-item:first-child {
+  margin-top: 400px;
+}
+
 </style>
