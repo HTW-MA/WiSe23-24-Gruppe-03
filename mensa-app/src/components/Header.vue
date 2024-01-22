@@ -51,7 +51,7 @@ export default {
 <template>
   <nav class="navbar navbar-expand-lg fixed-top">
     <div class="container">
-      <img src="../assets/logo.png" alt="Logo" width="30" height="30">
+      <img src="../assets/Logo_Test.png" alt="Logo" width="50" height="50">
       Forscher Futter
     </div>
   </nav>
@@ -76,7 +76,7 @@ export default {
 }
 
 .container img {
-  position: absolute; left: 5px; top: 7px;
+  position: absolute; left: -5px; top: -5px;
 }
 
 img {

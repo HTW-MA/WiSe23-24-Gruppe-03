@@ -374,8 +374,14 @@ export default {
         return;
       }
       if (starRating.value&& reviewComment.value) {
-
-
+        // Auskommentiert, solange API down ist
+        // if ("serviceWorker" in navigator && "SyncManager" in window) {
+        //   navigator.serviceWorker.ready.then(function (registration) {
+        //     registration.sync.register("post-meal-review:" + meal.id + ":" + starRating.value + ":" + reviewComment.value + ":" + meal.category);
+        //   })
+        // } else {
+        //   postMealReview(meal.id, starRating.value, reviewComment.value, meal.category);
+        // }
         postMealReview(meal.id, starRating.value, reviewComment.value, meal.category);
         showReviewPopup.value = false;
         reviewComment.value = '';
