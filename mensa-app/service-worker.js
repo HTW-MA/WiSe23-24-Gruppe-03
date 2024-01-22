@@ -1,8 +1,7 @@
 import { precacheAndRoute } from 'workbox-precaching';
 import heat from '/src/assets/dinoooo.png';
-import {precacheAndRoute} from 'workbox-precaching';
-import review_db from "@/review_db";
-import axios from "axios";
+//import review_db from "@/review_db";
+//import axios from "axios";
 
 precacheAndRoute(self.__WB_MANIFEST);
 
