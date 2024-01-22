@@ -122,11 +122,19 @@ export default {
       return timestampHex + randomHex;
     }
 
+    const selectedCanteen = ref<string | null>(null);
+
     function sortCanteensByDistance() {
       canteens.value.sort(function (a, b) {
         return Math.sqrt((länge - a.address.geoLocation.longitude) ** 2 + (breite - a.address.geoLocation.latitude) ** 2) - Math.sqrt((länge - b.address.geoLocation.longitude) ** 2 + (breite - b.address.geoLocation.latitude) ** 2)
       });
+      if (canteens.value.length > 0 && canteens.value[0].id) {
+        selectedCanteen.value = canteens.value[0].id;
+      } else {
+        selectedCanteen.value = null;
+      }
     }
+
 
     function sortCanteensAlphabetically() {
       canteens.value.sort(function (a, b) {
@@ -141,7 +149,7 @@ export default {
     const router = useRouter()
     const selectedRole = ref(localStorage.getItem('selectedRole') || '');
     const selectedDiet = ref(localStorage.getItem('selectedDiet') || '');
-    const selectedCanteen = ref<string | null>(null);
+
     const canteens = ref<Canteen[]>([]);
     const loseWeight = ref (localStorage.getItem('loseWeight')|| '');
     const screenWidth = window.innerWidth;
@@ -296,6 +304,11 @@ export default {
           sortCanteensAlphabetically()
           sorted = 'alphabetically'
         }
+      }
+      if (canteens.value.length > 0 && canteens.value[0].id) {
+        selectedCanteen.value = canteens.value[0].id;
+      } else {
+        selectedCanteen.value = null;
       }
     }
 
