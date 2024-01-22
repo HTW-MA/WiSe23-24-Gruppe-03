@@ -15,9 +15,7 @@
 import { defineComponent, onMounted, ref } from 'vue';
 import {useRouter} from "vue-router";
 import axios from 'axios';
-console.log(process.env)
-
-import MenuDisplay from "@/components/MenuDisplay.vue";
+import MenuDisplay from "@/views/MenuDisplay.vue";
 import db from "@/db";
 import {Canteen} from "@/types";
 
