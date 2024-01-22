@@ -162,6 +162,55 @@ export default {
 
 
   methods: {
+    async fetchMenuForNextSevenDays() {
+      let datesToFetch = [];
+      for (let i = 0; i < 7; i++) {
+        let date = new Date();
+        date.setDate(date.getDate() + i);
+        datesToFetch.push(date.toISOString().split('T')[0]);
+      }
+
+      for (let date of datesToFetch) {
+        try {
+          // Fetch the data using `fetch` instead of `axios` to leverage the service worker caching
+          const response = await fetch(`https://mensa.gregorflachs.de/api/v1/menue?loadingtype=complete&canteenId=${this.selectedCanteen}&startdate=${date}&enddate=${date}`, {
+            headers: { 'X-API-KEY': process.env.VUE_APP_API_KEY }
+          });
+
+          if (!response.ok) {
+            throw new Error(`Network response was not ok for date ${date}`);
+          }
+
+          const responseData = await response.json();
+
+          // Process the response data
+          const mealsByDateAndCategory = responseData.reduce((acc, dayData) => {
+            const mealsByCategory = dayData.meals.reduce((catAcc, meal) => {
+              if (!catAcc[meal.category]) {
+                catAcc[meal.category] = [];
+              }
+              catAcc[meal.category].push(meal);
+              return catAcc;
+            }, {});
+
+            acc[dayData.date] = mealsByCategory;
+            return acc;
+          }, {});
+
+          // Update your Vue component's state
+          // Assuming `meals` is a reactive property in your component
+          this.meals[date] = mealsByDateAndCategory[date];
+
+          // Update UI or perform other actions as necessary
+          this.updateButtonColor();
+
+        } catch (error) {
+          console.error(`Error fetching menu for ${date}:`, error);
+        }
+      }
+    },
+
+
     isBadgePresent(badges, badgeName) {
       return badges.some(badge => badge.name === badgeName);
     },
@@ -169,6 +218,9 @@ export default {
     openPopup(meal) {
       meal.showPopup = true;
     },
+  },
+  mounted() {
+    this.fetchMenuForNextSevenDays();
   },
   computed: {
     store() {
@@ -864,7 +916,8 @@ export default {
       halfLeaf,
       emptyLeaf,
       leafIcon,
-      updateButtonColorPopup
+      updateButtonColorPopup,
+      updateButtonColor
     };
   }
 };

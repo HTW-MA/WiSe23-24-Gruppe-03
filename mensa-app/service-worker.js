@@ -52,3 +52,31 @@ self.addEventListener('fetch', function(event) {
         })
     );
 });
+const CACHE_NAME = 'menu-data';
+const CACHE_TTL = 8 * 24 * 60 * 60 * 1000;
+self.addEventListener('fetch', function(event) {
+    if (event.request.url.includes('/api/v1/menue')) {
+        event.respondWith(
+            caches.open(CACHE_NAME).then(function(cache) {
+                return cache.match(event.request).then(function(cachedResponse) {
+                    const fetchAndUpdateCache = function() {
+                        return fetch(event.request).then(function(networkResponse) {
+                            if (networkResponse.ok) {
+                                cache.put(event.request, networkResponse.clone());
+                            }
+                            return networkResponse;
+                        });
+                    };
+
+                    if (cachedResponse) {
+                        const fetchedTime = new Date(cachedResponse.headers.get('date'));
+                        if (new Date() - fetchedTime < CACHE_TTL) {
+                            return cachedResponse;
+                        }
+                    }
+                    return fetchAndUpdateCache();
+                });
+            })
+        );
+    }
+});
