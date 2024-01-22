@@ -1,9 +1,5 @@
 <template>
-
   <div id="app" @touchstart="handleTouchStart" @touchend="handleTouchEnd">
-
-
-
     <div class="content">
       <div class="date-picker">
         <span class="arrow" @click="decrementDate()">&#9664;</span>
@@ -30,30 +26,16 @@
         <div v-else>
           <div v-for="(categories, date) in filteredMeals" :key="date">
             <h3></h3>
-
-            <div v-for="(categoryMeals, category) in categories" :key="category"  class="category-section"  >
+            <div v-for="(categoryMeals, category) in categories" :key="category" class="category-section">
               <h4>{{ category }}</h4>
               <div>
                 <div v-for="meal in categoryMeals" :key="meal.id" class="meal-container">
-
-
-                  <div
-                      v-if="showMessage"
-                      :style="{ top: popupPosition.y + 'px', left: popupPosition.x + 'px' }"
-                      class="favorite-popup"
-                  >
+                  <div v-if="showMessage" :style="{ top: popupPosition.y + 'px', left: popupPosition.x + 'px' }" class="favorite-popup">
                     {{ message }}
                   </div>
 
-
                   <div @click="openPopup(meal)">
-
-
-
-                    <div
-                        v-if="showAdditivesPopup"
-                        class="popup"
-                    >
+                    <div v-if="showAdditivesPopup" class="popup">
                       <div class="popup-content">
                         <h3>Zusatzstoffe</h3>
                         <ul>
@@ -67,67 +49,39 @@
                       </div>
                     </div>
 
-
                     {{ meal.name || 'Unbekanntes Gericht' }}
-
                     <span class="meal-price">{{ getPrice(meal) }} €</span>
-
-
-
-
 
                     <div v-if="showReviewPopup" class="review-popup">
                       <div class="popup-content">
                         <h3>Bewertung abgeben</h3>
-
                         <div class="star-rating" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
                           <button @click="updateRating(-0.5)" class="small-button">-</button>
                           <span v-for="item in 5" :key="item" ref="stars" @click="handleClick($event, item)">
-                          <img :src="getChickenImage(item)" alt="rating symbol" class="rating-symbol" />
-                      </span>
+                            <img :src="getChickenImage(item)" alt="rating symbol" class="rating-symbol" />
+                          </span>
                           <button @click="updateRating(0.5)" class="small-button">+</button>
                         </div>
 
-
-                        <textarea class="comment-field"
-                                  v-model="reviewComment"
-                                  placeholder="Kommentar"
-                        ></textarea>
+                        <textarea class="comment-field" v-model="reviewComment" placeholder="Kommentar"></textarea>
                         <div class="button-container">
-                        <button @click="showReviewPopup = false" class="htw-btn-active">
-                          Abbrechen
-                        </button>
-                        <button @click="() =>submitReview()" class="htw-btn-active">
-                          Senden
-                        </button>
+                          <button @click="showReviewPopup = false" class="htw-btn-active">
+                            Abbrechen
+                          </button>
+                          <button @click="() =>submitReview()" class="htw-btn-active">
+                            Senden
+                          </button>
                         </div>
-
-
-
-
-
                       </div>
-
                     </div>
+
                     <div class="flex-container">
                       <div class="badge-container" v-if="meal.badges.length > 0">
                         <div class="break-row"></div>
                         <div v-for="badge in meal.badges" :key="badge.id" class="badge-container">
+                          <img :src="getBadgeSymbol(badge.name)" class="icon-inline" @click.stop="openBadgePopup(meal.id, badge, $event)" @touchstart.stop="openBadgePopup(meal.id, badge, $event)" >
 
-
-                          <img
-                              :src="getBadgeSymbol(badge.name)"
-                              class="icon-inline"
-                              @click.stop="openBadgePopup(meal.id, badge, $event)"
-                              @touchstart.stop="openBadgePopup(meal.id, badge, $event)"
-
-                          >
-
-
-                          <div
-                              v-if="showBadgePopup === meal.id"
-                              class="popup"
-                          >
+                          <div v-if="showBadgePopup === meal.id" class="popup">
                             <div class="popup-content" ref="popupContentRef">
                               <h4>{{ currentBadge.name }}</h4>
                               <p class="current-badge">{{ currentBadge.description }}</p>
@@ -138,28 +92,12 @@
                           </div>
                         </div>
 
-                        <img
-                            v-if="meal.additives.length > 0"
-                            :src="addOns"
-                            class="icon-inline"
-                            @click.stop="openAdditivesPopup(meal, $event)"
-                            @touchstart.stop="openAdditivesPopup(meal, $event)"
-                        >
-
+                        <img v-if="meal.additives.length > 0" :src="addOns" class="icon-inline" @click.stop="openAdditivesPopup(meal, $event)" @touchstart.stop="openAdditivesPopup(meal, $event)" >
                         <div class="break-row"></div>
 
-                        <img
-                            v-if="category === 'Essen' || category === 'Desserts'"
-                            :src="isFavorite(meal) ? fullStar : emptyStar"
-                            alt="Star"
-                            class="icon-inline"
-                            @click="toggleFavorite(meal); openFavPopup(meal, $event)"
-                        >
-
+                        <img v-if="category === 'Essen' || category === 'Desserts'" :src="isFavorite(meal) ? fullStar : emptyStar" alt="Star" class="icon-inline" @click="toggleFavorite(meal); openFavPopup(meal, $event)" >
                         <button @click="prepareReview(meal)" class="htw-btn-active">Bewerten</button>
-
                       </div>
-
                     </div>
                   </div>
                 </div>
@@ -170,20 +108,21 @@
       </div>
     </div>
     <p> </p>
-
   </div>
-
 </template>
 
-
-
 <script>
-import {ref, watch, computed, onMounted, reactive, nextTick} from 'vue';
-import {useRouter} from "vue-router";
+import { ref, watch, computed, onMounted, reactive, nextTick } from 'vue';
+import { useRouter } from "vue-router";
 import axios from 'axios';
 import veganIcon from '../assets/vegan-siegel.png';
 import veggieIcon from '../assets/veggie.png'
 import chickenIcon from '../assets/fullChicken.png'
+import emptyChicken from '../assets/emptyChicken.png'
+import leafIcon from '../assets/leafFull.png'
+import halfLeaf from '../assets/leafHalf.png'
+import emptyLeaf from '../assets/leafEmpty.png'
+import halfChicken from '../assets/halfChicken.png'
 import addOns from '../assets/zusatzstoffe.png'
 import gruen from '../assets/gruenerAmpelPunkt.png'
 import aggro from '../assets/aggriculture.png'
@@ -207,12 +146,10 @@ import swipeLeft from '../assets/lefffft.webp'
 import swipeRight from '../assets/swipe rigth.webp'
 
 import fav_db from "@/fav_db";
-import {changeColorScheme} from "@/utils";
+import { changeColorScheme } from "@/utils";
 import store from "@/store";
 import badges_db from "@/badges_db";
 import review_db from "@/review_db";
-
-
 
 export default {
   name: 'MenuDisplay',
@@ -224,16 +161,54 @@ export default {
   },
 
 
-
-
   methods: {
+    async fetchMenuForNextSevenDays() {
+      let datesToFetch = [];
+      for (let i = 0; i < 7; i++) {
+        let date = new Date();
+        date.setDate(date.getDate() + i);
+        datesToFetch.push(date.toISOString().split('T')[0]);
+      }
 
+      for (let date of datesToFetch) {
+        try {
+          // Fetch the data using `fetch` instead of `axios` to leverage the service worker caching
+          const response = await fetch(`https://mensa.gregorflachs.de/api/v1/menue?loadingtype=complete&canteenId=${this.selectedCanteen}&startdate=${date}&enddate=${date}`, {
+            headers: { 'X-API-KEY': process.env.VUE_APP_API_KEY }
+          });
 
+          if (!response.ok) {
+            throw new Error(`Network response was not ok for date ${date}`);
+          }
 
+          const responseData = await response.json();
 
+          // Process the response data
+          const mealsByDateAndCategory = responseData.reduce((acc, dayData) => {
+            const mealsByCategory = dayData.meals.reduce((catAcc, meal) => {
+              if (!catAcc[meal.category]) {
+                catAcc[meal.category] = [];
+              }
+              catAcc[meal.category].push(meal);
+              return catAcc;
+            }, {});
 
+            acc[dayData.date] = mealsByCategory;
+            return acc;
+          }, {});
 
+          // Update your Vue component's state
+          // Assuming `meals` is a reactive property in your component
+          this.meals[date] = mealsByDateAndCategory[date];
 
+          // Update UI or perform other actions as necessary
+          this.updateButtonColor();
+
+        } catch (error) {
+          console.error(`Error fetching menu for ${date}:`, error);
+        }
+      }
+    },
 
 
     isBadgePresent(badges, badgeName) {
@@ -243,18 +218,14 @@ export default {
     openPopup(meal) {
       meal.showPopup = true;
     },
-
-
-
+  },
+  mounted() {
+    this.fetchMenuForNextSevenDays();
   },
   computed: {
-
     store() {
       return store
     },
-
-
-
 
     filteredMeals() {
       const filtered = {};
@@ -274,8 +245,6 @@ export default {
           });
         }
       }
-
-
       const sortedFiltered = {};
       for (const date in filtered) {
         if (filtered[date]['Essen']) {
@@ -290,7 +259,6 @@ export default {
           }
         }
       }
-
       return sortedFiltered;
     },
 
@@ -302,29 +270,21 @@ export default {
 
   setup(props) {
 
-
-
     const currentMealForReview = ref(null);
-
     function prepareReview(meal) {
       currentMealForReview.value = meal;
       showReviewPopup.value = true;
 
     }
 
-
     const showReviewPopup = ref(false);
     const reviewComment = ref('');
     const reviewRating = ref(0);
     const isHighlighted = ref(false);
-
-
     const popupPosition  =ref({x:0,y:0});
-
     const showMessage = ref(false);
     const message = ref('');
     const popupContentRef = ref(null)
-
     const showFavoritePopup = ref(false);
     const starRating = ref(0);
     let filledSymbol;
@@ -332,15 +292,14 @@ export default {
     let halfSymbol;
     const selectedDiet = ref(localStorage.getItem('selectedDiet'));
 
-
     if (selectedDiet.value === "Allesfresser") {
-      filledSymbol = require('@/assets/fullChicken.png');
-      emptySymbol = require('@/assets/emptyChicken.png');
-      halfSymbol = require('@/assets/halfChicken.png')
+      filledSymbol = chickenIcon;
+      emptySymbol = emptyChicken;
+      halfSymbol = halfChicken;
     } else {
-      filledSymbol = require('@/assets/leafFull.png');
-      emptySymbol = require('@/assets/leafEmpty.png');
-      halfSymbol = require('@/assets/leafHalf.png');
+      filledSymbol = leafIcon;
+      emptySymbol = emptyLeaf;
+      halfSymbol = halfLeaf;
     }
 
     function handleClick(event, item) {
@@ -392,8 +351,6 @@ export default {
       currentMealForReview.value = null;
     }
 
-
-
     async function postMealReview(mealID, rating, comment, category) {
       const userID = localStorage.getItem('userID');
 
@@ -402,9 +359,6 @@ export default {
           'X-API-KEY': process.env.VUE_APP_API_KEY
         }
       };
-
-
-
       try {
         const record = await review_db.reviews.where({ mealId: mealID }).first();
         if (record !== undefined){
@@ -419,9 +373,7 @@ export default {
               }
             ],
             comment: comment
-
           }
-
           try{
             const response =await axios.put('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
             if (response && response.data) {
@@ -431,7 +383,6 @@ export default {
                 apiResponseId: response.data.id,
                 rating:rating
               });
-
             }
           }
           catch (error){
@@ -460,24 +411,18 @@ export default {
                 rating: rating
               });
             }
-
           } catch (error) {
             console.log('Fehler :', error)
           }
-
         }
       } catch (error) {
         console.error('Fehler beim Posten:', error)
       }
     }
 
-
-
     function generateTimestampedHex(len) {
       const timestampHex = Date.now().toString(16);
-
       const remainingLen = len - timestampHex.length;
-
       let randomHex = '';
       const characters = '0123456789abcdef';
       for (let i = 0; i < remainingLen; i++) {
@@ -489,7 +434,6 @@ export default {
     const isFavorite = (meal) => {
       return favoriteStatuses.value[meal.id];
     };
-
 
     const toggleFavorite = async (meal) => {
       if (isFavorite(meal)) {
@@ -512,12 +456,8 @@ export default {
 
     };
 
-
-
     const meals = ref([]);
-
     const favoriteStatuses = ref({});
-
     const updateFavoriteStatuses = async () => {
       for (let date in meals.value) {
         for (let category in meals.value[date]) {
@@ -530,8 +470,6 @@ export default {
     };
 
     watch(meals, updateFavoriteStatuses, { deep: true });
-
-
     const showAdditivesPopup = ref(false);
     const additivesList = ref([]);
 
@@ -558,8 +496,6 @@ export default {
     }
 
     const isChangingDate = ref(true);
-
-
     const openAdditivesPopup = (meal,event) => {
       isChangingDate.value = false;
       showMessage.value = false;
@@ -583,21 +519,12 @@ export default {
       showAdditivesPopup.value = true;
     };
 
-
-
-
-
-
     const expandedCategories = reactive({
       Essen: true
-
     });
-
-
 
     const startDate = ref(sessionStorage.getItem('selectedDate') || new Date().toISOString().slice(0, 10));
     const isTouchDevice = ref('ontouchstart' in window || navigator.maxTouchPoints > 0);
-
 
     let touchStartX = 0;
     let touchStartY = 0;
@@ -605,7 +532,6 @@ export default {
     let touchEndY = 0;
 
     const stars=ref([])
-
     const handleTouchStart = (e) => {
       touchStartX = e.changedTouches[0].screenX;
       touchStartY = e.changedTouches[0].screenY;
@@ -622,8 +548,6 @@ export default {
     };
     const handleTouchMove = (event) => {
       event.preventDefault();
-
-
       const touch = event.touches[0];
       updateRatingBasedOnTouch(touch);
       touchEndX = touch.screenX;
@@ -634,12 +558,12 @@ export default {
       const touchX = touch.clientX;
       stars.value.forEach((star, index) => {
         const { left, right } = star.getBoundingClientRect();
-        const midPoint = left + (right - left) / 2; // Calculate the midpoint of the star
+        const midPoint = left + (right - left) / 2; //Mitte des Icons berechnen
 
         if (touchX >= left && touchX < midPoint) {
-          setRating(index + 0.5); // Set a half star rating if touch is in the first half
+          setRating(index + 0.5); // halbe bewertung, falls in 1. Hälfte getappt
         } else if (touchX >= midPoint && touchX <= right) {
-          setRating(index + 1); // Set a full star rating if touch is in the second half
+          setRating(index + 1); // ganze, falls in 2. Hälfte
         }
       });
     };
@@ -650,8 +574,7 @@ export default {
       }
       const deltaX = touchEndX - touchStartX;
       const deltaY = touchEndY - touchStartY;
-
-      //diesen Wert ggf. erhöhen, falls swipe immer noch zu sensibel
+      //diesen Wert ggf. erhöhen, falls zu sensibel
       const threshold = window.innerWidth / 3;
 
       if (Math.abs(deltaX) > threshold && Math.abs(deltaX) > Math.abs(deltaY)) {
@@ -695,11 +618,8 @@ export default {
     };
 
     const badges = ref([])
-
-
     const storedMeals =sessionStorage.getItem('meals');
     const selectedMeal = ref(null);
-
     const selectMeal = (meal) => {
       selectedMeal.value = meal;
       router.push({ path:'/Meal', query: { mealId: meal.id } });
@@ -715,15 +635,12 @@ export default {
 
 
     const router = useRouter();
-
     const navigateToProfile = () => {
       router.push('/Profile');
     };
 
     const fetchMenu = async (date) => {
-
       try {
-
         const response = await axios.get(`https://mensa.gregorflachs.de/api/v1/menue?loadingtype=complete&canteenId=${props.selectedCanteen}&startdate=${date}&enddate=${date}`, {
           headers: {  'X-API-KEY':  process.env.VUE_APP_API_KEY
           }
@@ -751,10 +668,7 @@ export default {
 
     const fetchAndStoreTodaysMenu = async () => {
       const today = new Date().toISOString().split('T')[0];
-
       await fetchMenu(today);
-
-      // Store today's menu and date in sessionStorage
       sessionStorage.setItem('meals', JSON.stringify(meals.value));
       sessionStorage.setItem('selectedDate', today);
     };
@@ -794,13 +708,8 @@ export default {
       }
     };
 
-
-
     const showBadgePopup=ref(false);
     const currentBadge = ref({});
-
-
-
     const openBadgePopup = (mealId, badge,event) => {
       showMessage.value = false;
       showAdditivesPopup.value = false;
@@ -815,11 +724,9 @@ export default {
         x=event.clientX;
         y=event.clientY;
       }
-
       currentBadge.value = badge;
       showBadgePopup.value = mealId;
       popupPosition.value = {x,y};
-
       nextTick(() => {
         changeColorScheme(store.state.selectedCanteen, 'backgroundColor', '.htw-btn-active');
       });
@@ -832,8 +739,6 @@ export default {
     const closeBadgePopup = () => {
       showBadgePopup.value = null;
     };
-
-
 
     const updateButtonColor = () => {
       changeColorScheme(store.state.selectedCanteen, 'backgroundColor', '.htw-btn-active');
@@ -862,14 +767,12 @@ export default {
         updateButtonColor();
       });
       updateButtonColorPopup();
-
       try {
         // Now call your async functions
         await fetchAndStoreTodaysMenu();
         await fetchMenu(startDate.value);
         checkAndCompareMeals();
         updateButtonColor();
-
         const storedBadges = await badges_db.badges.toArray();
         if (storedBadges.length > 0) {
           badges.value = storedBadges;
@@ -879,10 +782,7 @@ export default {
       } catch (exception) {
         console.error(exception);
       }
-
     });
-
-
 
     const checkAndCompareMeals = () => {
       const today = new Date().toISOString().split('T')[0];
@@ -902,27 +802,20 @@ export default {
             allMealIds = allMealIds.concat(meals.value[date][category].map(meal => meal.id));
           }
         }
-
         const matchingMeals = await fav_db.meal.where('id').anyOf(allMealIds).toArray();
-
         if (matchingMeals.length > 0) {
           const mealNames = matchingMeals.map(meal => meal.name).join(', ');
           if (Notification.permission === "granted") {
             new Notification("Whoop! Whoop!", {
               body: `Es gibt dein(e) Lieblingsessen: ${mealNames}`,
-
             });
           }
         }
-
       }
       catch (error){
         console.log(error)
-
       }
-
     };
-
 
     watch(() => store.state.selectedCanteen, updateButtonColor);
     watch([() => store.state.selectedCanteen, () => showAdditivesPopup.value], (newValues, oldValues) => {
@@ -945,14 +838,10 @@ export default {
         updateButtonColorPopup();
       }
     });
-
     watch(() => props.selectedCanteen, fetchMenu);
     watch(startDate, (newValue) => {
       fetchMenu(newValue);
     });
-
-
-
 
     const categorizedMeals = computed(() => {
       return meals.value.reduce((acc, meal) => {
@@ -974,7 +863,6 @@ export default {
     };
 
     return {
-
       startDate,
       categorizedMeals,
       meals,
@@ -1008,7 +896,6 @@ export default {
       openFavPopup,
       generateTimestampedHex,
       submitReview,
-      setRating,
       reviewRating,
       getChickenImage,
       reviewComment,
@@ -1032,9 +919,13 @@ export default {
       swipeLeft,
       swipeRight,
       fetchMenu,
-      changeColorScheme,
-      updateButtonColorPopup
-
+      halfChicken,
+      emptyChicken,
+      halfLeaf,
+      emptyLeaf,
+      leafIcon,
+      updateButtonColorPopup,
+      updateButtonColor
     };
   }
 };
@@ -1294,8 +1185,6 @@ img {
   margin: 5px 0;
   text-align: center;
 }
-
-
 
 
 </style>
