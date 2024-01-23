@@ -117,12 +117,12 @@ import { useRouter } from "vue-router";
 import axios from 'axios';
 import veganIcon from '../assets/vegan-siegel.png';
 import veggieIcon from '../assets/veggie.png'
-import chickenIcon from '../assets/fullChicken.png'
-import emptyChicken from '../assets/emptyChicken.png'
-import leafIcon from '../assets/leafFull.png'
-import halfLeaf from '../assets/leafHalf.png'
-import emptyLeaf from '../assets/leafEmpty.png'
-import halfChicken from '../assets/halfChicken.png'
+import chickenIcon from '../assets/fullChicken_d.png'
+import emptyChicken from '../assets/emptyChicken_d.png'
+import leafIcon from '../assets/leafFull_d.png'
+import halfLeaf from '../assets/leafHalf_d.png'
+import emptyLeaf from '../assets/leafEmpty_d.png'
+import halfChicken from '../assets/halfChicken_d.png'
 import addOns from '../assets/zusatzstoffe.png'
 import gruen from '../assets/gruenerAmpelPunkt.png'
 import aggro from '../assets/aggriculture.png'
@@ -1010,7 +1010,7 @@ img {
 
 
 .popup-content {
-  background-color: white;
+  background-color: #f5f5f5;
   padding: 20px;
   border-radius: 5px;
   display: inline-block;
