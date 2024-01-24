@@ -198,6 +198,7 @@ export default {
           console.log(response)
           meal.mealReviews.averageRating = response.data[0]?.mealReviews[0]?.averageRating;
           await getMyRating(meal)
+          console.log(meal.mealRatings)
 
         } catch (error) {
           console.error('Error fetching meal details:', error);

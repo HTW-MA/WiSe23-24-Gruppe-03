@@ -143,6 +143,11 @@ self.addEventListener("sync", function (event) {
         let rating = event.tag.split(":")[3]
         let comment = event.tag.split(":")[4]
         let category = event.tag.split(":")[5]
+        console.log(userId)
+        console.log(mealId)
+        console.log(rating)
+        console.log(comment)
+        console.log(category)
         event.waitUntil(postMealReview(userId, mealId, rating, comment, category));
     }
 });
