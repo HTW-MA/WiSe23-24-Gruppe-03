@@ -1,8 +1,6 @@
 import { precacheAndRoute } from 'workbox-precaching';
 import heat from '/src/assets/dinoooo.png';
 import review_db from "@/review_db";
-import axios from "axios";
-//import fetchAdapter from "@vespaiach/axios-fetch-adapter";
 
 precacheAndRoute(self.__WB_MANIFEST);
 
@@ -56,22 +54,20 @@ self.addEventListener("fetch", function(event) {
 });
 
 async function postMealReview(userID, mealID, rating, comment, category) {
-    console.log("In der postMealReview im Serviceworker")
-    const config = {
-        headers: {
-            'X-API-KEY': process.env.VUE_APP_API_KEY
-        }
-    };
-
-
+    console.log("In der Methode im Serviceworker")
+    const apiKey = process.env.VUE_APP_API_KEY;
+    const headers = new Headers({
+        'X-API-KEY': apiKey,
+        'Content-Type': 'application/json'
+    });
 
     try {
         const record = await review_db.reviews.where({ mealId: mealID }).first();
-        if (record !== undefined){
+        if (record !== undefined) {
             const review = {
                 id: record.apiResponseId,
                 mealId: record.apiResponseId,
-                userId:userID,
+                userId: userID,
                 detailRatings: [
                     {
                         rating: rating,
@@ -79,26 +75,28 @@ async function postMealReview(userID, mealID, rating, comment, category) {
                     }
                 ],
                 comment: comment
+            };
 
-            }
+            try {
+                const response = await fetch('https://mensa.gregorflachs.de/api/v1/mealreview', {
+                    method: 'PUT',
+                    headers: headers,
+                    body: JSON.stringify(review)
+                });
 
-            try{
-                const response =await axios.put('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
-                if (response && response.data) {
+                if (response.ok) {
+                    const data = await response.json();
                     await review_db.reviews.put({
                         mealId: mealID,
-                        userId: response.data.userId,
-                        apiResponseId: response.data.id,
-                        rating:rating
+                        userId: data.userId,
+                        apiResponseId: data.id,
+                        rating: rating
                     });
-
                 }
+            } catch (error) {
+                console.error('Fehler:', error);
             }
-            catch (error){
-                console.log('Fehler :', error)
-            }
-        }
-        else {
+        } else {
             const review = {
                 mealId: mealID,
                 userId: userID,
@@ -110,25 +108,30 @@ async function postMealReview(userID, mealID, rating, comment, category) {
                 ],
                 comment: comment
             };
-            try {
-                const response = await axios.post('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
 
-                if (response && response.data) {
+            try {
+                const response = await fetch('https://mensa.gregorflachs.de/api/v1/mealreview', {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(review)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
                     await review_db.reviews.add({
                         mealId: mealID,
-                        userId: response.data.userId,
-                        apiResponseId: response.data.id,
+                        userId: data.userId,
+                        apiResponseId: data.id,
                         rating: rating
                     });
                 }
-
+                console.log("In die Dexi geschrieben")
             } catch (error) {
-                console.log('Fehler :', error)
+                console.error('Fehler:', error);
             }
-
         }
     } catch (error) {
-        console.error('Fehler beim Posten:', error)
+        console.error('Fehler beim Posten:', error);
     }
 }
 
