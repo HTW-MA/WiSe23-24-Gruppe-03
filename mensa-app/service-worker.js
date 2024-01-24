@@ -2,7 +2,7 @@ import { precacheAndRoute } from 'workbox-precaching';
 import heat from '/src/assets/dinoooo.png';
 import review_db from "@/review_db";
 import axios from "axios";
-import fetchAdapter from "@vespaiach/axios-fetch-adapter";
+//import fetchAdapter from "@vespaiach/axios-fetch-adapter";
 
 precacheAndRoute(self.__WB_MANIFEST);
 
