@@ -138,16 +138,18 @@ async function postMealReview(userID, mealID, rating, comment, category) {
 self.addEventListener("sync", function (event) {
     if (event.tag.includes("post-meal-review")) {
         console.log("Im Serviceworker")
+        console.log("Tag:" + event.tag)
+        console.log("Gesplittet:" + event.tag.split(":"))
         let userId = event.tag.split(":")[1]
         let mealId = event.tag.split(":")[2]
         let rating = event.tag.split(":")[3]
         let comment = event.tag.split(":")[4]
         let category = event.tag.split(":")[5]
-        console.log(userId)
-        console.log(mealId)
-        console.log(rating)
-        console.log(comment)
-        console.log(category)
+        console.log("UserID:" + userId)
+        console.log("MealID:" + mealId)
+        console.log("Rating:" + rating)
+        console.log("Comment:" + comment)
+        console.log("Category:" + category)
         event.waitUntil(postMealReview(userId, mealId, rating, comment, category));
     }
 });
