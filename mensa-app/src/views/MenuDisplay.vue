@@ -335,6 +335,7 @@ export default {
       if (starRating.value&& reviewComment.value) {
         if ("serviceWorker" in navigator && "SyncManager" in window) {
           navigator.serviceWorker.ready.then(function (registration) {
+            console.log("Bewertung: " + starRating + " " + starRating.value)
             registration.sync.register("post-meal-review:" + localStorage.getItem('userID') + ":" + meal.id + ":" + starRating.value + ":" + reviewComment.value + ":" + meal.category);
           })
         } else {
