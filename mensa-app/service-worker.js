@@ -59,8 +59,7 @@ async function postMealReview(userID, mealID, rating, comment, category) {
     console.log("In der postMealReview im Serviceworker")
     const config = {
         headers: {
-            'X-API-KEY': process.env.VUE_APP_API_KEY,
-            'adapter': fetchAdapter
+            'X-API-KEY': process.env.VUE_APP_API_KEY
         }
     };
 
