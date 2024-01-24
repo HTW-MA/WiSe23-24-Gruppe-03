@@ -95,7 +95,7 @@
                         <img v-if="meal.additives.length > 0" :src="addOns" class="icon-inline" @click.stop="openAdditivesPopup(meal, $event)" @touchstart.stop="openAdditivesPopup(meal, $event)" >
                         <div class="break-row"></div>
 
-                        <img v-if="category === 'Essen' || category === 'Desserts'" :src="isFavorite(meal) ? fullStar : emptyStar" alt="Star" class="icon-inline" @click="toggleFavorite(meal); openFavPopup(meal, $event)" >
+                        <img v-if="category === 'Essen' || category === 'Desserts'" :src="isFavorite(meal) ? fullStar : emptyStar" alt="Star" class="icon-inline" @click="toggleFavorite(meal)" >
                         <button @click="prepareReview(meal)" class="htw-btn-active">Bewerten</button>
                       </div>
                     </div>
@@ -968,7 +968,8 @@ img {
   z-index: 100;
 
   border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0), 0 4px 8px rgba(0, 0, 0, 0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(to bottom right, #f5f5f5, #f5f5f5);
   word-wrap: break-word;
   font-size: 18px;
   padding: 20px;
@@ -1010,7 +1011,7 @@ img {
 
 
 .popup-content {
-  background-color: white;
+  background-color: #f5f5f5;
   padding: 20px;
   border-radius: 5px;
   display: inline-block;
