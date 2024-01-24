@@ -334,7 +334,6 @@ export default {
       }
       if (starRating.value&& reviewComment.value) {
         if ("serviceWorker" in navigator && "SyncManager" in window) {
-          console.log("Background Sync wird unterstützt")
           navigator.serviceWorker.ready.then(function (registration) {
             registration.sync.register("post-meal-review:" + localStorage.getItem('userID') + ":" + meal.id + ":" + starRating.value + ":" + reviewComment.value + ":" + meal.category);
           })

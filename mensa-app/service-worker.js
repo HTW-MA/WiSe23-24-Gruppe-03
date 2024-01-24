@@ -124,8 +124,8 @@ async function postMealReview(userID, mealID, rating, comment, category) {
                         apiResponseId: data.id,
                         rating: rating
                     });
+                    console.log("In die Dexi geschrieben")
                 }
-                console.log("In die Dexi geschrieben")
             } catch (error) {
                 console.error('Fehler:', error);
             }
