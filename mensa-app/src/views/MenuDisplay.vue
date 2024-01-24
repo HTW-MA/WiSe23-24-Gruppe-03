@@ -333,9 +333,13 @@ export default {
         return;
       }
       if (starRating.value&& reviewComment.value) {
+        console.log("Bewertung: " + starRating.value)
+        console.log("Kommentar: " + reviewComment.value)
         if ("serviceWorker" in navigator && "SyncManager" in window) {
+          console.log("ServiceWorker wird unterstützt")
+          console.log("Bewertung: " + starRating.value)
+          console.log("Kommentar: " + reviewComment.value)
           navigator.serviceWorker.ready.then(function (registration) {
-            console.log("Bewertung: " + starRating.value)
             registration.sync.register("post-meal-review:" + localStorage.getItem('userID') + ":" + meal.id + ":" + starRating.value + ":" + reviewComment.value + ":" + meal.category);
           })
         } else {
@@ -352,6 +356,8 @@ export default {
     }
 
     async function postMealReview(mealID, rating, comment, category) {
+      console.log("Bewertung: " + rating)
+      console.log("Kommentar: " + comment)
       const userID = localStorage.getItem('userID');
 
       const config = {
