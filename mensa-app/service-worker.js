@@ -115,7 +115,7 @@ async function postMealReview(userID, mealID, rating, comment, category) {
                     headers: headers,
                     body: JSON.stringify(review)
                 });
-
+                console.log(response)
                 if (response.ok) {
                     const data = await response.json();
                     await review_db.reviews.add({

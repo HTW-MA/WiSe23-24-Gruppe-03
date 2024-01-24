@@ -177,6 +177,7 @@ export default {
     async function loadFavorites() {
       console.log("loadFavorites started")
       const meals = await fav_db.meal.toArray();
+      console.log("Meals:" + meals)
       if (meals.length > 0) {
         favorites.value = meals.map(meal => {
           meal.mealReviews = { averageRating: 0, comment: '' };
