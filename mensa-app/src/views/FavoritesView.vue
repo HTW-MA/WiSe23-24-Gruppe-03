@@ -181,6 +181,10 @@ export default {
       if (meals.length > 0) {
         favorites.value = meals.map(meal => {
           meal.mealReviews = { averageRating: 0, comment: '' };
+          console.log("Meal:" + meal)
+          console.log(meal.id)
+          console.log(meal.name)
+          console.log(meal.mealReviews)
           return meal;
         });
 
