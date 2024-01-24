@@ -2,6 +2,7 @@ import { precacheAndRoute } from 'workbox-precaching';
 import heat from '/src/assets/dinoooo.png';
 import review_db from "@/review_db";
 import axios from "axios";
+import fetchAdapter from "@vespaiach/axios-fetch-adapter";
 
 precacheAndRoute(self.__WB_MANIFEST);
 
@@ -58,7 +59,8 @@ async function postMealReview(userID, mealID, rating, comment, category) {
     console.log("In der postMealReview im Serviceworker")
     const config = {
         headers: {
-            'X-API-KEY': process.env.VUE_APP_API_KEY
+            'X-API-KEY': process.env.VUE_APP_API_KEY,
+            'adapter': fetchAdapter
         }
     };
 
@@ -111,6 +113,7 @@ async function postMealReview(userID, mealID, rating, comment, category) {
             };
             try {
                 const response = await axios.post('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
+
                 if (response && response.data) {
                     await review_db.reviews.add({
                         mealId: mealID,
