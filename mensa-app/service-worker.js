@@ -54,10 +54,8 @@ self.addEventListener("fetch", function(event) {
     );
 });
 
-async function postMealReview(mealID, rating, comment, category) {
-    console.log("In der postMealReview im")
-    const userID = localStorage.getItem('userID');
-
+async function postMealReview(userID, mealID, rating, comment, category) {
+    console.log("In der postMealReview im Serviceworker")
     const config = {
         headers: {
             'X-API-KEY': process.env.VUE_APP_API_KEY
@@ -135,10 +133,11 @@ async function postMealReview(mealID, rating, comment, category) {
 self.addEventListener("sync", function (event) {
     if (event.tag.includes("post-meal-review")) {
         console.log("Im Serviceworker")
-        let mealId = event.tag.split(":")[1]
-        let rating = event.tag.split(":")[2]
-        let comment = event.tag.split(":")[3]
-        let category = event.tag.split(":")[4]
-        event.waitUntil(postMealReview(mealId, rating, comment, category));
+        let userId = event.tag.split(":")[1]
+        let mealId = event.tag.split(":")[2]
+        let rating = event.tag.split(":")[3]
+        let comment = event.tag.split(":")[4]
+        let category = event.tag.split(":")[5]
+        event.waitUntil(postMealReview(userId, mealId, rating, comment, category));
     }
 });
