@@ -339,8 +339,10 @@ export default {
           console.log("ServiceWorker wird unterstützt")
           console.log("Bewertung: " + starRating.value)
           console.log("Kommentar: " + reviewComment.value)
+          let message = "post-meal-review:" + localStorage.getItem('userID') + ":" + meal.id + ":" + starRating.value.toString() + ":" + reviewComment.value + ":" + meal.category
+          console.log(message)
           navigator.serviceWorker.ready.then(function (registration) {
-            registration.sync.register("post-meal-review:" + localStorage.getItem('userID') + ":" + meal.id + ":" + starRating.value + ":" + reviewComment.value + ":" + meal.category);
+            registration.sync.register(message);
           })
         } else {
           console.log("Background Sync wird nicht unterstützt")
