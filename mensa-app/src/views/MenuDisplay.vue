@@ -545,6 +545,7 @@ export default {
 
     const updateRating = (change) => {
       starRating.value = Math.max(0, Math.min(5, starRating.value + change));
+      console.log("Rating updated to " + starRating.value)
     };
     const handleTouchMove = (event) => {
       event.preventDefault();
