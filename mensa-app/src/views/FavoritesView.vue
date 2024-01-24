@@ -191,6 +191,7 @@ export default {
           const response = await axios.get(`https://mensa.gregorflachs.de/api/v1/meal?ID=${meal.id}&loadingtype=complete`, {
             headers: { 'X-API-KEY': process.env.VUE_APP_API_KEY }
           });
+          console.log(response)
           meal.mealReviews.averageRating = response.data[0]?.mealReviews[0]?.averageRating;
           await getMyRating(meal)
 
