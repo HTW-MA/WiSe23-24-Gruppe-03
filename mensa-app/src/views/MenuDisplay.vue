@@ -162,55 +162,6 @@ export default {
 
 
   methods: {
-    async fetchMenuForNextSevenDays() {
-      let datesToFetch = [];
-      for (let i = 0; i < 7; i++) {
-        let date = new Date();
-        date.setDate(date.getDate() + i);
-        datesToFetch.push(date.toISOString().split('T')[0]);
-      }
-
-      for (let date of datesToFetch) {
-        try {
-          // Fetch the data using `fetch` instead of `axios` to leverage the service worker caching
-          const response = await fetch(`https://mensa.gregorflachs.de/api/v1/menue?loadingtype=complete&canteenId=${this.selectedCanteen}&startdate=${date}&enddate=${date}`, {
-            headers: { 'X-API-KEY': process.env.VUE_APP_API_KEY }
-          });
-
-          if (!response.ok) {
-            throw new Error(`Network response was not ok for date ${date}`);
-          }
-
-          const responseData = await response.json();
-
-          // Process the response data
-          const mealsByDateAndCategory = responseData.reduce((acc, dayData) => {
-            const mealsByCategory = dayData.meals.reduce((catAcc, meal) => {
-              if (!catAcc[meal.category]) {
-                catAcc[meal.category] = [];
-              }
-              catAcc[meal.category].push(meal);
-              return catAcc;
-            }, {});
-
-            acc[dayData.date] = mealsByCategory;
-            return acc;
-          }, {});
-
-          // Update your Vue component's state
-          // Assuming `meals` is a reactive property in your component
-          this.meals[date] = mealsByDateAndCategory[date];
-
-          // Update UI or perform other actions as necessary
-          this.updateButtonColor();
-
-        } catch (error) {
-          console.error(`Error fetching menu for ${date}:`, error);
-        }
-      }
-    },
-
-
     isBadgePresent(badges, badgeName) {
       return badges.some(badge => badge.name === badgeName);
     },
@@ -219,9 +170,7 @@ export default {
       meal.showPopup = true;
     },
   },
-  mounted() {
-    this.fetchMenuForNextSevenDays();
-  },
+
   computed: {
     store() {
       return store
@@ -353,19 +302,22 @@ export default {
 
     async function postMealReview(mealID, rating, comment, category) {
       const userID = localStorage.getItem('userID');
+      const apiKey = process.env.VUE_APP_API_KEY;
 
-      const config = {
-        headers: {
-          'X-API-KEY': process.env.VUE_APP_API_KEY
-        }
-      };
+
+      const headers = new Headers({
+        'X-API-KEY': apiKey,
+        'Content-Type': 'application/json'
+      });
+
+
       try {
         const record = await review_db.reviews.where({ mealId: mealID }).first();
-        if (record !== undefined){
+        if (record !== undefined) {
           const review = {
             id: record.apiResponseId,
             mealId: record.apiResponseId,
-            userId:userID,
+            userId: userID,
             detailRatings: [
               {
                 rating: rating,
@@ -373,23 +325,31 @@ export default {
               }
             ],
             comment: comment
-          }
-          try{
-            const response =await axios.put('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
-            if (response && response.data) {
+          };
+
+
+          try {
+            const response = await fetch('https://mensa.gregorflachs.de/api/v1/mealreview', {
+              method: 'PUT',
+              headers: headers,
+              body: JSON.stringify(review)
+            });
+
+
+            if (response.ok) {
+              const data = await response.json();
               await review_db.reviews.put({
                 mealId: mealID,
-                userId: response.data.userId,
-                apiResponseId: response.data.id,
-                rating:rating
+                userId: data.userId,
+                apiResponseId: data.id,
+                rating: rating
               });
+
             }
+          } catch (error) {
+            console.error('Fehler:', error);
           }
-          catch (error){
-            console.log('Fehler :', error)
-          }
-        }
-        else {
+        } else {
           const review = {
             mealId: mealID,
             userId: userID,
@@ -401,24 +361,35 @@ export default {
             ],
             comment: comment
           };
+
+
           try {
-            const response = await axios.post('https://mensa.gregorflachs.de/api/v1/mealreview', review, config);
-            if (response && response.data) {
+            const response = await fetch('https://mensa.gregorflachs.de/api/v1/mealreview', {
+              method: 'POST',
+              headers: headers,
+              body: JSON.stringify(review)
+            });
+
+
+            if (response.ok) {
+              const data = await response.json();
               await review_db.reviews.add({
                 mealId: mealID,
-                userId: response.data.userId,
-                apiResponseId: response.data.id,
+                userId: data.userId,
+                apiResponseId: data.id,
                 rating: rating
               });
             }
           } catch (error) {
-            console.log('Fehler :', error)
+            console.error('Fehler:', error);
           }
         }
       } catch (error) {
-        console.error('Fehler beim Posten:', error)
+        console.error('Fehler beim Posten:', error);
       }
     }
+
+
 
     function generateTimestampedHex(len) {
       const timestampHex = Date.now().toString(16);
