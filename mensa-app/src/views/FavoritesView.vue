@@ -175,10 +175,16 @@ export default {
     };
 
     async function loadFavorites() {
+      console.log("loadFavorites started")
       const meals = await fav_db.meal.toArray();
+      console.log("Meals:" + meals)
       if (meals.length > 0) {
         favorites.value = meals.map(meal => {
           meal.mealReviews = { averageRating: 0, comment: '' };
+          console.log("Meal:" + meal)
+          console.log(meal.id)
+          console.log(meal.name)
+          console.log(meal.mealReviews)
           return meal;
         });
 
@@ -189,14 +195,17 @@ export default {
           const response = await axios.get(`https://mensa.gregorflachs.de/api/v1/meal?ID=${meal.id}&loadingtype=complete`, {
             headers: { 'X-API-KEY': process.env.VUE_APP_API_KEY }
           });
+          console.log(response)
           meal.mealReviews.averageRating = response.data[0]?.mealReviews[0]?.averageRating;
           await getMyRating(meal)
+          console.log(meal.mealRatings)
 
         } catch (error) {
           console.error('Error fetching meal details:', error);
         }
       }
       favorites.value = [...favorites.value];
+      console.log("loadFavorites finished")
     }
 
     const currentMealForReview = ref(null);

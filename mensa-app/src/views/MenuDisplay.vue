@@ -282,10 +282,16 @@ export default {
         return;
       }
       if (starRating.value&& reviewComment.value) {
+        console.log("Bewertung: " + starRating.value)
+        console.log("Kommentar: " + reviewComment.value)
         if ("serviceWorker" in navigator && "SyncManager" in window) {
-          console.log("Background Sync wird unterstützt")
+          console.log("ServiceWorker wird unterstützt")
+          console.log("Bewertung: " + starRating.value)
+          console.log("Kommentar: " + reviewComment.value)
+          let message = "post-meal-review:" + localStorage.getItem('userID') + ":" + meal.id + ":" + starRating.value.toString() + ":" + reviewComment.value + ":" + meal.category
+          console.log(message)
           navigator.serviceWorker.ready.then(function (registration) {
-            registration.sync.register("post-meal-review:" + localStorage.getItem('userID') + ":" + meal.id + ":" + starRating.value + ":" + reviewComment.value + ":" + meal.category);
+            registration.sync.register(message);
           })
         } else {
           console.log("Background Sync wird nicht unterstützt")
@@ -301,6 +307,8 @@ export default {
     }
 
     async function postMealReview(mealID, rating, comment, category) {
+      console.log("Bewertung: " + rating)
+      console.log("Kommentar: " + comment)
       const userID = localStorage.getItem('userID');
       const apiKey = process.env.VUE_APP_API_KEY;
 
@@ -516,6 +524,7 @@ export default {
 
     const updateRating = (change) => {
       starRating.value = Math.max(0, Math.min(5, starRating.value + change));
+      console.log("Rating updated to " + starRating.value)
     };
     const handleTouchMove = (event) => {
       event.preventDefault();
