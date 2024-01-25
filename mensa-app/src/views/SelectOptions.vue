@@ -280,12 +280,20 @@ export default {
             breite = position.coords.latitude;
             länge = position.coords.longitude;
           })
-          setTimeout(function() {
-          }, 500)
+        }
+      }
+      let iterations = 0
+      while (länge === 0) {
+        setTimeout(function () {
+          console.log("waiting for location")
+          iterations++
+        })
+        if (iterations >= 10) {
+          break
         }
       }
       isCheckboxClicked = !isCheckboxClicked
-      if (navigator.geolocation && isCheckboxClicked && sorted === 'alphabetically') {
+      if (navigator.geolocation && isCheckboxClicked && sorted === 'alphabetically' && länge !== 0) {
         sortCanteensByDistance();
         sorted = 'byDistance'
       } else if (navigator.geolocation && !isCheckboxClicked && sorted !== 'alphabetically'){
