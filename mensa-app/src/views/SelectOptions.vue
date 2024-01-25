@@ -287,7 +287,7 @@ export default {
         setTimeout(function () {
           console.log("waiting for location")
           iterations++
-        })
+        }, 500)
         if (iterations >= 10) {
           break
         }
