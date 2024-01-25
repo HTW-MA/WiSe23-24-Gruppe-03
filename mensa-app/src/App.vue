@@ -31,8 +31,21 @@ const app = initializeApp(firebaseConfig); //eslint-disable-line
 // subsequent calls to getToken will return from cache.
 const messaging = getMessaging();
 onMessage(messaging, (payload) => {
-  console.log('Message received. ', payload);
-  // ...
+  if (payload.notification?.title !== undefined && payload.notification.body !== undefined) {
+    console.log('Message received. ', payload);
+    const notificationTitle = payload.notification.title;
+    const notificationOptions = {
+      body: payload.notification.body,
+      icon: '/firebase-logo.png'
+    };
+    Notification.requestPermission().then(function (permission) {
+      if (permission === "granted") {
+        navigator.serviceWorker.ready.then(function (registration) {
+          registration.showNotification(notificationTitle, notificationOptions)
+        })
+      }
+    })
+  }
 });
 getToken(messaging, { vapidKey: 'BLaAKtfevr-_XQcO_zN9u18aEuh-KRL9qQ-0z_k8qmk5HSvaNaiFFJZ2QdDRGuADS4cVq6O2RnFZXffWYnjeseA' }).then((currentToken) => {
   if (currentToken) {
