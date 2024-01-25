@@ -282,16 +282,6 @@ export default {
           })
         }
       }
-      let iterations = 0
-      while (länge === 0) {
-        setTimeout(function () {
-          console.log("waiting for location")
-          iterations++
-        }, 500)
-        if (iterations >= 10) {
-          break
-        }
-      }
       isCheckboxClicked = !isCheckboxClicked
       if (navigator.geolocation && isCheckboxClicked && sorted === 'alphabetically' && länge !== 0) {
         sortCanteensByDistance();
