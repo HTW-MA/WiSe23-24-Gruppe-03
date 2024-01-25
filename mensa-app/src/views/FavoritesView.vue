@@ -31,7 +31,7 @@
                     placeholder="Kommentar"
           ></textarea>
           <div class="button-container">
-          <button @click="showReviewPopup = false" class="htw-btn-active">
+          <button @click="showReviewPopup = false;starRating = 0;" class="htw-btn-active">
             Abbrechen
           </button>
 
@@ -415,7 +415,6 @@ export default {
       touchStartY,
       reviewComment,
       stars,
-      getMyRating,
       mealRatings,
       updateButtonColor,
       halfLeaf,
@@ -423,7 +422,8 @@ export default {
       chickenIcon,
       leafIcon,
       emptyLeaf,
-      emptyChicken
+      emptyChicken,
+      starRating
     };
   }
 };

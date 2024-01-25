@@ -33,7 +33,6 @@
                   <div v-if="showMessage" :style="{ top: popupPosition.y + 'px', left: popupPosition.x + 'px' }" class="favorite-popup">
                     {{ message }}
                   </div>
-
                   <div @click="openPopup(meal)">
                     <div v-if="showAdditivesPopup" class="popup">
                       <div class="popup-content">
@@ -48,11 +47,9 @@
                         </button>
                       </div>
                     </div>
-
                     {{ meal.name || 'Unbekanntes Gericht' }}
                     <span class="meal-price">{{ getPrice(meal) }} €</span>
-
-                    <div v-if="showReviewPopup" class="review-popup">
+                         <div v-if="showReviewPopup" class="review-popup">
                       <div class="popup-content">
                         <h3>Bewertung abgeben</h3>
                         <div class="star-rating" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
@@ -62,10 +59,9 @@
                           </span>
                           <button @click="updateRating(0.5)" class="small-button">+</button>
                         </div>
-
                         <textarea class="comment-field" v-model="reviewComment" placeholder="Kommentar"></textarea>
                         <div class="button-container">
-                          <button @click="showReviewPopup = false" class="htw-btn-active">
+                          <button @click="showReviewPopup = false;starRating = 0; " class="htw-btn-active">
                             Abbrechen
                           </button>
                           <button @click="() =>submitReview()" class="htw-btn-active">
@@ -74,13 +70,11 @@
                         </div>
                       </div>
                     </div>
-
                     <div class="flex-container">
                       <div class="badge-container" v-if="meal.badges.length > 0">
                         <div class="break-row"></div>
                         <div v-for="badge in meal.badges" :key="badge.id" class="badge-container">
                           <img :src="getBadgeSymbol(badge.name)" class="icon-inline" @click.stop="openBadgePopup(meal.id, badge, $event)" @touchstart.stop="openBadgePopup(meal.id, badge, $event)" >
-
                           <div v-if="showBadgePopup === meal.id" class="popup">
                             <div class="popup-content" ref="popupContentRef">
                               <h4>{{ currentBadge.name }}</h4>
@@ -91,10 +85,8 @@
                             </div>
                           </div>
                         </div>
-
                         <img v-if="meal.additives.length > 0" :src="addOns" class="icon-inline" @click.stop="openAdditivesPopup(meal, $event)" @touchstart.stop="openAdditivesPopup(meal, $event)" >
                         <div class="break-row"></div>
-
                         <img v-if="category === 'Essen' || category === 'Desserts'" :src="isFavorite(meal) ? fullStar : emptyStar" alt="Star" class="icon-inline" @click="toggleFavorite(meal)" >
                         <button @click="prepareReview(meal)" class="htw-btn-active">Bewerten</button>
                       </div>
@@ -983,7 +975,7 @@ img {
 
 .rating-symbol {
   margin-right: 0.3em;
-  width: 2.4em;
+  width: 2em;
   height: auto;
 
 }
@@ -1084,6 +1076,7 @@ img {
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   text-align:  left;
+  position:relative;
 
 }
 
@@ -1166,6 +1159,18 @@ img {
   margin: 5px 0;
   text-align: center;
 }
+.meals-and-divider-container {
+  display: flex; /* or 'display: grid;' depending on your layout */
+  flex-direction: column; /* For flexbox */
+  width: 100%; /* Inherit width from .category-section */
+}
 
+.meal-divider {
+  position: absolute; /* Make the divider absolute relative to the category-section */
+  bottom: 0; /* Align it to the bottom of the category-section */
+  left: 0; /* Align it to the left edge of the category-section */
+  width: 100%; /* Stretch it across the full width */
+  border-bottom: 1px solid #000;
+}
 
 </style>
