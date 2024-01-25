@@ -21,8 +21,7 @@ export default {
       betrag: localStorage.getItem("Betrag") || -1,
       betragDate: localStorage.getItem("Timestamp") || null,
       target: "Icon",
-      scanErfolgreich: "noch nicht",
-      token: localStorage.getItem("User-Token")
+      scanErfolgreich: "noch nicht"
     }
   },
   setup(){
@@ -215,8 +214,6 @@ export default {
   <br>
   <br>
   <br>
-
-  {{token}}
 <!--  <div class="test">-->
 <!--    <button v-on:click="sendNotification">send Message - funktioniert nicht</button>-->
 <!--  </div>-->
