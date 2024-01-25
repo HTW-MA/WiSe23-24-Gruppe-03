@@ -16,7 +16,6 @@
       <div v-if="showReviewPopup" class="review-popup">
         <div class="popup-content">
           <h3>Bewertung abgeben</h3>
-
           <div class="star-rating" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
             <button @click="updateRating(-0.5)" class="small-button" >-</button>
             <span v-for="item in 5" :key="item" ref="stars" @click="handleClick($event, item)">
@@ -24,8 +23,6 @@
                       </span>
             <button @click="updateRating(0.5)" class="small-button">+</button>
           </div>
-
-
           <textarea class="comment-field"
                     v-model="reviewComment"
                     placeholder="Kommentar"
@@ -34,15 +31,11 @@
           <button @click="showReviewPopup = false;starRating = 0;" class="htw-btn-active">
             Abbrechen
           </button>
-
           <button @click="() =>submitReview()" class="htw-btn-active">
             Senden
           </button>
           </div>
-
-
         </div>
-
       </div>
     </div>
   </div>
@@ -473,7 +466,7 @@ export default {
 
 .rating-symbol {
   margin-right: 0.3em;
-  width: 2.4em;
+  width: 2em;
   height: auto;
 
 }
