@@ -214,6 +214,7 @@ export default {
   <br>
   <br>
   <br>
+  {{localStorage.getItem("User-Token")}}
 <!--  <div class="test">-->
 <!--    <button v-on:click="sendNotification">send Message - funktioniert nicht</button>-->
 <!--  </div>-->
