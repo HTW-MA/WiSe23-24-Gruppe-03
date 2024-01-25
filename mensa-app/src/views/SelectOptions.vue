@@ -274,6 +274,16 @@ export default {
     };
 
     const checkboxClicked = () => {
+      if (länge === 0) {
+        if ('geolocation' in window) {
+          navigator.geolocation.getCurrentPosition((position) => {
+            breite = position.coords.latitude;
+            länge = position.coords.longitude;
+          })
+          setTimeout(function() {
+          }, 500)
+        }
+      }
       isCheckboxClicked = !isCheckboxClicked
       if (navigator.geolocation && isCheckboxClicked && sorted === 'alphabetically') {
         sortCanteensByDistance();
