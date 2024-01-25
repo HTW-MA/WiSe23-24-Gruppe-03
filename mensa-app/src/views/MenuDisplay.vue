@@ -33,7 +33,6 @@
                   <div v-if="showMessage" :style="{ top: popupPosition.y + 'px', left: popupPosition.x + 'px' }" class="favorite-popup">
                     {{ message }}
                   </div>
-
                   <div @click="openPopup(meal)">
                     <div v-if="showAdditivesPopup" class="popup">
                       <div class="popup-content">
@@ -48,11 +47,9 @@
                         </button>
                       </div>
                     </div>
-
                     {{ meal.name || 'Unbekanntes Gericht' }}
                     <span class="meal-price">{{ getPrice(meal) }} €</span>
-
-                    <div v-if="showReviewPopup" class="review-popup">
+                         <div v-if="showReviewPopup" class="review-popup">
                       <div class="popup-content">
                         <h3>Bewertung abgeben</h3>
                         <div class="star-rating" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
@@ -62,10 +59,9 @@
                           </span>
                           <button @click="updateRating(0.5)" class="small-button">+</button>
                         </div>
-
                         <textarea class="comment-field" v-model="reviewComment" placeholder="Kommentar"></textarea>
                         <div class="button-container">
-                          <button @click="showReviewPopup = false" class="htw-btn-active">
+                          <button @click="showReviewPopup = false;starRating = 0; " class="htw-btn-active">
                             Abbrechen
                           </button>
                           <button @click="() =>submitReview()" class="htw-btn-active">
@@ -74,13 +70,11 @@
                         </div>
                       </div>
                     </div>
-
                     <div class="flex-container">
                       <div class="badge-container" v-if="meal.badges.length > 0">
                         <div class="break-row"></div>
                         <div v-for="badge in meal.badges" :key="badge.id" class="badge-container">
                           <img :src="getBadgeSymbol(badge.name)" class="icon-inline" @click.stop="openBadgePopup(meal.id, badge, $event)" @touchstart.stop="openBadgePopup(meal.id, badge, $event)" >
-
                           <div v-if="showBadgePopup === meal.id" class="popup">
                             <div class="popup-content" ref="popupContentRef">
                               <h4>{{ currentBadge.name }}</h4>
@@ -91,15 +85,15 @@
                             </div>
                           </div>
                         </div>
-
                         <img v-if="meal.additives.length > 0" :src="addOns" class="icon-inline" @click.stop="openAdditivesPopup(meal, $event)" @touchstart.stop="openAdditivesPopup(meal, $event)" >
                         <div class="break-row"></div>
-
                         <img v-if="category === 'Essen' || category === 'Desserts'" :src="isFavorite(meal) ? fullStar : emptyStar" alt="Star" class="icon-inline" @click="toggleFavorite(meal)" >
                         <button @click="prepareReview(meal)" class="htw-btn-active">Bewerten</button>
                       </div>
                     </div>
+                    <div class="meal-divider" :style="dividerStyle"></div>
                   </div>
+
                 </div>
               </div>
             </div>
@@ -107,7 +101,6 @@
         </div>
       </div>
     </div>
-    <p> </p>
   </div>
 </template>
 
@@ -214,9 +207,22 @@ export default {
     mensaSucks() {
       const meal = this.meals[this.startDate];
       return meal && Object.keys(meal).length === 0;
-    }},
+    },
+    dividerStyle() {
+      // Assuming that `this.$refs.categorySection` is a reference to your category section
+      if (this.$refs.categorySection) {
+        const style = window.getComputedStyle(this.$refs.categorySection);
+        const paddingTotal = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+        return {
+          width: `calc(100% + ${paddingTotal}px)`,
+          marginLeft: `-${style.paddingLeft}`,
+          marginRight: `-${style.paddingRight}`
+        };
+      }
+      return {};
+    }
 
-
+  } ,
   setup(props) {
 
     const currentMealForReview = ref(null);
@@ -983,7 +989,7 @@ img {
 
 .rating-symbol {
   margin-right: 0.3em;
-  width: 2.4em;
+  width: 2em;
   height: auto;
 
 }
@@ -1083,9 +1089,9 @@ img {
   margin-bottom: 15px;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  text-align:  left;
-
+  text-align: left;
 }
+
 
 .category-section h4 {
   margin-top: 0;
@@ -1121,18 +1127,44 @@ img {
 
 .meal-container {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  box-sizing: border-box;
-  margin-bottom: 15px;
+  flex-direction: column;
+  position: relative;
+  padding: 0 10px;
+}
+.meal-container:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-bottom: 1px solid transparent;
 }
 
 
-
-.meal-container:last-child {
-  padding-bottom: 40px;
+.meal-container::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: -10px;
+  right: -10px;
+  border-bottom: 1px solid #000;
+  display: block;
 }
+
+.category-section .meal-container:last-child::after {
+  display: none;
+}
+
+
+.category-section .meal-container:last-child {
+  margin-bottom: 0;
+}
+
+.category-section .meal-container:last-child + .meal-divider {
+  display: none;
+}
+
+
 
 .meal-price {
   flex-shrink: 0;
@@ -1166,6 +1198,28 @@ img {
   margin: 5px 0;
   text-align: center;
 }
+
+
+.meal-divider {
+  border-bottom: 1px solid #000;
+  margin-left: -10px;
+  margin-right: -10px;
+  width: calc(100% + 20px);
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.category-section .meal-container {
+  margin-bottom: 0;
+}
+.category-section .meal-container:last-child::after {
+  content: none;
+}
+
+.category-section:last-of-type .meal-container:last-child {
+  margin-bottom: 30px;
+}
+
 
 
 </style>

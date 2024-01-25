@@ -16,7 +16,6 @@
       <div v-if="showReviewPopup" class="review-popup">
         <div class="popup-content">
           <h3>Bewertung abgeben</h3>
-
           <div class="star-rating" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
             <button @click="updateRating(-0.5)" class="small-button" >-</button>
             <span v-for="item in 5" :key="item" ref="stars" @click="handleClick($event, item)">
@@ -24,25 +23,19 @@
                       </span>
             <button @click="updateRating(0.5)" class="small-button">+</button>
           </div>
-
-
           <textarea class="comment-field"
                     v-model="reviewComment"
                     placeholder="Kommentar"
           ></textarea>
           <div class="button-container">
-          <button @click="showReviewPopup = false" class="htw-btn-active">
+          <button @click="showReviewPopup = false;starRating = 0;" class="htw-btn-active">
             Abbrechen
           </button>
-
           <button @click="() =>submitReview()" class="htw-btn-active">
             Senden
           </button>
           </div>
-
-
         </div>
-
       </div>
     </div>
   </div>
@@ -415,7 +408,6 @@ export default {
       touchStartY,
       reviewComment,
       stars,
-      getMyRating,
       mealRatings,
       updateButtonColor,
       halfLeaf,
@@ -423,7 +415,8 @@ export default {
       chickenIcon,
       leafIcon,
       emptyLeaf,
-      emptyChicken
+      emptyChicken,
+      starRating
     };
   }
 };
@@ -473,7 +466,7 @@ export default {
 
 .rating-symbol {
   margin-right: 0.3em;
-  width: 2.4em;
+  width: 2em;
   height: auto;
 
 }
@@ -485,20 +478,6 @@ export default {
   cursor: pointer;
   font-size: 1.8em;
   font-weight: bold;
-}
-
-.meal-info {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.category-section {
-  background-color: #f5f5f5;
-  padding: 10px;
-  margin-bottom: 15px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  text-align:  left;
 }
 
 
