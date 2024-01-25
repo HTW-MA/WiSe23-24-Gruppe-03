@@ -274,18 +274,14 @@ export default {
     };
 
     const checkboxClicked = () => {
-      if ('geolocation' in window) {
-        navigator.geolocation.getCurrentPosition((position) => {
-          breite = position.coords.latitude;
-          länge = position.coords.longitude;
-        })
-      }
-      let iteration = 0
-      while (länge === 0) {
-        console.log(0)
-        iteration++
-        if (iteration >= 10) {
-          break
+      if (länge === 0) {
+        if ('geolocation' in navigator) {
+          navigator.geolocation.getCurrentPosition((position) => {
+            breite = position.coords.latitude;
+            länge = position.coords.longitude;
+          })
+          setTimeout(function() {
+          }, 500)
         }
       }
       isCheckboxClicked = !isCheckboxClicked
