@@ -91,7 +91,9 @@
                         <button @click="prepareReview(meal)" class="htw-btn-active">Bewerten</button>
                       </div>
                     </div>
+                    <div class="meal-divider" :style="dividerStyle"></div>
                   </div>
+
                 </div>
               </div>
             </div>
@@ -99,7 +101,6 @@
         </div>
       </div>
     </div>
-    <p> </p>
   </div>
 </template>
 
@@ -206,9 +207,22 @@ export default {
     mensaSucks() {
       const meal = this.meals[this.startDate];
       return meal && Object.keys(meal).length === 0;
-    }},
+    },
+    dividerStyle() {
+      // Assuming that `this.$refs.categorySection` is a reference to your category section
+      if (this.$refs.categorySection) {
+        const style = window.getComputedStyle(this.$refs.categorySection);
+        const paddingTotal = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+        return {
+          width: `calc(100% + ${paddingTotal}px)`,
+          marginLeft: `-${style.paddingLeft}`,
+          marginRight: `-${style.paddingRight}`
+        };
+      }
+      return {};
+    }
 
-
+  } ,
   setup(props) {
 
     const currentMealForReview = ref(null);
@@ -1075,10 +1089,9 @@ img {
   margin-bottom: 15px;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  text-align:  left;
-  position:relative;
-
+  text-align: left;
 }
+
 
 .category-section h4 {
   margin-top: 0;
@@ -1114,18 +1127,44 @@ img {
 
 .meal-container {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  box-sizing: border-box;
-  margin-bottom: 15px;
+  flex-direction: column;
+  position: relative;
+  padding: 0 10px;
+}
+.meal-container:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-bottom: 1px solid transparent;
 }
 
 
-
-.meal-container:last-child {
-  padding-bottom: 40px;
+.meal-container::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: -10px;
+  right: -10px;
+  border-bottom: 1px solid #000;
+  display: block;
 }
+
+.category-section .meal-container:last-child::after {
+  display: none;
+}
+
+
+.category-section .meal-container:last-child {
+  margin-bottom: 0;
+}
+
+.category-section .meal-container:last-child + .meal-divider {
+  display: none;
+}
+
+
 
 .meal-price {
   flex-shrink: 0;
@@ -1159,18 +1198,28 @@ img {
   margin: 5px 0;
   text-align: center;
 }
-.meals-and-divider-container {
-  display: flex; /* or 'display: grid;' depending on your layout */
-  flex-direction: column; /* For flexbox */
-  width: 100%; /* Inherit width from .category-section */
-}
+
 
 .meal-divider {
-  position: absolute; /* Make the divider absolute relative to the category-section */
-  bottom: 0; /* Align it to the bottom of the category-section */
-  left: 0; /* Align it to the left edge of the category-section */
-  width: 100%; /* Stretch it across the full width */
   border-bottom: 1px solid #000;
+  margin-left: -10px;
+  margin-right: -10px;
+  width: calc(100% + 20px);
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
+
+.category-section .meal-container {
+  margin-bottom: 0;
+}
+.category-section .meal-container:last-child::after {
+  content: none;
+}
+
+.category-section:last-of-type .meal-container:last-child {
+  margin-bottom: 30px;
+}
+
+
 
 </style>
