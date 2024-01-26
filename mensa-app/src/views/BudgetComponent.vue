@@ -36,6 +36,9 @@ export default {
 
   },
   methods: {
+    clearBudget() {
+      localStorage.removeItem("Betrag")
+    },
     closeModal() {
       setTimeout(() => {
         console.log("4 Sekunden rum!");
@@ -228,6 +231,9 @@ export default {
     <div v-if="budgetGescannt" v-on:click="readCard" data-bs-toggle="modal" data-bs-target="#exampleModal" style="font-size: 40px">
       {{betrag}} €
     </div>
+  </div>
+  <div>
+    <button v-on:click="clearBudget">Budget löschen</button>
   </div>
 
   <!-- Modal -->
