@@ -220,11 +220,11 @@ export default {
       if (!('geolocation' in navigator)) {
         geoLocActive = false
       } else {
-        let longitude;
-        navigator.geolocation.getCurrentPosition(position => {
-          longitude = position.coords.longitude
+        navigator.geolocation.getCurrentPosition((position) => {
+          breite = position.coords.latitude;
+          länge = position.coords.longitude;
         })
-        if (longitude === null) {
+        if (länge === null || länge === 0) {
           geoLocActive = false
         }
       }
@@ -274,15 +274,16 @@ export default {
     };
 
     const checkboxClicked = () => {
-      if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition((position) => {
-          breite = position.coords.latitude;
-          länge = position.coords.longitude;
-        })
+      if (länge === 0) {
+        if ('geolocation' in navigator) {
+          navigator.geolocation.getCurrentPosition((position) => {
+            breite = position.coords.latitude;
+            länge = position.coords.longitude;
+          })
+        }
       }
-
       isCheckboxClicked = !isCheckboxClicked
-      if (navigator.geolocation && isCheckboxClicked && sorted === 'alphabetically') {
+      if (navigator.geolocation && isCheckboxClicked && sorted === 'alphabetically' && länge !== 0) {
         sortCanteensByDistance();
         sorted = 'byDistance'
       } else if (navigator.geolocation && !isCheckboxClicked && sorted !== 'alphabetically'){
