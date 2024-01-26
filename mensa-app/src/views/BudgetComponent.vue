@@ -232,9 +232,6 @@ export default {
       {{betrag}} €
     </div>
   </div>
-  <div>
-    <button v-on:click="clearBudget">Budget löschen</button>
-  </div>
 
   <!-- Modal -->
 <!--  <PopUp ref="My-Modal"/>-->
