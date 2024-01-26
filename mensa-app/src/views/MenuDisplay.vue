@@ -567,6 +567,7 @@ export default {
         if (deltaX < 0) incrementDate();
         else decrementDate();
       }
+      isChangingDate.value=false;
     };
 
     const incrementDate = () => {
@@ -699,6 +700,7 @@ export default {
     const openBadgePopup = (mealId, badge,event) => {
       showMessage.value = false;
       showAdditivesPopup.value = false;
+      isChangingDate.value=false;
       event.stopPropagation();
       let x,y;
       if (event.type.startsWith('touch')){
@@ -1209,16 +1211,6 @@ img {
   margin-bottom: 10px;
 }
 
-.category-section .meal-container {
-  margin-bottom: 0;
-}
-.category-section .meal-container:last-child::after {
-  content: none;
-}
-
-.category-section:last-of-type .meal-container:last-child {
-  margin-bottom: 30px;
-}
 
 
 
